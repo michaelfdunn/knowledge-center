@@ -45,6 +45,9 @@ svg{display:block;}
 /* ─── APP SHELL ─── */
 .app{display:flex;height:100vh;overflow:hidden;}
 
+/* Chat panel is a flex sibling — pushes main content */
+.app-body{display:flex;flex:1;overflow:hidden;min-width:0;transition:all .28s cubic-bezier(.4,0,.2,1);}
+
 /* ─── SIDEBAR ─── */
 .sidebar{
   width:280px;flex-shrink:0;background:var(--bg);
@@ -135,6 +138,65 @@ svg{display:block;}
 .page-title{font-size:28px;font-weight:600;color:var(--text-b);line-height:1.2;}
 .page-subtitle{font-size:14px;color:var(--text-s);margin-top:4px;}
 .header-actions{display:flex;align-items:center;gap:8px;}
+
+/* ─── NOW ASSIST CHAT BAR ─── */
+.chat-section{
+  padding:20px 32px 0;flex-shrink:0;
+}
+.chat-welcome{
+  font-size:22px;font-weight:600;color:var(--text-b);
+  text-align:center;margin-bottom:14px;
+}
+.chat-bar{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-pill);
+  padding:0 8px 0 16px;height:52px;
+  box-shadow:0 2px 12px rgba(0,0,0,.07);
+  transition:border-color .2s, box-shadow .2s;
+  max-width:680px;margin:0 auto;
+}
+.chat-bar:focus-within{
+  border-color:var(--teal);
+  box-shadow:0 2px 16px rgba(19,137,170,.15);
+}
+.chat-bar-icon{
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:8px;color:var(--text-s);
+}
+.chat-bar-divider{width:1px;height:20px;background:var(--border);flex-shrink:0;}
+.chat-bar-plus{
+  flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;color:var(--text-s);cursor:pointer;transition:background .15s;
+}
+.chat-bar-plus:hover{background:var(--bg);}
+.chat-bar input{
+  flex:1;border:none;outline:none;font-size:14px;color:var(--text-b);
+  background:transparent;font-family:'Inter',sans-serif;
+  caret-color:var(--teal);
+}
+.chat-bar input::placeholder{color:var(--text-d);}
+.chat-mic{
+  flex-shrink:0;width:36px;height:36px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s;border:none;
+}
+.chat-mic:hover{background:#3bcf4f;}
+.chat-chips{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:10px;flex-wrap:wrap;
+  max-width:680px;margin-left:auto;margin-right:auto;
+}
+.chat-chip{
+  display:flex;align-items:center;gap:5px;
+  height:28px;padding:0 12px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:12px;color:var(--text-s);cursor:pointer;
+  transition:border-color .15s,color .15s,background .15s;
+  white-space:nowrap;
+}
+.chat-chip:hover{border-color:var(--teal);color:var(--teal);background:rgba(19,137,170,.04);}
+.chat-chip svg{flex-shrink:0;opacity:.7;}
 .btn-primary{
   height:36px;padding:0 18px;border-radius:var(--r-pill);
   background:var(--dark);color:#fff;font-size:14px;font-weight:500;
@@ -348,46 +410,48 @@ svg{display:block;}
 .left-column{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
 .right-sidebar{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;}
 
-/* ─── REQUIRES ACTION CARD (dark) ─── */
+/* ─── REQUIRES ACTION CARD (white) ─── */
 .ra-card{
-  background:var(--dark);border-radius:var(--r-dark);
+  background:var(--surface);border-radius:var(--r-card);
+  border:1px solid var(--border);
+  box-shadow:0 1px 2px rgba(0,0,0,.05);
   padding:20px;
 }
 .ra-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.ra-title{font-size:16px;font-weight:600;color:#fff;}
-.ra-subtitle{font-size:13px;color:rgba(255,255,255,.65);margin-top:2px;}
+.ra-title{font-size:16px;font-weight:600;color:var(--text-b);}
+.ra-subtitle{font-size:13px;color:var(--text-s);margin-top:2px;}
 .ra-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
 .ra-pill{
   display:flex;flex-direction:column;align-items:center;
   padding:10px 14px;border-radius:var(--r-pill);
-  background:rgba(255,255,255,.1);cursor:pointer;
+  background:var(--bg);border:1px solid var(--border);cursor:pointer;
   min-width:80px;transition:background .15s;
 }
-.ra-pill:hover{background:rgba(255,255,255,.16);}
-.ra-pill.active{background:rgba(255,255,255,.18);outline:2px solid rgba(255,255,255,.3);}
-.ra-pill-num{font-size:22px;font-weight:700;color:#fff;line-height:1;}
-.ra-pill-num.overdue{color:var(--green);}
-.ra-pill-label{font-size:11px;color:rgba(255,255,255,.65);margin-top:4px;white-space:nowrap;}
+.ra-pill:hover{background:var(--border-sub);}
+.ra-pill.active{background:var(--border-sub);outline:2px solid var(--nav-active);}
+.ra-pill-num{font-size:22px;font-weight:700;color:var(--text-b);line-height:1;}
+.ra-pill-num.overdue{color:#059669;}
+.ra-pill-label{font-size:11px;color:var(--text-s);margin-top:4px;white-space:nowrap;}
 .ra-table{width:100%;}
 .ra-table-header{
   display:grid;grid-template-columns:1fr 90px 60px 56px;gap:0;
-  padding:6px 0;border-bottom:1px solid rgba(255,255,255,.12);
-  font-size:11px;color:rgba(255,255,255,.45);font-weight:500;
+  padding:6px 0;border-bottom:1px solid var(--border-sub);
+  font-size:11px;color:var(--text-s);font-weight:500;
 }
 .ra-table-row{
   display:grid;grid-template-columns:1fr 90px 60px 56px;gap:0;
-  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);
+  padding:8px 0;border-bottom:1px solid var(--border-sub);
   align-items:center;font-size:13px;
 }
 .ra-table-row:last-child{border-bottom:none;}
-.ra-table-row:hover{background:rgba(255,255,255,.04);}
-.ra-row-title{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;}
-.ra-row-kb{color:rgba(255,255,255,.5);font-size:12px;}
-.ra-row-views{color:rgba(255,255,255,.65);font-size:12px;}
+.ra-table-row:hover{background:var(--bg);}
+.ra-row-title{color:var(--teal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;}
+.ra-row-kb{color:var(--text-s);font-size:12px;}
+.ra-row-views{color:var(--text-s);font-size:12px;}
 .ra-row-stars{display:flex;gap:2px;}
-.ra-star{color:rgba(255,255,255,.25);font-size:11px;}
+.ra-star{color:var(--border);font-size:11px;}
 .ra-star.lit{color:#f59e0b;}
-.ra-empty{font-size:13px;color:rgba(255,255,255,.45);padding:12px 0;text-align:center;}
+.ra-empty{font-size:13px;color:var(--text-s);padding:12px 0;text-align:center;}
 
 /* ─── WHITE CARD ─── */
 .wcard{
@@ -469,6 +533,131 @@ svg{display:block;}
 }
 .sc-link:hover{text-decoration:underline;}
 .sc-link svg{flex-shrink:0;opacity:.7;}
+
+/* ─── NOW ASSIST CHAT PANEL (inline — pushes content) ─── */
+.chat-panel-overlay{display:none;}/* unused but kept for safe removal */
+
+.chat-panel{
+  flex-shrink:0;
+  width:0;
+  overflow:hidden;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:width .28s cubic-bezier(.4,0,.2,1);
+}
+.chat-panel.open{width:400px;}
+
+/* Panel header */
+.cp-header{
+  flex-shrink:0;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+}
+.cp-header-left{display:flex;align-items:center;gap:8px;}
+.cp-logo{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.cp-title{font-size:14px;font-weight:600;color:var(--text-b);}
+.cp-header-actions{display:flex;align-items:center;gap:2px;}
+.cp-icon-btn{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-s);cursor:pointer;background:none;border:none;
+  transition:background .15s,color .15s;
+}
+.cp-icon-btn:hover{background:var(--bg);color:var(--text-b);}
+
+/* Messages area */
+.cp-messages{
+  flex:1;overflow-y:auto;padding:20px 16px;
+  display:flex;flex-direction:column;gap:16px;
+}
+
+/* Message bubbles */
+.cp-msg{display:flex;flex-direction:column;gap:4px;}
+.cp-msg.user{align-items:flex-end;}
+.cp-msg.ai{align-items:flex-start;}
+
+.cp-bubble{
+  max-width:88%;padding:10px 14px;border-radius:16px;
+  font-size:13px;line-height:1.55;
+}
+.cp-msg.user .cp-bubble{
+  background:var(--dark);color:#fff;
+  border-radius:16px 16px 4px 16px;
+}
+.cp-msg.ai .cp-bubble{
+  background:var(--bg);color:var(--text-b);
+  border:1px solid var(--border);
+  border-radius:4px 16px 16px 16px;
+}
+.cp-msg-time{font-size:11px;color:var(--text-d);padding:0 4px;}
+
+/* Action button inside bubble */
+.cp-action-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:10px;height:32px;padding:0 16px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:13px;font-weight:500;
+  border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:background .15s;
+}
+.cp-action-btn:hover{background:#1e3a52;}
+.cp-action-btn.outline{
+  background:transparent;color:var(--teal);border:1px solid var(--teal);
+}
+.cp-action-btn.outline:hover{background:rgba(19,137,170,.06);}
+
+/* Chip result rows */
+.cp-result-row{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);font-size:12px;cursor:pointer;
+  transition:border-color .15s;margin-top:4px;
+}
+.cp-result-row:hover{border-color:var(--teal);}
+.cp-result-link{color:var(--teal);font-weight:600;flex-shrink:0;min-width:70px;}
+.cp-result-title{flex:1;color:var(--text-b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cp-result-badge{flex-shrink:0;height:18px;padding:0 7px;border-radius:var(--r-pill);font-size:11px;font-weight:500;display:inline-flex;align-items:center;}
+.rb-red{background:var(--red-bg);color:var(--red);}
+.rb-amber{background:var(--amber-bg);color:var(--amber);}
+.rb-green{background:#dcfce7;color:#166534;}
+
+/* Typing indicator */
+.cp-typing{display:flex;align-items:center;gap:4px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:4px 16px 16px 16px;width:fit-content;}
+.cp-dot{width:7px;height:7px;border-radius:50%;background:var(--text-d);animation:cpBounce 1.2s infinite;}
+.cp-dot:nth-child(2){animation-delay:.2s;}
+.cp-dot:nth-child(3){animation-delay:.4s;}
+@keyframes cpBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* Bottom input */
+.cp-footer{
+  flex-shrink:0;padding:12px 16px 16px;
+  border-top:1px solid var(--border);background:var(--surface);
+}
+.cp-input-row{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r-pill);padding:0 8px 0 14px;height:44px;
+  transition:border-color .2s;
+}
+.cp-input-row:focus-within{border-color:var(--teal);}
+.cp-input-row input{
+  flex:1;border:none;outline:none;font-size:13px;
+  color:var(--text-b);background:transparent;font-family:'Inter',sans-serif;
+}
+.cp-input-row input::placeholder{color:var(--text-d);}
+.cp-send-btn{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;transition:background .15s;
+}
+.cp-send-btn:hover{background:#3bcf4f;}
+.cp-footer-note{font-size:11px;color:var(--text-d);text-align:center;margin-top:6px;}
 
 /* ─── PERSONALIZE MODAL ─── */
 .modal-overlay{
@@ -644,7 +833,7 @@ svg{display:block;}
           <circle cx="10" cy="10" r="8"/>
           <path d="M10 2C10 2 7 6 7 10s3 8 3 8M10 2c0 0 3 4 3 8s-3 8-3 8M2 10h16"/>
         </svg>
-        World Knowledge
+        Knowledge Center
       </div>
     </div>
 
@@ -720,6 +909,8 @@ svg{display:block;}
 
   </nav><!-- /sidebar -->
 
+  <div class="app-body">
+
   <!-- ═══════════════════════════ MAIN ═══════════════════════════════ -->
   <main class="main">
 
@@ -731,13 +922,6 @@ svg{display:block;}
           <div class="page-subtitle">Set up, manage, and monitor your knowledge bases</div>
         </div>
         <div class="header-actions">
-          <div class="header-search">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <circle cx="6.5" cy="6.5" r="5" stroke="#656462" stroke-width="1.5"/>
-              <path d="M11 11l3 3" stroke="#656462" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <input type="text" placeholder="Search for an article" />
-          </div>
           <button class="btn-ghost personalize-btn" onclick="openModal()">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/>
@@ -752,6 +936,50 @@ svg{display:block;}
             New article
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- NOW ASSIST CHAT BAR -->
+    <div class="chat-section">
+      <div class="chat-welcome">Welcome back, Michael</div>
+      <div class="chat-bar">
+        <div class="chat-bar-icon">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M3 4h14M3 8h10M3 12h12M3 16h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="chat-bar-divider"></div>
+        <button class="chat-bar-plus" title="Attach">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <input type="text" placeholder='Try asking "Show me articles that need review"' id="chatInput" onkeydown="handleChatKey(event)" />
+        <button class="chat-mic" title="Voice input">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+            <rect x="7" y="2" width="6" height="10" rx="3" fill="#172b3e"/>
+            <path d="M4 10a6 6 0 0012 0" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M10 16v2" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chat-chips">
+        <button class="chat-chip" onclick="setChat('Show me articles that need review')">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Show articles needing review
+        </button>
+        <button class="chat-chip" onclick="setChat('What are my top knowledge gaps?')">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9l4-6 4 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          What are my top knowledge gaps?
+        </button>
+        <button class="chat-chip" onclick="setChat('Show potential duplicate articles')">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="3" width="7" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 1.5h6a1 1 0 011 1v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Show potential duplicates
+        </button>
+        <button class="chat-chip" onclick="setChat('Summarize knowledge base health')">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9C2 6.24 4.24 4 7 4s5 2.24 5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M7 4V2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Summarize KB health
+        </button>
       </div>
     </div>
 
@@ -885,7 +1113,7 @@ svg{display:block;}
                 <text x="276" y="193" font-size="10" fill="#172b3e" font-family="Inter,sans-serif" text-anchor="middle">100</text>
               </svg>
               <p id="health-label" class="health-score-label">Multiple improvements needed</p>
-              <button class="health-btn" onclick="window.location='health-score-config.html'">View knowledge base health</button>
+              <button class="health-btn" onclick="window.location='knowledge-base-health.html'">View knowledge base health</button>
             </div>
           </div>
         </div>
@@ -896,7 +1124,7 @@ svg{display:block;}
           <div class="ic">
             <div class="ic-header">
               <span class="title">Potential duplicates <i class="ico-info">i</i></span>
-              <a class="view-all">View all</a>
+              <a class="view-all" onclick="window.location='potential-duplicates.html'">View all</a>
             </div>
             <div style="display:flex;gap:24px;margin-bottom:10px">
               <div>
@@ -967,7 +1195,7 @@ svg{display:block;}
           <div class="ic">
             <div class="ic-header">
               <span class="title">Article optimization <i class="ico-info">i</i></span>
-              <a class="view-all">View all</a>
+              <a class="view-all" onclick="window.location='article-optimization.html'">View all</a>
             </div>
             <div style="margin-bottom:8px;">
               <div class="ic-label">Articles flagged</div>
@@ -1057,7 +1285,7 @@ svg{display:block;}
                 <div class="kf-title">My approvals</div>
                 <div class="kf-desc">Review your knowledge article approval tasks.</div>
               </div>
-              <div class="kf-card" onclick="window.location='health-score-config.html'" style="cursor:pointer;">
+              <div class="kf-card" onclick="window.location='knowledge-base-health.html'" style="cursor:pointer;">
                 <svg class="kf-icon" viewBox="0 0 32 32" fill="none">
                   <circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="1.5"/>
                   <path d="M7 22 A11 11 0 0 1 25 22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -1137,6 +1365,48 @@ svg{display:block;}
     </div><!-- /page-body -->
 
   </main><!-- /main -->
+
+  <!-- ═══════════════════════════ NOW ASSIST CHAT PANEL ═══════════════════════════ -->
+  <div class="chat-panel" id="chatPanel">
+  <div class="cp-header">
+    <div class="cp-header-left">
+      <div class="cp-logo">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7l3 3 7-7" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="cp-title">Now Assist</span>
+    </div>
+    <div class="cp-header-actions">
+      <button class="cp-icon-btn" title="New conversation" onclick="clearChat()">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M12 2H4a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2z" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </button>
+      <button class="cp-icon-btn" title="Close" onclick="closeChatPanel()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="cp-messages" id="cpMessages">
+    <!-- messages injected by JS -->
+  </div>
+
+  <div class="cp-footer">
+    <div class="cp-input-row">
+      <input type="text" id="cpInput" placeholder="Ask or search for anything" onkeydown="cpSend(event)" />
+      <button class="cp-send-btn" onclick="cpSendClick()">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <rect x="7" y="2" width="6" height="10" rx="3" fill="#172b3e"/>
+          <path d="M4 10a6 6 0 0012 0" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M10 16v2" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cp-footer-note">Some answers generated by AI. Be sure to check for accuracy.</div>
+  </div>
+</div><!-- /chat-panel -->
+
+</div><!-- /app-body -->
 </div><!-- /app -->
 
 <!-- ═══════════════════════════ PERSONALIZE MODAL ═══════════════════════════ -->
@@ -1355,6 +1625,162 @@ const ownershipGroups = {
   Operations: ['Select','Ops Team'],
   'Known error': ['Select','IT Team'],
 };
+
+// ─── Now Assist Chat Panel ───
+const CP_RESPONSES = {
+  duplicate: {
+    text: "I found <strong>29 potential duplicate topics</strong> across your knowledge bases. Here are the top matches:",
+    results: [
+      {kb:'KB8090001',title:'Hardware assets should have asset tag',badge:'96%',badgeClass:'rb-green'},
+      {kb:'KB0010023',title:'How to use Now Support | Developer',badge:'94%',badgeClass:'rb-green'},
+      {kb:'KB0041200',title:'Penetration Testing for Mobile, Network…',badge:'93%',badgeClass:'rb-amber'},
+    ],
+    action:'View all duplicates', actionUrl:'potential-duplicates.html'
+  },
+  optim: {
+    text: "I scanned <strong>1,512 flagged articles</strong> and found <strong>10,753 total findings</strong>. Here are the top issues to fix:",
+    results: [
+      {kb:'H1 Tags',title:'127 articles with H1 in article body',badge:'Auto-fixable',badgeClass:'rb-green'},
+      {kb:'Bad Links',title:'Articles with broken hyperlinks',badge:'Manual review',badgeClass:'rb-amber'},
+      {kb:'Alt Tags',title:'Missing image alt text (20 issues)',badge:'Auto-fixable',badgeClass:'rb-green'},
+    ],
+    action:'View article optimization', actionUrl:'article-optimization.html'
+  },
+  health: {
+    text: "Your current <strong>Knowledge Base Health Score is 47</strong> — multiple improvements needed. Here's a breakdown by knowledge base:",
+    results: [
+      {kb:'Customer Service',title:'Customer service knowledge base',badge:'2',badgeClass:'rb-red'},
+      {kb:'Human Resources',title:'Human Resources Knowledge – UK',badge:'22',badgeClass:'rb-red'},
+      {kb:'IT',title:'The ACME North America IT Service Desk',badge:'80',badgeClass:'rb-green'},
+    ],
+    action:'View KB health', actionUrl:'knowledge-base-health.html'
+  },
+  review: {
+    text: "Here are <strong>articles currently needing review</strong> in your knowledge bases:",
+    results: [
+      {kb:'KB0010023',title:'Now Support Developer Guide — needs update',badge:'Overdue',badgeClass:'rb-red'},
+      {kb:'KB0041200',title:'Mobile Device Penetration Testing',badge:'Due soon',badgeClass:'rb-amber'},
+      {kb:'KB0071200',title:'Exit Interview: What to Expect',badge:'Pending',badgeClass:'rb-amber'},
+    ],
+    action:'View all flagged articles', actionUrl:'article-optimization.html'
+  },
+  default: {
+    text: "I can help you manage your knowledge bases. Try asking about <strong>potential duplicates</strong>, <strong>article optimization</strong>, <strong>KB health scores</strong>, or <strong>articles needing review</strong>.",
+    results: [],
+    action: null
+  }
+};
+
+let cpHistory = [];
+
+function openChatPanel(prompt){
+  document.getElementById('chatPanel').classList.add('open');
+  if(prompt){
+    const input = document.getElementById('cpInput');
+    input.value = '';
+    addUserMessage(prompt);
+    showTyping(prompt);
+  } else {
+    if(cpHistory.length === 0) showWelcome();
+  }
+}
+
+function closeChatPanel(){
+  document.getElementById('chatPanel').classList.remove('open');
+}
+
+function clearChat(){
+  cpHistory = [];
+  document.getElementById('cpMessages').innerHTML = '';
+  showWelcome();
+}
+
+function showWelcome(){
+  appendAiMessage("Hi Michael! I'm Now Assist. Ask me about your knowledge bases — duplicates, optimization, health scores, or articles needing review.");
+}
+
+function addUserMessage(text){
+  const msgs = document.getElementById('cpMessages');
+  const el = document.createElement('div');
+  el.className = 'cp-msg user';
+  el.innerHTML = `<div class="cp-bubble">${text}</div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+  cpHistory.push({role:'user', text});
+}
+
+function appendAiMessage(text, results, action, actionUrl){
+  const msgs = document.getElementById('cpMessages');
+  const el = document.createElement('div');
+  el.className = 'cp-msg ai';
+  let html = `<div class="cp-bubble">${text}`;
+  if(results && results.length){
+    results.forEach(r => {
+      html += `<div class="cp-result-row" onclick="window.location='${actionUrl||'#'}'">
+        <span class="cp-result-link">${r.kb}</span>
+        <span class="cp-result-title">${r.title}</span>
+        <span class="cp-result-badge ${r.badgeClass}">${r.badge}</span>
+      </div>`;
+    });
+  }
+  if(action){
+    html += `<br><button class="cp-action-btn" onclick="window.location='${actionUrl}'">${action} →</button>`;
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping(prompt){
+  const msgs = document.getElementById('cpMessages');
+  const el = document.createElement('div');
+  el.className = 'cp-msg ai';
+  el.id = 'cpTyping';
+  el.innerHTML = `<div class="cp-typing"><span class="cp-dot"></span><span class="cp-dot"></span><span class="cp-dot"></span></div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    const typing = document.getElementById('cpTyping');
+    if(typing) typing.remove();
+    const key = /duplicate/i.test(prompt) ? 'duplicate'
+      : /optim|flag|fix/i.test(prompt) ? 'optim'
+      : /health|score/i.test(prompt) ? 'health'
+      : /review|need/i.test(prompt) ? 'review'
+      : 'default';
+    const r = CP_RESPONSES[key];
+    appendAiMessage(r.text, r.results, r.action, r.actionUrl);
+  }, 900);
+}
+
+function cpSendClick(){
+  const input = document.getElementById('cpInput');
+  const val = input.value.trim();
+  if(!val) return;
+  input.value = '';
+  addUserMessage(val);
+  showTyping(val);
+}
+
+function cpSend(e){
+  if(e.key === 'Enter') cpSendClick();
+}
+
+// Top chat bar functions — now open the panel
+function setChat(text){
+  openChatPanel(text);
+}
+
+function handleChatKey(e){
+  if(e.key === 'Enter'){
+    const val = e.target.value.trim();
+    if(!val) return;
+    e.target.value = '';
+    openChatPanel(val);
+    document.getElementById('chatInput').blur();
+  }
+}
 
 const DB = {
   all: {

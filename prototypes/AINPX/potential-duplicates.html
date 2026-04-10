@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Potential Duplicates — Knowledge Center</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── Janus Design Tokens ─── */
+:root{
+  --bg:        #f4f3f0;
+  --surface:   #ffffff;
+  --input-bg:  #edece9;
+  --border:    #e3e2df;
+  --border-sub:#edece9;
+  --nav-active:#c2c1be;
+  --dark:      #172b3e;
+  --text-h:    #000000;
+  --text-b:    #172b3e;
+  --text-s:    #656462;
+  --text-d:    #94a3b8;
+  --teal:      #1389aa;
+  --green:     #4edf61;
+  --amber:     #ca8a04;
+  --amber-bg:  #fef9c3;
+  --red:       #dc2626;
+  --red-bg:    #fee2e2;
+  --badge-red: #e2161c;
+  --r-card:    24px;
+  --r-dark:    32px;
+  --r-pill:    9999px;
+}
+
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;
+  color:var(--text-b);background:var(--bg);}
+a{color:var(--teal);text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:underline;}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+select{font-family:'Inter',sans-serif;cursor:pointer;}
+svg{display:block;}
+
+/* ─── APP SHELL ─── */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:280px;flex-shrink:0;background:var(--bg);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sb-logo{
+  height:40px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px 0 16px;flex-shrink:0;
+}
+.sb-logo-text{font-size:14px;font-weight:600;color:var(--dark);letter-spacing:-.2px;}
+.sb-hamburger{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;cursor:pointer;flex-shrink:0;
+}
+.sb-hamburger:hover{background:var(--border-sub);}
+.sb-nav{padding:8px 16px 0;}
+.nav-item{
+  height:40px;display:flex;align-items:center;gap:10px;
+  padding:0 10px;border-radius:var(--r-pill);cursor:pointer;
+  font-size:14px;color:var(--text-h);user-select:none;
+}
+.nav-item:hover{background:var(--border-sub);}
+.nav-item.active{background:var(--nav-active);}
+.nav-item svg{flex-shrink:0;opacity:.85;}
+.sb-section-label{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px 4px;font-size:12px;color:var(--text-s);
+}
+.sb-section-label-btn{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;cursor:pointer;
+}
+.sb-section-label-btn:hover{background:var(--border-sub);}
+.sb-recent-item{
+  height:40px;display:flex;align-items:center;
+  padding:0 10px;margin:0 16px;border-radius:var(--r-pill);
+  font-size:14px;color:var(--text-h);cursor:pointer;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sb-recent-item:hover{background:var(--border-sub);}
+.sb-recent-see-all{
+  height:40px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 10px;margin:0 16px;border-radius:var(--r-pill);
+  font-size:14px;color:var(--text-h);cursor:pointer;
+}
+.sb-recent-see-all:hover{background:var(--border-sub);}
+.sb-divider{height:1px;background:var(--border);margin:8px 16px;}
+.sb-bottom{margin-top:auto;padding-bottom:8px;border-top:1px solid var(--border);}
+.sb-notif{
+  height:40px;display:flex;align-items:center;gap:8px;
+  padding:0 10px;margin:8px 16px 0;border-radius:var(--r-pill);
+  font-size:14px;color:var(--text-h);cursor:pointer;position:relative;
+}
+.sb-notif:hover{background:var(--border-sub);}
+.notif-badge{
+  position:absolute;top:7px;left:26px;
+  width:12px;height:12px;border-radius:6px;
+  background:var(--badge-red);border:1.5px solid var(--bg);
+}
+.sb-user{
+  height:40px;display:flex;align-items:center;gap:10px;
+  padding:0 10px;margin:0 16px;border-radius:var(--r-pill);
+  font-size:13px;color:var(--text-b);cursor:pointer;
+}
+.sb-user:hover{background:var(--border-sub);}
+.user-avatar{
+  width:24px;height:24px;border-radius:12px;
+  background:rgba(0,123,158,0.16);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:600;color:var(--dark);
+}
+
+/* ─── MAIN ─── */
+.main{flex:1;overflow-y:auto;background:var(--bg);display:flex;flex-direction:column;min-width:0;}
+
+/* ─── PAGE HEADER ─── */
+.page-header{padding:28px 32px 0;flex-shrink:0;}
+.page-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-s);margin-bottom:8px;}
+.page-breadcrumb a{color:var(--teal);font-size:13px;}
+.page-breadcrumb-sep{opacity:.5;}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+.page-title{font-size:28px;font-weight:600;color:var(--text-b);line-height:1.2;}
+.page-meta{font-size:13px;color:var(--text-s);margin-top:2px;}
+.header-actions{display:flex;align-items:center;gap:8px;}
+
+/* ─── BUTTONS ─── */
+.btn-primary{
+  height:36px;padding:0 18px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:14px;font-weight:500;
+  display:flex;align-items:center;gap:6px;transition:background .15s;
+}
+.btn-primary:hover{background:#1e3a52;}
+.btn-ghost{
+  height:36px;padding:0 14px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text-b);font-size:14px;
+  display:flex;align-items:center;gap:6px;transition:border-color .15s;
+}
+.btn-ghost:hover{border-color:var(--nav-active);}
+
+/* ─── PAGE BODY ─── */
+.page-body{padding:16px 32px 32px;display:flex;flex-direction:column;gap:16px;}
+
+/* ─── FILTER ROW ─── */
+.filter-row{display:flex;align-items:center;gap:10px;}
+.filter-label{font-size:13px;color:var(--text-s);}
+.filter-select{
+  appearance:none;-webkit-appearance:none;
+  height:32px;padding:0 28px 0 12px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%23656462' stroke-width='1.3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E")
+    no-repeat right 10px center;
+  font-size:13px;color:var(--text-b);font-family:'Inter',sans-serif;cursor:pointer;
+  transition:border-color .15s;
+}
+.filter-select:focus{outline:none;border-color:var(--teal);}
+
+/* ─── AI BANNER ─── */
+.ai-banner{
+  border-radius:var(--r-card);border:1px solid rgba(78,223,97,.35);
+  background:linear-gradient(90deg,rgba(78,223,97,.08),rgba(19,137,170,.06));
+  display:flex;align-items:center;gap:12px;padding:12px 18px;
+}
+.ai-banner-dot{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ai-banner-text{flex:1;font-size:13px;color:var(--text-b);line-height:1.5;}
+.ai-banner-text strong{font-weight:600;}
+.ai-banner-text a{color:var(--teal);}
+
+/* ─── STATS ROW ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:20px 24px;
+}
+.stat-num{font-size:36px;font-weight:700;color:var(--text-b);line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:13px;color:var(--text-s);}
+
+/* ─── LIST CARD ─── */
+.list-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-card);overflow:hidden;
+}
+
+/* ─── LIST ROW ─── */
+.list-row{border-bottom:1px solid var(--border-sub);}
+.list-row:last-child{border-bottom:none;}
+.list-row-main{
+  display:grid;
+  grid-template-columns:40px 40px 1fr 200px 160px 130px 90px;
+  align-items:center;padding:0 16px;min-height:52px;
+  cursor:pointer;transition:background .1s;
+  gap:4px;
+}
+.list-row-main:hover{background:var(--bg);}
+.list-row.expanded .list-row-main{background:rgba(19,137,170,.04);}
+
+.row-chevron{
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;color:var(--text-s);flex-shrink:0;
+}
+.row-chevron svg{transition:transform .2s;}
+.list-row.expanded .row-chevron svg{transform:rotate(90deg);}
+
+/* NX checkbox */
+.cb{
+  appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border-radius:4px;
+  border:1px solid var(--text-d);background:var(--surface);cursor:pointer;
+  transition:border-color .15s,background .15s;flex-shrink:0;position:relative;
+}
+.cb:hover{border-color:var(--teal);}
+.cb:checked{background:var(--teal);border-color:var(--teal);}
+.cb:checked::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:8px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(40deg);}
+
+.row-topic{display:flex;align-items:center;gap:8px;min-width:0;}
+.row-topic-name{font-size:13px;font-weight:500;color:var(--text-b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.conf-badge{
+  flex-shrink:0;height:20px;padding:0 8px;border-radius:var(--r-pill);
+  font-size:11px;font-weight:600;display:inline-flex;align-items:center;
+}
+.conf-green{background:#dcfce7;color:#166534;}
+.conf-amber{background:var(--amber-bg);color:var(--amber);}
+.conf-red{background:var(--red-bg);color:var(--red);}
+
+.row-meta{font-size:12px;color:var(--text-s);display:flex;align-items:center;gap:4px;}
+
+.review-badge{
+  flex-shrink:0;height:22px;padding:0 10px;border-radius:var(--r-pill);
+  font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px;
+}
+.badge-amber{background:var(--amber-bg);color:var(--amber);}
+.badge-teal{background:rgba(19,137,170,.1);color:var(--teal);}
+
+.row-actions{display:flex;align-items:center;gap:6px;}
+
+.btn-row-primary{
+  height:28px;padding:0 12px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:12px;font-weight:500;
+  display:inline-flex;align-items:center;
+  transition:background .15s;
+}
+.btn-row-primary:hover{background:#1e3a52;}
+
+.btn-row-ghost{
+  height:28px;padding:0 12px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text-b);font-size:12px;
+  display:inline-flex;align-items:center;
+  transition:border-color .15s;
+}
+.btn-row-ghost:hover{border-color:var(--nav-active);}
+
+.btn-dismiss{
+  height:28px;padding:0 10px;border-radius:var(--r-pill);
+  background:transparent;color:var(--text-s);font-size:12px;
+  display:inline-flex;align-items:center;
+  transition:background .15s,color .15s;
+}
+.btn-dismiss:hover{background:var(--bg);color:var(--text-b);}
+
+/* ─── EXPANDED PANEL ─── */
+.list-expand{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.list-expand.open{max-height:400px;}
+.expand-inner{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;padding:20px 20px 20px 96px;
+  border-top:1px solid var(--border-sub);
+  background:rgba(19,137,170,.03);
+}
+.expand-panel{padding-right:24px;}
+.expand-panel+.expand-panel{padding-left:24px;padding-right:0;border-left:1px solid var(--border-sub);}
+.expand-panel-title{
+  font-size:11px;font-weight:600;color:var(--text-s);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;
+}
+.rec-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:var(--r-pill);padding:5px 12px;margin-bottom:10px;
+  font-size:12px;font-weight:600;
+}
+.rec-badge-green{background:#dcfce7;color:#166534;}
+.rec-badge-amber{background:var(--amber-bg);color:var(--amber);}
+.rec-desc{font-size:12px;color:var(--text-s);margin-bottom:10px;line-height:1.5;}
+.rec-pills{display:flex;flex-wrap:wrap;gap:4px;}
+.rec-pill{
+  height:22px;padding:0 10px;border-radius:var(--r-pill);
+  background:rgba(19,137,170,.08);color:var(--teal);
+  font-size:11px;font-weight:500;display:inline-flex;align-items:center;cursor:pointer;
+}
+.rec-pill:hover{background:rgba(19,137,170,.15);}
+
+.article-list{display:flex;flex-direction:column;gap:6px;}
+.article-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:12px;
+  border:1px solid var(--border);background:var(--surface);
+  font-size:12px;cursor:pointer;transition:border-color .15s;
+}
+.article-item:hover{border-color:var(--teal);}
+.article-kb{color:var(--teal);font-weight:600;flex-shrink:0;min-width:80px;}
+.article-ver{color:var(--text-d);flex-shrink:0;}
+.article-title{flex:1;color:var(--text-b);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.article-cat{color:var(--text-s);flex-shrink:0;font-size:11px;}
+.article-pub{
+  flex-shrink:0;height:18px;padding:0 7px;border-radius:var(--r-pill);
+  background:#dcfce7;color:#166534;font-size:11px;font-weight:500;display:inline-flex;align-items:center;
+}
+
+/* ─── PAGINATION ─── */
+.pagination{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;border-top:1px solid var(--border-sub);
+}
+.pagination-info{font-size:13px;color:var(--text-s);}
+.pagination-pages{display:flex;align-items:center;gap:4px;}
+.page-btn{
+  min-width:28px;height:28px;padding:0 6px;border-radius:8px;
+  border:1px solid transparent;background:transparent;
+  font-size:13px;color:var(--teal);display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-family:'Inter',sans-serif;transition:border-color .15s,background .15s;
+}
+.page-btn:hover{border-color:var(--border);background:var(--bg);}
+.page-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+.page-btn.arrow{color:var(--text-s);}
+.page-ellipsis{font-size:13px;color:var(--text-s);padding:0 4px;}
+.page-size-wrap{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-s);}
+.page-size-select{
+  appearance:none;-webkit-appearance:none;
+  height:28px;padding:0 24px 0 8px;border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%23656462' stroke-width='1.3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") no-repeat right 6px center;
+  font-size:13px;color:var(--text-b);font-family:'Inter',sans-serif;cursor:pointer;
+}
+
+/* ─── BOTTOM ACTION BAR ─── */
+.action-bar{
+  position:sticky;bottom:0;height:52px;background:var(--surface);
+  border-top:1px solid var(--border);display:flex;align-items:center;
+  padding:0 32px;gap:8px;flex-shrink:0;z-index:10;
+}
+.action-bar-info{font-size:13px;color:var(--text-s);margin-right:8px;}
+.action-bar-info strong{font-weight:600;color:var(--text-b);}
+.action-bar-sep{width:1px;height:20px;background:var(--border);margin:0 4px;}
+
+/* ─── SIDE PANEL ─── */
+.sp-overlay{position:fixed;inset:0;background:rgba(23,43,62,.18);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;}
+.sp-overlay.open{opacity:1;pointer-events:all;}
+.side-panel{
+  position:fixed;top:0;right:0;bottom:0;width:560px;
+  background:var(--surface);border-left:1px solid var(--border);
+  z-index:201;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:-6px 0 24px rgba(0,0,0,.1);
+}
+.side-panel.open{transform:translateX(0);}
+.sp-header{flex-shrink:0;padding:20px 24px 16px;border-bottom:1px solid var(--border);}
+.sp-header-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+.sp-eyebrow{font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.sp-title{font-size:16px;font-weight:600;color:var(--text-b);line-height:1.3;}
+.sp-close{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-s);cursor:pointer;flex-shrink:0;}
+.sp-close:hover{background:var(--bg);color:var(--text-b);}
+.sp-section{flex-shrink:0;padding:16px 24px;border-bottom:1px solid var(--border);}
+.sp-section-label{font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.sp-content{flex:1;overflow-y:auto;padding:20px 24px;}
+.sp-article-title{font-size:17px;font-weight:600;color:var(--text-b);margin-bottom:8px;line-height:1.4;}
+.sp-article-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border-sub);}
+.sp-article-meta-tag{font-size:12px;color:var(--text-s);}
+.sp-article-body{font-size:13px;color:var(--text-b);line-height:1.65;}
+.sp-article-body p{margin-bottom:12px;}
+.sp-footer{flex-shrink:0;padding:14px 24px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.sp-footer-info{flex:1;font-size:13px;color:var(--text-s);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
+  <nav class="sidebar">
+    <div class="sb-logo">
+      <span class="sb-logo-text">servicenow</span>
+      <button class="sb-hamburger" title="Collapse sidebar">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path stroke="#343331" stroke-width="1.5" stroke-linecap="round" d="M4 6h12M4 10h12M4 14h12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sb-nav">
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path fill="#343331" d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4a1 1 0 001-1v-3h2v3a1 1 0 001 1h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        Home
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="3" y="4" width="14" height="14" rx="2"/>
+          <path stroke-linecap="round" d="M3 8h14M7 2v4M13 2v4"/>
+        </svg>
+        Calendar Management
+      </div>
+      <div class="nav-item active" onclick="window.location='knowledge-center-ainpx.html'" style="cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <circle cx="10" cy="10" r="8"/>
+          <path d="M10 2C10 2 7 6 7 10s3 8 3 8M10 2c0 0 3 4 3 8s-3 8-3 8M2 10h16"/>
+        </svg>
+        Knowledge Center
+      </div>
+    </div>
+
+
+    <div class="sb-section-label">
+      <span>Recent</span>
+      <button class="sb-section-label-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="#343331">
+          <path d="M7 2v10M2 7h10" stroke="#343331" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sb-recent-item">VPN configuration failing with Mac</div>
+    <div class="sb-recent-item">Password reset in windows desktop</div>
+    <div class="sb-recent-item">Don't forget to review KB health...</div>
+    <div class="sb-recent-see-all">
+      <span>See all</span>
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#656462" stroke-width="1.5">
+        <path stroke-linecap="round" d="M6 4l4 4-4 4"/>
+      </svg>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-section-label"><span>My Apps</span></div>
+    <div class="sb-nav" style="padding-top:0">
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <circle cx="9" cy="9" r="6"/><path stroke-linecap="round" d="M15 15l3 3"/>
+        </svg>
+        Enterprise Search
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/>
+          <rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/>
+        </svg>
+        My canvas
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11.5 2L4.5 11H10L8.5 18.5L16.5 9H11L11.5 2Z"/>
+        </svg>
+        Activity hub
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="8" y="1" width="4" height="4" rx="1"/>
+          <rect x="2" y="14" width="4" height="4" rx="1"/>
+          <rect x="14" y="14" width="4" height="4" rx="1"/>
+          <path d="M10 5v4M4 14V11h12v3"/>
+        </svg>
+        Org chart
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-notif">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <path stroke-linecap="round" d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z"/>
+          <path d="M8.5 17.5a1.5 1.5 0 003 0" stroke-linecap="round"/>
+        </svg>
+        <span>Notifications</span>
+        <div class="notif-badge"></div>
+      </div>
+      <div class="sb-user">
+        <div class="user-avatar">MD</div>
+        <span>Michael Dunn</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════ MAIN ═══════════════════════════════ -->
+  <main class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-breadcrumb">
+        <a href="knowledge-center-ainpx.html">Knowledge Center</a>
+        <span class="page-breadcrumb-sep">›</span>
+        <span>Potential duplicates</span>
+      </div>
+      <div class="page-header-top">
+        <div>
+          <div class="page-title">Potential duplicates</div>
+          <div class="page-meta">Last refreshed 1m ago</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-ghost">Go to list</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- FILTER ROW -->
+      <div class="filter-row">
+        <span class="filter-label">Sort by</span>
+        <select class="filter-select" onchange="sortRows(this.value)">
+          <option value="conf">Confidence</option>
+          <option value="articles">Articles</option>
+          <option value="views">Views</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+
+      <!-- AI BANNER -->
+      <div class="ai-banner">
+        <div class="ai-banner-dot">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="ai-banner-text">
+          Now Assist analyzed all <strong>29</strong> duplicate topics &nbsp;<strong>0 recommendations</strong> with pre-generated drafts ready · <a>29 need manual review</a>
+        </div>
+        <button class="btn-primary" onclick="acceptAll()">Accept all recommendations</button>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="statDupTotal">29</div>
+          <div class="stat-lbl">Duplicate Topics</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">0</div>
+          <div class="stat-lbl">AI Recommendations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">29</div>
+          <div class="stat-lbl">Need Review</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">196</div>
+          <div class="stat-lbl">Articles with Recommendations</div>
+        </div>
+      </div>
+
+      <!-- LIST CARD -->
+      <div class="list-card">
+        <div id="listBody"></div>
+        <div class="pagination">
+          <div class="pagination-info" id="pagInfo">Showing 1–10 of 29</div>
+          <div class="pagination-pages" id="pagPages"></div>
+          <div class="page-size-wrap">
+            Records per page:
+            <select class="page-size-select">
+              <option selected>10</option>
+              <option>15</option>
+              <option>25</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-body -->
+
+    <!-- BOTTOM ACTION BAR -->
+    <div class="action-bar">
+      <div class="action-bar-info" id="selInfo"><strong>0</strong> items selected</div>
+      <div class="action-bar-sep"></div>
+      <button class="btn-ghost" id="btnRetire" disabled style="opacity:.4;cursor:not-allowed;">Retire</button>
+      <button class="btn-ghost" id="btnUnmark" disabled style="opacity:.4;cursor:not-allowed;">Unmark as duplicate</button>
+      <button class="btn-primary" style="margin-left:auto;" onclick="bulkMerge()">Merge into new</button>
+    </div>
+
+  </main>
+</div>
+
+<!-- SIDE PANEL -->
+<div class="sp-overlay" id="spOverlay" onclick="closeSidePanel()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="sp-header">
+    <div class="sp-header-row">
+      <div>
+        <div class="sp-eyebrow">View Draft</div>
+        <div class="sp-title" id="spTitle"></div>
+      </div>
+      <button class="sp-close" onclick="closeSidePanel()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="sp-section">
+    <div class="sp-section-label">Select articles to merge</div>
+    <div id="spArticleList" class="article-list"></div>
+  </div>
+  <div class="sp-content" id="spContent"></div>
+  <div class="sp-footer">
+    <div class="sp-footer-info" id="spSelInfo">Select articles to merge</div>
+    <button class="btn-ghost" style="height:32px;padding:0 14px;font-size:13px;border-radius:var(--r-pill);" onclick="closeSidePanel()">Cancel</button>
+    <button class="btn-primary" style="height:32px;padding:0 14px;font-size:13px;border-radius:var(--r-pill);" id="spMergeBtn" disabled>Merge selected</button>
+  </div>
+</div>
+
+<script>
+const ROWS = [
+  {id:1,topic:'Hardware assets should have asset tag',conf:96,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Unmark as duplicates',
+   actionDesc:'6 articles with 87–96% overlap. After publish: 3 unpublished expired, 3 published retired, 1 custom state unchanged. Have been identified as false positives and will be unmarked as duplicates.',
+   kbRefs:['KB8046231','KB8046235','KB8046233','KB8046231','KB8046230','KB8046234'],
+   articleList:[
+     {kb:'KB8090001',ver:'v1',title:'Family Release Penetration Test',cat:'IT 5899',status:'Published'},
+     {kb:'KB8090002',ver:'v1',title:'Penetration Test: Edge Encryption',cat:'IT 5899',status:'Published'},
+     {kb:'KB8090005',ver:'v2',title:'Penetration Test: Mobile SDK',cat:'IT 5899',status:'Published'},
+   ]},
+  {id:2,topic:'How to use Now Support | Developer',conf:94,articles:2,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'These articles cover the same topic and should be merged.',
+   kbRefs:['KB0010023','KB0019841'],
+   articleList:[
+     {kb:'KB0010023',ver:'v1',title:'Now Support Developer Guide',cat:'IT 4201',status:'Published'},
+     {kb:'KB0019841',ver:'v1',title:'Developer Portal — Getting Started',cat:'IT 4201',status:'Published'},
+   ]},
+  {id:3,topic:'Penetration Testing for Mobile, Network, and Edge Encryption Systems',conf:93,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Multiple articles cover overlapping penetration testing topics.',
+   kbRefs:['KB0041200','KB0041509','KB0042011'],
+   articleList:[
+     {kb:'KB0041200',ver:'v1',title:'Mobile Device Penetration Testing',cat:'IT 5210',status:'Published'},
+     {kb:'KB0041509',ver:'v1',title:'Network Security Assessment',cat:'IT 5210',status:'Published'},
+     {kb:'KB0042011',ver:'v2',title:'Edge Encryption Standards',cat:'IT 5210',status:'Published'},
+   ]},
+  {id:4,topic:'Hardware assets should have asset tag',conf:91,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Update existing article',actionDesc:'This article duplicates existing knowledge base documentation.',
+   kbRefs:['KB0055100'],
+   articleList:[
+     {kb:'KB0055100',ver:'v3',title:'Creating Knowledge Articles — Admin Guide',cat:'IT 3300',status:'Published'},
+   ]},
+  {id:5,topic:'How to use Now Support | Developer',conf:87,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Multiple support articles cover the same developer workflow.',
+   kbRefs:['KB0060100','KB0060240'],
+   articleList:[
+     {kb:'KB0060100',ver:'v1',title:'Asset Tagging Policy',cat:'IT 6100',status:'Published'},
+     {kb:'KB0060240',ver:'v1',title:'Hardware Inventory Tagging',cat:'IT 6100',status:'Published'},
+   ]},
+  {id:6,topic:'How to use Now Support | Developer',conf:84,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Duplicate developer documentation entries.',
+   kbRefs:['KB0071200','KB0071360'],
+   articleList:[
+     {kb:'KB0071200',ver:'v1',title:'Exit Interview: What to Expect',cat:'HR 2100',status:'Published'},
+     {kb:'KB0071360',ver:'v1',title:'Scheduling Your Exit Interview',cat:'HR 2100',status:'Published'},
+   ]},
+  {id:7,topic:'Hardware assets should have asset tag',conf:81,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Several articles cover the same cloud migration steps.',
+   kbRefs:['KB0033210','KB0033848','KB0034102'],
+   articleList:[
+     {kb:'KB0033210',ver:'v1',title:'Migrating to Cloud Storage: Overview',cat:'IT 4400',status:'Published'},
+     {kb:'KB0033848',ver:'v1',title:'OneDrive Migration Steps',cat:'IT 4400',status:'Published'},
+     {kb:'KB0034102',ver:'v2',title:'SharePoint Migration Guide',cat:'IT 4400',status:'Published'},
+   ]},
+  {id:8,topic:'How to use Now Support | Developer',conf:79,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Update KB0010023',actionDesc:'The canonical password reset article should absorb these duplicates.',
+   kbRefs:['KB0010023','KB0010100'],
+   articleList:[
+     {kb:'KB0010023',ver:'v4',title:'How to Reset Your Password',cat:'IT 1001',status:'Published'},
+     {kb:'KB0010100',ver:'v1',title:'Password Reset via Email Link',cat:'IT 1001',status:'Published'},
+   ]},
+  {id:9,topic:'Hardware assets should have asset tag',conf:78,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'DNS configuration content is fragmented across multiple articles.',
+   kbRefs:['KB0041200','KB0041509'],
+   articleList:[
+     {kb:'KB0041200',ver:'v2',title:'Setting Up DNS for Your Domain',cat:'IT 5500',status:'Published'},
+     {kb:'KB0041509',ver:'v1',title:'DNS Troubleshooting Guide',cat:'IT 5500',status:'Published'},
+   ]},
+  {id:10,topic:'How to use Now Support | Developer',conf:75,articles:3,views:5155,cat:'IT',hasDraft:false,
+   action:'Update KB0055621',actionDesc:'The primary org chart article should absorb the duplicates.',
+   kbRefs:['KB0055621','KB0055840'],
+   articleList:[
+     {kb:'KB0055621',ver:'v2',title:'How to View the Org Chart',cat:'HR 1800',status:'Published'},
+     {kb:'KB0055840',ver:'v1',title:'Org Chart in ServiceNow Portal',cat:'HR 1800',status:'Published'},
+   ]},
+];
+
+let expanded = new Set([1]);
+let selected = new Set();
+let spRowId = null;
+
+function confClass(c){ return c>=95?'conf-green':c>=85?'conf-amber':'conf-red'; }
+
+function renderList(data){
+  const body = document.getElementById('listBody');
+  body.innerHTML = '';
+  data.forEach(r => {
+    const isExp = expanded.has(r.id);
+    const isSel = selected.has(r.id);
+    const cc = confClass(r.conf);
+    const rowDiv = document.createElement('div');
+    rowDiv.className = `list-row${isExp?' expanded':''}`;
+    rowDiv.id = `row-${r.id}`;
+    rowDiv.innerHTML = `
+      <div class="list-row-main" onclick="toggleExpand(${r.id})">
+        <div style="display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation()">
+          <input type="checkbox" class="cb" ${isSel?'checked':''} onchange="toggleSel(${r.id},this)" />
+        </div>
+        <div class="row-chevron">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="row-topic">
+          <span class="row-topic-name">Duplicate topic: ${r.topic}</span>
+          <span class="conf-badge ${cc}">${r.conf}%</span>
+        </div>
+        <div class="row-meta">${r.articles} articles $${r.views.toLocaleString()} views</div>
+        <div><span class="review-badge badge-amber">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M5 3v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Manual review</span></div>
+        <div class="row-actions" onclick="event.stopPropagation()">
+          <button class="btn-row-ghost" onclick="viewDraft(${r.id})">View draft</button>
+        </div>
+        <div onclick="event.stopPropagation()">
+          <button class="btn-dismiss" onclick="dismissRow(${r.id})">Dismiss</button>
+        </div>
+      </div>
+      <div class="list-expand${isExp?' open':''}" id="exp-${r.id}">
+        <div class="expand-inner">
+          <div class="expand-panel">
+            <div class="expand-panel-title">Recommended action</div>
+            <div class="rec-badge rec-badge-amber">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M4 6l1.5 1.5 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              ${r.action}
+            </div>
+            <div class="rec-desc">${r.actionDesc}</div>
+            <div class="rec-pills">${r.kbRefs.map(k=>`<span class="rec-pill">${k}</span>`).join('')}</div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-panel-title">Articles in topic</div>
+            <div class="article-list">
+              ${r.articleList.map((a,i)=>`
+                <div class="article-item" onclick="viewDraftArticle(${r.id},${i})">
+                  <span class="article-kb">${a.kb}</span>
+                  <span class="article-ver">${a.ver}</span>
+                  <span class="article-title">${a.title}</span>
+                  <span class="article-cat">${a.cat}</span>
+                  <span class="article-pub">${a.status}</span>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    body.appendChild(rowDiv);
+  });
+  renderPagination();
+}
+
+function toggleExpand(id){
+  if(expanded.has(id)) expanded.delete(id); else expanded.add(id);
+  const row=document.getElementById(`row-${id}`);
+  const exp=document.getElementById(`exp-${id}`);
+  const chev=row.querySelector('.row-chevron svg');
+  if(expanded.has(id)){row.classList.add('expanded');exp.classList.add('open');chev.style.transform='rotate(90deg)';}
+  else{row.classList.remove('expanded');exp.classList.remove('open');chev.style.transform='';}
+}
+
+function toggleSel(id,cb){
+  if(cb.checked) selected.add(id); else selected.delete(id);
+  updateSelUI();
+}
+
+function updateSelUI(){
+  const n=selected.size;
+  document.getElementById('selInfo').innerHTML=`<strong>${n}</strong> item${n!==1?'s':''} selected`;
+  document.getElementById('btnRetire').disabled=n===0;
+  document.getElementById('btnRetire').style.opacity=n===0?'.4':'1';
+  document.getElementById('btnRetire').style.cursor=n===0?'not-allowed':'pointer';
+  document.getElementById('btnUnmark').disabled=n===0;
+  document.getElementById('btnUnmark').style.opacity=n===0?'.4':'1';
+  document.getElementById('btnUnmark').style.cursor=n===0?'not-allowed':'pointer';
+}
+
+function sortRows(v){
+  let d=[...ROWS];
+  if(v==='conf') d.sort((a,b)=>b.conf-a.conf);
+  else if(v==='articles') d.sort((a,b)=>b.articles-a.articles);
+  else if(v==='views') d.sort((a,b)=>b.views-a.views);
+  else d.sort((a,b)=>a.topic.localeCompare(b.topic));
+  renderList(d);
+}
+
+function renderPagination(){
+  const el=document.getElementById('pagPages');
+  el.innerHTML=[
+    `<button class="page-btn arrow">‹</button>`,
+    `<button class="page-btn active">1</button>`,
+    `<button class="page-btn">2</button>`,
+    `<button class="page-btn">3</button>`,
+    `<span class="page-ellipsis">…</span>`,
+    `<button class="page-btn">10</button>`,
+    `<button class="page-btn arrow">›</button>`
+  ].join('');
+}
+
+function dismissRow(id){
+  const idx=ROWS.findIndex(r=>r.id===id);
+  if(idx>-1){ROWS.splice(idx,1);renderList(ROWS);}
+}
+
+function viewDraft(id){
+  spRowId=id;
+  const r=ROWS.find(r=>r.id===id);
+  document.getElementById('spTitle').textContent=`Duplicate topic: ${r.topic}`;
+  document.getElementById('spArticleList').innerHTML=r.articleList.map((a,i)=>`
+    <div class="article-item" onclick="spSelectArticle(${i})">
+      <span class="article-kb">${a.kb}</span>
+      <span class="article-ver">${a.ver}</span>
+      <span class="article-title">${a.title}</span>
+      <span class="article-cat">${a.cat}</span>
+    </div>`).join('');
+  document.getElementById('spContent').innerHTML=`
+    <div class="sp-article-title">Merged Draft: ${r.topic}</div>
+    <div class="sp-article-meta">
+      <span class="sp-article-meta-tag">Draft · AI Generated</span>
+      <span class="sp-article-meta-tag">·</span>
+      <span class="sp-article-meta-tag">${r.articles} source articles</span>
+    </div>
+    <div class="sp-article-body">
+      <p>This draft article was automatically generated by Now Assist by merging content from the identified duplicate articles. Review the merged content and make any necessary edits before publishing.</p>
+      <h4>Overview</h4>
+      <p>This article consolidates information about <strong>${r.topic.toLowerCase()}</strong> from multiple knowledge sources into a single, comprehensive reference.</p>
+      <h4>Details</h4>
+      <p>The merged content covers all key aspects identified in the source articles, ensuring users have access to complete and accurate information without needing to reference multiple articles.</p>
+    </div>`;
+  document.getElementById('sidePanel').classList.add('open');
+  document.getElementById('spOverlay').classList.add('open');
+}
+
+function viewDraftArticle(rowId,idx){viewDraft(rowId);}
+function closeSidePanel(){
+  document.getElementById('sidePanel').classList.remove('open');
+  document.getElementById('spOverlay').classList.remove('open');
+}
+function acceptAll(){alert('All recommendations accepted.');}
+function bulkMerge(){if(selected.size===0){alert('Select items to merge.');return;}alert(`Merging ${selected.size} items.`);}
+
+renderList(ROWS);
+</script>
+</body>
+</html>

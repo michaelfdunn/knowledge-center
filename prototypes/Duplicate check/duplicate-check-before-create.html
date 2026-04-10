@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KC – Duplicate Check Before Create</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── NX TOKENS ───────────────────────────────────────────── */
+:root {
+  --bg-primary:       #ffffff;
+  --bg-secondary:     #e5edf0;
+  --bg-tertiary:      #f3f8f9;
+  --bg-global-nav:    #032d42;
+  --text-primary:     #172b31;
+  --text-secondary:   #294149;
+  --text-tertiary:    #4a5e65;
+  --text-link:        #1955be;
+  --interactive:      #0080a3;
+  --focus-ring:       #248a13;
+  --border-card:      #d7e1e5;
+  --border-sub:       #cfd5d7;
+  --border-ctrl:      #69838c;
+  --info-bg:          #dff0f7;
+  --info-border:      #a8d4e6;
+  --success-green:    #2e7d32;
+  --kc-accent:        #2e7d32;
+  --tab-bg:           #b8dbe5;
+  --font:             'Inter', 'ServiceNow Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; font-family: var(--font); font-size: 14px;
+  color: var(--text-primary); background: #111827; overflow: hidden;
+}
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+input  { font-family: var(--font); }
+a      { color: var(--text-link); text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+
+/* ── PROTOTYPE CONTROLS ──────────────────────────────────── */
+#proto-bar {
+  position: fixed; top: 0; left: 0; width: 100%; height: 40px;
+  background: #111827; border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 16px; padding: 0 16px; z-index: 9999;
+}
+.p-label { color: rgba(255,255,255,.45); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; }
+.p-toggle { display: flex; border: 1px solid rgba(255,255,255,.2); border-radius: 6px; overflow: hidden; }
+.p-btn {
+  padding: 5px 14px; font-size: 11px; font-weight: 600; font-family: var(--font);
+  color: rgba(255,255,255,.45); cursor: pointer; transition: all .15s; border: none;
+  background: none; letter-spacing: .3px;
+}
+.p-btn.active { background: #0080a3; color: #fff; }
+#p-step { color: rgba(255,255,255,.4); font-size: 11px; margin-left: 8px; }
+#p-step strong { color: rgba(255,255,255,.75); }
+#p-tip {
+  color: rgba(255,255,255,.35); font-size: 11px; font-style: italic;
+  border-left: 1px solid rgba(255,255,255,.1); padding-left: 12px; margin-left: 4px;
+}
+.p-reset {
+  margin-left: auto; padding: 4px 10px; font-size: 11px;
+  color: rgba(255,255,255,.4); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 4px; cursor: pointer; font-family: var(--font);
+}
+.p-reset:hover { color: #fff; border-color: rgba(255,255,255,.4); }
+
+/* No-results toggle (author only) */
+#p-noresults-wrap { display: none; align-items: center; gap: 6px; }
+#p-noresults-wrap .p-label { color: rgba(255,255,255,.35); }
+.p-noresults-btn {
+  padding: 4px 10px; font-size: 11px; font-family: var(--font);
+  color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 4px; cursor: pointer;
+}
+.p-noresults-btn:hover { color: rgba(255,255,255,.7); border-color: rgba(255,255,255,.3); }
+
+/* ── SHELL ───────────────────────────────────────────────── */
+.shell {
+  position: absolute; top: 40px; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; min-width: 1100px;
+}
+
+/* ── GLOBAL NAV ──────────────────────────────────────────── */
+.gnav {
+  height: 52px; background: var(--bg-global-nav);
+  display: flex; align-items: center; flex-shrink: 0; z-index: 100;
+}
+.gnav-logo {
+  width: 52px; height: 52px; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+}
+.gnav-mark {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #e65c00 0%, #ff9500 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 15px; font-weight: 800; letter-spacing: -1px; user-select: none;
+}
+.gnav-links { display: flex; align-items: center; }
+.gnav-link {
+  height: 52px; display: flex; align-items: center; padding: 0 13px;
+  color: rgba(255,255,255,.65); font-size: 13px; cursor: pointer;
+}
+.gnav-link:hover { color: #fff; }
+.gnav-ctx { display: flex; align-items: center; padding: 0 14px; }
+.gnav-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.18);
+  border-radius: 20px; padding: 5px 13px; color: #fff; font-size: 13px;
+  font-weight: 500; cursor: pointer; transition: background .15s;
+}
+.gnav-pill:hover { background: rgba(255,255,255,.22); }
+.gnav-right {
+  margin-left: auto; display: flex; align-items: center;
+  padding-right: 16px; gap: 2px;
+}
+.gnav-search {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(46,81,98,.7); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 6px; padding: 6px 12px; width: 210px; margin-right: 8px;
+}
+.gnav-search span { color: rgba(255,255,255,.4); font-size: 13px; }
+.gnav-icon {
+  width: 32px; height: 32px; display: flex; align-items: center;
+  justify-content: center; color: rgba(255,255,255,.55); cursor: pointer;
+  border-radius: 6px; transition: background .15s;
+}
+.gnav-icon:hover { background: rgba(255,255,255,.1); color: #fff; }
+.gnav-avatar {
+  width: 28px; height: 28px; border-radius: 50%; background: #5eafc5;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 700; margin-left: 4px; cursor: pointer;
+}
+
+/* ── TAB BAR ─────────────────────────────────────────────── */
+.tab-bar {
+  height: 36px; background: var(--tab-bg);
+  display: flex; align-items: flex-end; padding: 0 4px 0 0; flex-shrink: 0;
+}
+.tab {
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 13px; height: 32px; font-size: 13px;
+  color: rgba(23,43,49,.6); cursor: pointer; border-radius: 8px 8px 0 0;
+  flex-shrink: 0; max-width: 200px; user-select: none; transition: background .1s;
+}
+.tab.active { background: var(--bg-primary); color: var(--text-primary); font-weight: 500; }
+.tab:not(.active):hover { background: rgba(255,255,255,.4); }
+.tab-x { opacity: .45; font-size: 14px; line-height: 1; }
+.tab-x:hover { opacity: 1; }
+.tab-add {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; color: rgba(23,43,49,.5); font-size: 18px;
+  cursor: pointer; border-radius: 4px; margin-bottom: 2px;
+}
+.tab-add:hover { background: rgba(255,255,255,.4); }
+
+/* ── PAGE WRAP ───────────────────────────────────────────── */
+.page-wrap {
+  flex: 1; display: flex; overflow: hidden;
+  background: var(--bg-primary); position: relative;
+}
+.kc-strip { width: 6px; flex-shrink: 0; background: var(--kc-accent); }
+.page-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── STEPS ───────────────────────────────────────────────── */
+.step { display: none; flex-direction: column; height: 100%; }
+.step.active { display: flex; }
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.pg-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 40px 16px; border-bottom: 1px solid var(--border-card);
+  flex-shrink: 0; background: var(--bg-primary);
+}
+.pg-hdr h1 { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -.3px; }
+.pg-actions { display: flex; align-items: center; gap: 10px; }
+.sel-hint {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text-tertiary);
+}
+.sel-hint.has-sel { color: var(--interactive); }
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 16px; height: 32px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; font-family: var(--font);
+  cursor: pointer; transition: all .15s; white-space: nowrap; flex-shrink: 0;
+}
+.btn-primary {
+  background: var(--interactive); color: #fff;
+  border: 1px solid var(--interactive);
+}
+.btn-primary:hover:not(:disabled) { background: #006b8a; border-color: #006b8a; }
+.btn-primary:disabled {
+  background: #aacdd8; border-color: #aacdd8;
+  color: rgba(255,255,255,.75); cursor: not-allowed;
+}
+.btn-secondary {
+  background: #fff; color: var(--text-primary); border: 1px solid #6b858e;
+}
+.btn-secondary:hover:not(:disabled) { border-color: var(--interactive); color: var(--interactive); }
+.btn-secondary:disabled { color: #a0b4bb; border-color: #c5d0d4; cursor: not-allowed; }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 4px; color: var(--text-tertiary);
+  transition: all .15s;
+}
+.icon-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
+/* ── TEMPLATE PICKER ─────────────────────────────────────── */
+.tp-grid { display: flex; flex: 1; overflow: hidden; }
+.tp-col {
+  display: flex; flex-direction: column; overflow: hidden;
+  border-right: 1px solid var(--border-card);
+}
+.tp-col:last-child { flex: 1; border-right: none; }
+.tp-col:first-child  { width: 260px; flex-shrink: 0; }
+.tp-col:nth-child(2) { width: 230px; flex-shrink: 0; }
+.tp-col-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 18px 10px; border-bottom: 1px solid var(--border-card);
+  font-size: 13px; font-weight: 600; color: var(--text-secondary); flex-shrink: 0;
+}
+.tp-list { flex: 1; overflow-y: auto; padding: 6px 0; }
+.tp-item {
+  padding: 9px 18px; font-size: 13px; color: var(--text-primary);
+  cursor: pointer; transition: background .1s; user-select: none;
+  border-left: 3px solid transparent;
+}
+.tp-item:hover { background: var(--bg-tertiary); }
+.tp-item.sel {
+  color: var(--interactive); font-weight: 500;
+  border-left-color: var(--interactive); background: rgba(0,128,163,.05);
+}
+.tp-preview { flex: 1; overflow-y: auto; padding: 24px 22px; }
+.tp-preview.empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px; color: var(--text-tertiary); text-align: center;
+}
+.tp-preview.empty .ep-icon { font-size: 28px; opacity: .35; }
+.tp-preview-label {
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px;
+}
+.tp-preview-text {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.75;
+  background: var(--bg-tertiary); border-radius: 4px; padding: 14px;
+}
+
+/* ── INTERCEPTOR ─────────────────────────────────────────── */
+.ic-body {
+  flex: 1; overflow-y: auto; padding: 24px 40px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.ic-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; max-width: 820px; }
+
+/* Search */
+.search-wrap { position: relative; max-width: 680px; }
+.search-wrap .s-icon {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--text-tertiary); pointer-events: none;
+}
+.search-input {
+  width: 100%; height: 36px;
+  border: none; border-bottom: 1px solid var(--border-ctrl);
+  border-radius: 6px 6px 0 0;
+  padding: 0 12px 0 36px; font-size: 14px; color: var(--text-primary);
+  background: #fff; outline: none;
+}
+.search-input::placeholder { color: var(--text-tertiary); }
+.search-input:focus {
+  border: 2px solid var(--focus-ring); border-radius: 6px;
+  box-shadow: 0 0 0 4px rgba(36,138,19,.1);
+}
+
+/* Results panel */
+.res-panel {
+  border: 1px solid var(--border-card); border-radius: 8px; overflow: hidden;
+}
+.res-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--border-card);
+}
+.res-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--text-primary);
+}
+.res-badge {
+  min-width: 20px; height: 20px; padding: 0 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--interactive); color: #fff;
+  border-radius: 10px; font-size: 11px; font-weight: 700;
+}
+.res-badge.zero { background: var(--text-tertiary); }
+.res-meta { display: flex; align-items: center; gap: 8px; }
+.res-ts { font-size: 12px; color: var(--text-tertiary); }
+
+/* Banner */
+.banner {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 16px; font-size: 13px; line-height: 1.55;
+  background: var(--info-bg); border-bottom: 1px solid var(--info-border);
+}
+.banner-x { margin-left: auto; color: var(--text-tertiary); cursor: pointer; font-size: 17px; padding-left: 8px; }
+.banner-x:hover { color: var(--text-primary); }
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; gap: 4px;
+  padding: 8px 12px; border-bottom: 1px solid var(--border-card); background: #fff;
+}
+.tb-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border: 1px solid var(--border-card);
+  border-radius: 4px; font-size: 12px; color: var(--text-secondary);
+  cursor: pointer; transition: all .15s; background: #fff; font-family: var(--font);
+}
+.tb-btn:hover { border-color: var(--interactive); color: var(--interactive); }
+
+/* Table */
+.rt-header {
+  display: grid; grid-template-columns: 36px 110px 1fr 240px;
+  padding: 8px 16px; border-bottom: 1px solid var(--border-card);
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: .5px; background: var(--bg-tertiary);
+}
+.rt-row {
+  display: grid; grid-template-columns: 36px 110px 1fr 240px;
+  padding: 11px 16px; border-bottom: 1px solid var(--border-card);
+  align-items: center; cursor: pointer; transition: background .1s; background: #fff;
+}
+.rt-row:last-child { border-bottom: none; }
+.rt-row:hover { background: rgba(0,128,163,.04); }
+.rt-row.checked { background: rgba(0,128,163,.07); }
+.rt-row.checked:hover { background: rgba(0,128,163,.11); }
+.nx-cb {
+  width: 16px; height: 16px; border: 1.5px solid var(--border-ctrl);
+  border-radius: 3px; appearance: none; -webkit-appearance: none;
+  cursor: pointer; background: #fff; transition: all .12s;
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+}
+.nx-cb:checked { background: var(--interactive); border-color: var(--interactive); }
+.nx-cb:checked::after {
+  content: '';
+  position: absolute;
+  width: 9px; height: 5px;
+  border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.nx-cb:focus { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.cell-link { color: var(--text-link); font-size: 13px; cursor: pointer; }
+.cell-link:hover { text-decoration: underline; }
+.cell-desc { font-size: 13px; color: var(--text-link); cursor: pointer; }
+.cell-desc:hover { text-decoration: underline; }
+.cell-kb { display: flex; flex-wrap: wrap; gap: 4px; }
+.kb-chip {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  border-radius: 12px; background: #e0f3f7; color: var(--interactive);
+  font-size: 11px; font-weight: 500; white-space: nowrap;
+}
+
+/* Empty states */
+.empty-panel {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 52px 24px; gap: 10px; background: #fff;
+}
+.empty-panel .ep-icon { color: var(--interactive); opacity: .4; margin-bottom: 4px; }
+.empty-panel .ep-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.empty-panel .ep-sub { font-size: 13px; color: var(--text-tertiary); text-align: center; max-width: 340px; line-height: 1.65; }
+.ep-q {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 2px solid var(--border-card);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-tertiary); font-size: 24px; font-weight: 300; margin-bottom: 4px;
+}
+
+/* ── ARTICLE DRAWER ──────────────────────────────────────── */
+.drawer {
+  position: absolute; top: 0; right: -56%; width: 54%; height: 100%;
+  background: #fff; border-left: 1px solid var(--border-card);
+  box-shadow: -6px 0 20px rgba(23,43,49,.12);
+  transition: right .25s ease; z-index: 50;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.drawer.open { right: 0; }
+.drawer-hdr {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--border-card); flex-shrink: 0;
+}
+.drawer-meta { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
+.drawer-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.drawer-x { color: var(--text-tertiary); cursor: pointer; padding: 2px; }
+.drawer-x:hover { color: var(--text-primary); }
+.drawer-stats { display: flex; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--border-card); }
+.d-stat { font-size: 12px; color: var(--text-tertiary); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 20px; font-size: 13px; color: var(--text-secondary); line-height: 1.75; }
+
+/* ── INCIDENT RECORD ────────────────────────────────────── */
+.inc-hdr-strip {
+  padding: 12px 20px 10px; border-bottom: 1px solid var(--border-card);
+  background: var(--bg-primary); flex-shrink: 0;
+}
+.inc-breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--text-tertiary); margin-bottom: 5px;
+}
+.inc-breadcrumb .sep { color: var(--border-ctrl); }
+.inc-title-row { display: flex; align-items: center; gap: 10px; }
+.inc-num { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.inc-short-desc { font-size: 14px; color: var(--text-secondary); }
+.inc-badge {
+  display: inline-flex; align-items: center; padding: 2px 10px;
+  border-radius: 12px; font-size: 11px; font-weight: 600;
+}
+.inc-badge.open { background: #e0f2fe; color: #0369a1; }
+.inc-action-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-bottom: 1px solid var(--border-card);
+  background: var(--bg-primary); flex-shrink: 0;
+}
+.inc-form-cols { flex: 1; display: flex; overflow: hidden; }
+.inc-col {
+  flex: 1; padding: 16px 20px; border-right: 1px solid var(--border-card); overflow-y: auto;
+}
+.inc-col:last-child { border-right: none; }
+.inc-field { margin-bottom: 14px; }
+.inc-label {
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px;
+}
+.inc-val {
+  font-size: 13px; color: var(--text-primary); padding: 6px 8px;
+  border-bottom: 1px solid var(--border-ctrl); background: #fff; min-height: 30px;
+}
+.inc-val.link { color: var(--text-link); cursor: pointer; }
+.inc-val.link:hover { text-decoration: underline; }
+.inc-val.muted { color: var(--text-tertiary); }
+/* 3-dot menu */
+.dot-menu-wrap { position: relative; display: inline-flex; }
+.dot-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 32px; padding: 0 12px; border-radius: 6px;
+  font-size: 16px; font-weight: 700; color: var(--text-secondary);
+  border: 1px solid #6b858e; background: #fff; cursor: pointer;
+  font-family: var(--font); transition: all .15s; letter-spacing: 3px;
+}
+.dot-btn:hover { border-color: var(--interactive); color: var(--interactive); }
+.dot-menu-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); right: 0;
+  background: #fff; border: 1px solid var(--border-card);
+  border-radius: 6px; box-shadow: 0 8px 24px rgba(23,43,49,.14);
+  z-index: 200; min-width: 240px; padding: 4px 0;
+}
+.dot-menu-dropdown.open { display: block; }
+.dot-menu-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; font-size: 13px; color: var(--text-primary);
+  cursor: pointer; transition: background .1s;
+}
+.dot-menu-item:hover { background: var(--bg-tertiary); }
+.dmi-icon { color: var(--text-tertiary); flex-shrink: 0; }
+.dot-menu-sep { height: 1px; background: var(--border-card); margin: 4px 0; }
+/* right panel link */
+.inc-panel-link {
+  font-size: 12px; color: var(--interactive); cursor: pointer;
+  text-align: center; padding: 8px 0;
+}
+.inc-panel-link:hover { text-decoration: underline; }
+
+/* ── DUP CHECK MODAL ─────────────────────────────────────── */
+.dup-modal-ov {
+  display: none; position: fixed; inset: 40px 0 0 0;
+  background: rgba(23,43,49,.48); z-index: 500;
+  align-items: center; justify-content: center;
+}
+.dup-modal-ov.open { display: flex; }
+.dup-modal {
+  background: #fff; border-radius: 8px;
+  width: min(900px, 94vw); height: min(620px, 85vh);
+  box-shadow: 0 20px 28px rgba(23,43,49,.18);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.dup-modal-hdr {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 18px 24px 14px; border-bottom: 1px solid var(--border-card); flex-shrink: 0;
+}
+.dup-modal-title { font-size: 17px; font-weight: 600; color: var(--text-primary); }
+.dup-modal-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+.dup-modal-body {
+  flex: 1; overflow-y: auto; padding: 20px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.dup-modal-ftr {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 24px; border-top: 1px solid var(--border-card); flex-shrink: 0;
+}
+.dup-modal-ftr .sel-hint { margin-right: auto; }
+
+/* ── MODAL ───────────────────────────────────────────────── */
+.modal-ov {
+  display: none; position: fixed; inset: 36px 0 0 0;
+  background: rgba(23,43,49,.48); z-index: 400;
+  align-items: center; justify-content: center;
+}
+.modal-ov.open { display: flex; }
+.modal {
+  background: #fff; border-radius: 8px; width: 540px; max-width: 92vw;
+  box-shadow: 0 20px 28px rgba(23,43,49,.18);
+}
+.modal-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--border-card);
+}
+.modal-title { font-size: 17px; font-weight: 600; color: var(--text-primary); }
+.modal-x { color: var(--text-tertiary); font-size: 20px; cursor: pointer; line-height: 1; }
+.modal-x:hover { color: var(--text-primary); }
+.modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+.modal-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+.modal-articles { display: flex; flex-direction: column; gap: 8px; }
+.modal-art {
+  border: 1px solid var(--border-card); border-radius: 6px;
+  padding: 11px 14px; display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 12px;
+}
+.ma-num { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.ma-desc { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+.ma-chips { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.modal-ftr {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+  padding: 14px 24px; border-top: 1px solid var(--border-card);
+}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+#toast {
+  display: none; position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: #172b31; color: #fff;
+  padding: 11px 18px; border-radius: 6px; font-size: 13px;
+  align-items: center; gap: 8px; z-index: 9998;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3); white-space: nowrap;
+}
+#toast.show { display: flex; }
+
+/* ── UTILS ───────────────────────────────────────────────── */
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ── PROTOTYPE CONTROLS ──────────────────────────────────── -->
+<div id="proto-bar">
+  <span class="p-label">Persona</span>
+  <div class="p-toggle">
+    <button class="p-btn active" id="btn-pa" onclick="setPersona('agent')">Agent (from Incident)</button>
+    <button class="p-btn" id="btn-pb" onclick="setPersona('author')">Author (from KC Home)</button>
+  </div>
+  <span id="p-step"><strong>Step 1</strong> / 2 — Template Picker</span>
+  <span id="p-tip">Select a template then click Next →</span>
+  <div id="p-noresults-wrap">
+    <span class="p-label">Simulate</span>
+    <button class="p-noresults-btn" onclick="toggleNoResults()">Toggle no-results state</button>
+  </div>
+  <button class="p-reset" onclick="resetFlow()">↺ Reset</button>
+</div>
+
+<!-- ── SHELL ───────────────────────────────────────────────── -->
+<div class="shell">
+
+  <!-- Global Nav -->
+  <header class="gnav">
+    <div class="gnav-logo"><div class="gnav-mark">a</div></div>
+    <div class="gnav-links">
+      <span class="gnav-link">All</span>
+      <span class="gnav-link">Favorites</span>
+      <span class="gnav-link">History</span>
+      <span class="gnav-link">Workspaces</span>
+    </div>
+    <div class="gnav-ctx">
+      <button class="gnav-pill">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.5l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="ctx-pill-text">Knowledge</span>
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="gnav-right">
+      <div class="gnav-search">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Search</span>
+      </div>
+      <button class="gnav-icon" title="Language"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5c0 0-2 3.5-2 6.5s2 6.5 2 6.5M8 1.5c0 0 2 3.5 2 6.5s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      <button class="gnav-icon" title="Chat"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M14 9.5A5.5 5.5 0 0 1 8.5 15H3l1.5-2A5.5 5.5 0 1 1 14 9.5Z" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      <button class="gnav-icon" title="Add"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      <button class="gnav-icon" title="Help"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M6.1 6.2a2 2 0 1 1 2.4 1.9c-.6.2-.5.8-.5 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="11.5" r=".75" fill="currentColor"/></svg></button>
+      <button class="gnav-icon" title="Notifications"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2a4.5 4.5 0 0 0-4.5 4.5V10l-1.5 1.5h12L12.5 10V6.5A4.5 4.5 0 0 0 8 2ZM6.5 13a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      <div class="gnav-avatar">MF</div>
+    </div>
+  </header>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab" id="tab-source" onclick="handleSourceTabClick()">
+      <span id="tab-source-label">Knowledge Center</span>
+    </div>
+    <div class="tab" id="tab-create">
+      <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 7h4M7 5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <span>Create new article</span>
+      <span class="tab-x">×</span>
+    </div>
+    <button class="tab-add">+</button>
+  </div>
+
+  <!-- Page Wrap -->
+  <div class="page-wrap">
+    <div class="kc-strip"></div>
+    <div class="page-main">
+
+      <!-- ── STEP 0: INCIDENT RECORD ──────────────────── -->
+      <div id="step0" class="step">
+        <div class="inc-hdr-strip">
+          <div class="inc-breadcrumb">
+            <span>Service Operations Workspace</span>
+            <span class="sep">›</span>
+            <span>Incidents</span>
+            <span class="sep">›</span>
+            <span style="color:var(--text-primary);font-weight:600">INC000001</span>
+          </div>
+          <div class="inc-title-row">
+            <span class="inc-num">INC000001</span>
+            <span class="inc-short-desc">OKTA install problem on new iPhone</span>
+            <span class="inc-badge open">Open</span>
+          </div>
+        </div>
+        <div class="inc-action-bar">
+          <button class="btn btn-primary">Save</button>
+          <button class="btn btn-secondary">Create change request</button>
+          <button class="btn btn-secondary">Resolve</button>
+          <div class="dot-menu-wrap">
+            <button class="dot-btn" onclick="toggleDotMenu(event)" title="More actions">···</button>
+            <div class="dot-menu-dropdown" id="dot-menu">
+              <div class="dot-menu-item" onclick="openDupModal()">
+                <span class="dmi-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".6"/></svg></span>
+                Check for duplicate articles
+              </div>
+              <div class="dot-menu-sep"></div>
+              <div class="dot-menu-item">
+                <span class="dmi-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                Assign to me
+              </div>
+              <div class="dot-menu-item">
+                <span class="dmi-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                Add work note
+              </div>
+              <div class="dot-menu-item">
+                <span class="dmi-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                Link to problem
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="inc-form-cols">
+          <!-- Left col -->
+          <div class="inc-col">
+            <div class="inc-field">
+              <div class="inc-label">Number</div>
+              <div class="inc-val">INC000001</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Category</div>
+              <div class="inc-val">Software</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Subcategory</div>
+              <div class="inc-val">Mobile apps</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">State</div>
+              <div class="inc-val"><span class="inc-badge open">Open</span></div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Priority</div>
+              <div class="inc-val">3 - Moderate</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Assigned to</div>
+              <div class="inc-val link">Michael Flores</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Assignment group</div>
+              <div class="inc-val link">IT Support</div>
+            </div>
+          </div>
+          <!-- Center col -->
+          <div class="inc-col">
+            <div class="inc-field">
+              <div class="inc-label">Caller</div>
+              <div class="inc-val link">Beth Anglin</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Short description</div>
+              <div class="inc-val">OKTA install problem on new iPhone</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Description</div>
+              <div class="inc-val" style="min-height:80px;white-space:normal;line-height:1.65">Unable to install OKTA authenticator on new iPhone 15. Getting "App not compatible with this device" in the App Store. Tried restarting the device but the issue persists.</div>
+            </div>
+            <div class="inc-field">
+              <div class="inc-label">Resolution notes</div>
+              <div class="inc-val muted" style="min-height:52px">—</div>
+            </div>
+          </div>
+          <!-- Right panel -->
+          <div class="inc-col" style="flex:0 0 280px;background:var(--bg-tertiary)">
+            <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Knowledge articles</div>
+            <div style="font-size:13px;color:var(--text-tertiary);text-align:center;padding:24px 0 8px">No articles attached.</div>
+            <div class="inc-panel-link" onclick="openDupModal()">+ Check for duplicate articles</div>
+            <div style="font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px;margin:20px 0 12px">Related records</div>
+            <div style="font-size:13px;color:var(--text-tertiary);text-align:center;padding:16px 0">No related records.</div>
+          </div>
+        </div>
+      </div><!-- /step0 -->
+
+      <!-- ── STEP 1: TEMPLATE PICKER ───────────────────── -->
+      <div id="step1" class="step">
+        <div class="pg-hdr">
+          <h1>Create new article</h1>
+          <div class="pg-actions">
+            <button class="btn btn-primary" id="btn-next1" disabled onclick="goStep2()">Next</button>
+          </div>
+        </div>
+        <div class="tp-grid">
+          <!-- KB Column -->
+          <div class="tp-col">
+            <div class="tp-col-hdr">
+              Select Knowledge Base
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="tp-list" id="kb-list">
+              <div class="tp-item sel" data-kb="kcs" onclick="selKB(this)">KCS Knowledge Base</div>
+              <div class="tp-item" data-kb="cs" onclick="selKB(this)">Customer Service</div>
+              <div class="tp-item" data-kb="tech" onclick="selKB(this)">Technology - Hitech</div>
+              <div class="tp-item" data-kb="wp" onclick="selKB(this)">Workplace Services</div>
+              <div class="tp-item" data-kb="con" onclick="selKB(this)">Consumer Service</div>
+              <div class="tp-item" data-kb="ch" onclick="selKB(this)">Citizen Help</div>
+              <div class="tp-item" data-kb="sir" onclick="selKB(this)">Security Incident Response Runbook</div>
+              <div class="tp-item" data-kb="sol" onclick="selKB(this)">Solana Secure CSP</div>
+              <div class="tp-item" data-kb="saf" onclick="selKB(this)">Safety</div>
+              <div class="tp-item" data-kb="fsk" onclick="selKB(this)">Field Service Knowledge</div>
+              <div class="tp-item" data-kb="sla" onclick="selKB(this)">State Labour Agency</div>
+              <div class="tp-item" data-kb="grc" onclick="selKB(this)">Governance, Risk, and Compliance</div>
+              <div class="tp-item" data-kb="ke" onclick="selKB(this)">Known Error</div>
+              <div class="tp-item" data-kb="its" onclick="selKB(this)">Internal IT Support</div>
+              <div class="tp-item" data-kb="cm" onclick="selKB(this)">Coaching Management</div>
+            </div>
+          </div>
+          <!-- Template Column -->
+          <div class="tp-col">
+            <div class="tp-col-hdr">
+              Select article template
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="tp-list" id="tpl-list">
+              <div class="tp-item" data-tpl="standard" onclick="selTemplate(this)">Standard</div>
+              <div class="tp-item" data-tpl="faq" onclick="selTemplate(this)">FAQ</div>
+              <div class="tp-item" data-tpl="howto" onclick="selTemplate(this)">How to</div>
+              <div class="tp-item" data-tpl="known-error" onclick="selTemplate(this)">Known Error article</div>
+              <div class="tp-item" data-tpl="whatis" onclick="selTemplate(this)">What is</div>
+            </div>
+          </div>
+          <!-- Preview Column -->
+          <div class="tp-col">
+            <div class="tp-col-hdr">Article template preview</div>
+            <div class="tp-preview empty" id="tp-preview">
+              <div class="ep-icon">📄</div>
+              <div style="font-size:14px">No article template selected.</div>
+              <div style="font-size:12px;color:var(--text-tertiary)">Select an article template to see a preview.</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /step1 -->
+
+      <!-- ── STEP 2: DUPLICATE CHECK INTERCEPTOR ────────── -->
+      <div id="step2" class="step">
+        <div class="pg-hdr">
+          <h1>Create new article</h1>
+          <div class="pg-actions">
+            <div class="sel-hint" id="sel-hint">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.5v4M8 5v.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span id="sel-hint-text">Select one or more articles to attach</span>
+            </div>
+            <button class="btn btn-secondary" id="btn-attach" disabled onclick="openModal()">Attach and close</button>
+            <button class="btn btn-primary" id="btn-next2" onclick="proceedCreate()">Next</button>
+          </div>
+        </div>
+
+        <div class="ic-body">
+          <p class="ic-desc">Before you continue, we'll check for existing articles that may already cover this topic. Enter a short description and any key topics to get the most accurate results.</p>
+
+          <!-- Search -->
+          <div class="search-wrap">
+            <svg class="s-icon" width="15" height="15" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              class="search-input" id="search-input" type="text"
+              placeholder="Enter a short description to check for existing articles."
+              oninput="onSearchInput(this.value)"
+              onkeydown="if(event.key==='Enter')triggerSearch()"
+            />
+          </div>
+
+          <!-- Results panel -->
+          <div class="res-panel">
+            <div class="res-hdr">
+              <div class="res-title">
+                Potential similar articles found
+                <span class="res-badge zero" id="res-badge">0</span>
+                <span class="res-ts" id="res-ts" style="display:none">Last refreshed 1m ago</span>
+              </div>
+              <div class="res-meta">
+                <button class="icon-btn" title="Refresh" onclick="triggerSearch()">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13.5 8a5.5 5.5 0 1 1-.5-2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M13.5 2.5v3.5H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+            <!-- Info banner -->
+            <div class="banner" id="banner" style="display:none">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;color:var(--interactive);margin-top:1px"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.5v4M8 5v.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span><strong>We found similar content already published.</strong> You can attach one or more and close, or continue.</span>
+              <span class="banner-x" onclick="this.parentElement.style.display='none'">×</span>
+            </div>
+            <!-- Toolbar -->
+            <div class="toolbar" id="toolbar" style="display:none">
+              <button class="icon-btn" title="Search within results">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </button>
+              <button class="tb-btn"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Filter</button>
+              <button class="tb-btn"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 3l3 3 3-3M5 6V1M9 13l3-3 3 3M12 10v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Sort by</button>
+              <button class="tb-btn"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>Group by</button>
+            </div>
+            <!-- Table header -->
+            <div class="rt-header" id="rt-header" style="display:none">
+              <div></div><div>Number</div><div>Short description</div><div>Knowledge base</div>
+            </div>
+            <!-- Dynamic body -->
+            <div id="res-body"></div>
+          </div><!-- /res-panel -->
+        </div><!-- /ic-body -->
+
+        <!-- Article drawer -->
+        <div class="drawer" id="drawer">
+          <div class="drawer-hdr">
+            <div>
+              <div class="drawer-meta" id="drawer-meta">IT · KB0010006 · 1 min read</div>
+              <div class="drawer-title" id="drawer-title">Wireless devices intermittently disconnected</div>
+            </div>
+            <button class="drawer-x" onclick="closeDrawer()">
+              <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="drawer-stats">
+            <span class="d-stat">👁 3,259 views</span>
+            <span class="d-stat">⭐ Average rating 3/5</span>
+            <span class="d-stat">⏱ 1 min read</span>
+          </div>
+          <div class="drawer-body" id="drawer-body">
+            <strong>Enable/Disable Wireless Laptop Connections</strong><br><br>
+            <strong>Dell Quickset Utility</strong><br>
+            On a Dell laptop running the latest versions of Quickset and the Intel drivers, perform the following steps:<br><br>
+            • Launch the Quickset utility by double-clicking the Quickset icon in the system tray.<br>
+            • Click on Location Profiler in the upper left.<br>
+            • Click Modify Settings on the left side in the Quickset Location Profiler window.<br>
+            • Select the box Disable Wi-Fi until the Wired connection is terminated.<br>
+            • Click Save at the bottom of the window.<br><br>
+            This can be very useful to those who plug into an Ethernet port so they don't have to manually disable wireless.
+          </div>
+        </div>
+      </div><!-- /step2 -->
+
+    </div><!-- /page-main -->
+  </div><!-- /page-wrap -->
+</div><!-- /shell -->
+
+<!-- ── MODAL ───────────────────────────────────────────────── -->
+<div class="modal-ov" id="modal-ov">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="modal-title">Attach articles to INC000001</span>
+      <button class="modal-x" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc" id="modal-desc">The following article will be attached to this incident. Is this your final selection?</p>
+      <div class="modal-articles" id="modal-arts"></div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAttach()">Attach and close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DUP CHECK MODAL ─────────────────────────────────── -->
+<div class="dup-modal-ov" id="dup-modal-ov">
+  <div class="dup-modal">
+    <div class="dup-modal-hdr">
+      <div>
+        <div class="dup-modal-title">Potential duplicate articles — INC000001</div>
+        <div class="dup-modal-sub">OKTA install problem on new iPhone</div>
+      </div>
+      <button class="modal-x" onclick="closeDupModal()">×</button>
+    </div>
+    <div class="dup-modal-body">
+      <p class="ic-desc">Before creating a new article, check whether existing content already covers this incident. Select one or more articles to attach, or create a new article to continue.</p>
+      <div class="search-wrap">
+        <svg class="s-icon" width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input class="search-input" id="dm-search-input" type="text"
+          placeholder="Enter a short description to check for existing articles."
+          oninput="onDmSearchInput(this.value)"
+          onkeydown="if(event.key==='Enter')dmTriggerSearch()"
+        />
+      </div>
+      <div class="res-panel">
+        <div class="res-hdr">
+          <div class="res-title">
+            Potential similar articles found
+            <span class="res-badge zero" id="dm-res-badge">0</span>
+            <span class="res-ts" id="dm-res-ts" style="display:none">Last refreshed 1m ago</span>
+          </div>
+          <div class="res-meta">
+            <button class="icon-btn" title="Refresh" onclick="dmTriggerSearch()">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13.5 8a5.5 5.5 0 1 1-.5-2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M13.5 2.5v3.5H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="banner" id="dm-banner" style="display:none">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;color:var(--interactive);margin-top:1px"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.5v4M8 5v.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span><strong>We found similar content already published.</strong> Select articles to attach, or create a new one.</span>
+          <span class="banner-x" onclick="this.parentElement.style.display='none'">×</span>
+        </div>
+        <div class="toolbar" id="dm-toolbar" style="display:none">
+          <button class="icon-btn" title="Search">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+          <button class="tb-btn"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Filter</button>
+          <button class="tb-btn"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 3l3 3 3-3M5 6V1M9 13l3-3 3 3M12 10v5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Sort by</button>
+        </div>
+        <div class="rt-header" id="dm-rt-header" style="display:none">
+          <div></div><div>Number</div><div>Short description</div><div>Knowledge base</div>
+        </div>
+        <div id="dm-res-body"></div>
+      </div>
+    </div>
+    <div class="dup-modal-ftr">
+      <div class="sel-hint" id="dm-sel-hint">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 7.5v4M8 5v.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span id="dm-sel-hint-text">Select one or more articles to attach</span>
+      </div>
+      <button class="btn btn-secondary" onclick="closeDupModal()">Cancel</button>
+      <button class="btn btn-secondary" onclick="dmProceedCreate()">Create new article</button>
+      <button class="btn btn-primary" id="dm-btn-attach" disabled onclick="dmOpenConfirmModal()">Attach to incident</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ───────────────────────────────────────────────── -->
+<div id="toast">
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" fill="#2e7d32"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="toast-msg">Done</span>
+</div>
+
+<script>
+// ── STATE ───────────────────────────────────────────────────
+let persona      = 'agent';
+let selectedTpl  = null;
+let checked      = new Set();
+let forceNoRes   = false;
+const SRC        = 'INC000001';
+
+const ARTICLES = [
+  { num:'KB0010006', desc:'Wireless devices intermittently disconnected', kb:'KCS Knowledge Base' },
+  { num:'KB0010007', desc:'Forgot login, need to reset',                  kb:'KCS Knowledge Base,Consumer Service' },
+  { num:'KB0010008', desc:'Forgot login, need to reset',                  kb:'KCS Knowledge Base' },
+  { num:'KB0010009', desc:'Can\'t log in with SSO and okta',              kb:'Consumer Service' },
+  { num:'KB0010010', desc:'What to do when you are locked out of',        kb:'Consumer Service' },
+];
+
+// ── PERSONA ─────────────────────────────────────────────────
+function setPersona(p) {
+  persona = p;
+  document.getElementById('btn-pa').classList.toggle('active', p === 'agent');
+  document.getElementById('btn-pb').classList.toggle('active', p === 'author');
+  resetFlow();
+}
+
+// ── RESET ───────────────────────────────────────────────────
+function resetFlow() {
+  selectedTpl = null; checked = new Set(); forceNoRes = false;
+
+  // Reset template picker
+  document.querySelectorAll('#tpl-list .tp-item').forEach(e => e.classList.remove('sel'));
+  showTpPreviewEmpty();
+  document.getElementById('btn-next1').disabled = true;
+
+  // Show correct initial step
+  if (persona === 'agent') {
+    document.getElementById('step0').classList.add('active');
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.remove('active');
+  } else {
+    document.getElementById('step0').classList.remove('active');
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step2').classList.remove('active');
+  }
+
+  // Tab active state
+  document.getElementById('tab-source').classList.toggle('active', persona === 'agent');
+  document.getElementById('tab-create').classList.toggle('active', persona !== 'agent');
+
+  // Context pill
+  document.getElementById('ctx-pill-text').textContent =
+    persona === 'agent' ? 'Service Operations Workspace' : 'Knowledge';
+
+  // Tab 1 label
+  document.getElementById('tab-source-label').textContent =
+    persona === 'agent' ? 'INC000001 — OKTA install' : 'Knowledge Center';
+
+  // Step label + tip
+  setStepLabel(persona === 'agent' ? 0 : 1);
+
+  // Hide no-results toggle
+  document.getElementById('p-noresults-wrap').style.display = 'none';
+
+  // Reset interceptor
+  const inp = document.getElementById('search-input');
+  if (persona === 'agent') {
+    inp.value = 'OKTA install problem on new iPhone.';
+  } else {
+    inp.value = '';
+  }
+  resetInterceptorUI();
+  closeModal(); closeDrawer(); closeDupModal(); closeDotMenu();
+}
+
+function resetInterceptorUI() {
+  checked = new Set();
+  setAttachBtn();
+  if (persona === 'agent') {
+    showResults();
+  } else {
+    showAuthorEmpty();
+  }
+}
+
+// ── STEP LABELS ─────────────────────────────────────────────
+function setStepLabel(n) {
+  const el = document.getElementById('p-step');
+  const tip = document.getElementById('p-tip');
+  if (n === 0) {
+    el.innerHTML = '<strong>Incident Record</strong>';
+    tip.textContent = 'Click ··· to check for duplicate articles';
+    return;
+  }
+  const labels = ['Template Picker', 'Duplicate Check'];
+  const tips   = [
+    'Select a template then click Next →',
+    persona === 'agent' ? 'Results pre-loaded — select a row to attach' : 'Type in the search field to find duplicates'
+  ];
+  el.innerHTML = `<strong>Step ${n}</strong> / 2 — ${labels[n-1]}`;
+  tip.textContent = tips[n-1];
+}
+
+// ── TEMPLATE PICKER ─────────────────────────────────────────
+function selKB(el) {
+  document.querySelectorAll('#kb-list .tp-item').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function selTemplate(el) {
+  document.querySelectorAll('#tpl-list .tp-item').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedTpl = el.dataset.tpl;
+  document.getElementById('btn-next1').disabled = false;
+  showTpPreview(el.textContent.trim());
+}
+function showTpPreviewEmpty() {
+  const p = document.getElementById('tp-preview');
+  p.className = 'tp-preview empty';
+  p.innerHTML = '<div class="ep-icon">📄</div><div style="font-size:14px">No article template selected.</div><div style="font-size:12px;color:var(--text-tertiary)">Select an article template to see a preview.</div>';
+}
+function showTpPreview(name) {
+  const p = document.getElementById('tp-preview');
+  p.className = 'tp-preview';
+  p.innerHTML = `
+    <div class="tp-preview-label">${name.toUpperCase()}</div>
+    <div class="tp-preview-text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+    </div>`;
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────
+function goStep2() {
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step2').classList.add('active');
+  document.getElementById('ctx-pill-text').textContent = 'Create new article';
+  setStepLabel(2);
+  document.getElementById('p-noresults-wrap').style.display =
+    persona === 'author' ? 'flex' : 'none';
+  resetInterceptorUI();
+}
+
+function handleSourceTabClick() {
+  if (persona === 'agent') {
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step0').classList.add('active');
+    document.getElementById('ctx-pill-text').textContent = 'Service Operations Workspace';
+    document.getElementById('tab-source').classList.add('active');
+    document.getElementById('tab-create').classList.remove('active');
+    setStepLabel(0);
+    document.getElementById('p-noresults-wrap').style.display = 'none';
+  } else if (document.getElementById('step2').classList.contains('active')) {
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('ctx-pill-text').textContent = 'Knowledge';
+    setStepLabel(1);
+    document.getElementById('p-noresults-wrap').style.display = 'none';
+  }
+}
+
+function proceedCreate() {
+  showToast('Proceeding to create new article…');
+}
+
+// ── SEARCH ──────────────────────────────────────────────────
+function onSearchInput(val) {
+  if (persona !== 'author') return;
+  if (!val.trim()) { showAuthorEmpty(); return; }
+  if (val.length >= 4) triggerSearch();
+}
+function triggerSearch() {
+  const val = document.getElementById('search-input').value.trim();
+  if (!val) return;
+  if (forceNoRes) { showNoResults(); } else { showResults(); }
+}
+function toggleNoResults() {
+  forceNoRes = !forceNoRes;
+  const btn = document.querySelector('.p-noresults-btn');
+  btn.style.color = forceNoRes ? '#60a5fa' : '';
+  btn.style.borderColor = forceNoRes ? '#60a5fa' : '';
+  if (document.getElementById('search-input').value.trim()) triggerSearch();
+}
+
+// ── RESULTS STATES ───────────────────────────────────────────
+function showResults() {
+  checked = new Set(); setAttachBtn();
+  setResBadge(ARTICLES.length);
+  document.getElementById('banner').style.display = 'flex';
+  document.getElementById('toolbar').style.display = 'flex';
+  document.getElementById('rt-header').style.display = 'grid';
+  document.getElementById('res-ts').style.display = '';
+  document.getElementById('res-body').innerHTML = ARTICLES.map((a, i) => `
+    <div class="rt-row" id="row${i}" onclick="toggleRow(${i},event)">
+      <div><input type="checkbox" class="nx-cb" id="cb${i}" onclick="toggleRow(${i},event)"></div>
+      <div><span class="cell-link" onclick="openDrawer(${i},event)">${a.num}</span></div>
+      <div><span class="cell-desc" onclick="openDrawer(${i},event)">${a.desc}</span></div>
+      <div class="cell-kb">${fmtKBs(a.kb)}</div>
+    </div>`).join('');
+}
+function showNoResults() {
+  checked = new Set(); setAttachBtn();
+  setResBadge(0);
+  document.getElementById('banner').style.display = 'none';
+  document.getElementById('toolbar').style.display = 'none';
+  document.getElementById('rt-header').style.display = 'none';
+  document.getElementById('res-ts').style.display = '';
+  document.getElementById('res-body').innerHTML = `
+    <div class="empty-panel">
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none"><path d="M8 21l8 8 18-18" stroke="#2e7d32" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="ep-title">No similar articles found</div>
+      <div class="ep-sub">This topic doesn't appear to be covered yet. You're good to continue.</div>
+    </div>`;
+}
+function showAuthorEmpty() {
+  setResBadge(0);
+  document.getElementById('banner').style.display = 'none';
+  document.getElementById('toolbar').style.display = 'none';
+  document.getElementById('rt-header').style.display = 'none';
+  document.getElementById('res-ts').style.display = 'none';
+  document.getElementById('res-body').innerHTML = `
+    <div class="empty-panel">
+      <div class="ep-q">?</div>
+      <div class="ep-title">Start by entering your article short description</div>
+      <div class="ep-sub">Enter a short description above and we'll check for existing articles that may already cover this topic.</div>
+    </div>`;
+}
+function setResBadge(n) {
+  const b = document.getElementById('res-badge');
+  b.textContent = n;
+  b.className = 'res-badge' + (n === 0 ? ' zero' : '');
+}
+function fmtKBs(str) {
+  return str.split(',').map(k => `<span class="kb-chip">${k.trim()}</span>`).join('');
+}
+
+// ── ROW SELECTION ────────────────────────────────────────────
+function toggleRow(i, e) {
+  if (e.target.classList.contains('cell-link') || e.target.classList.contains('cell-desc')) return;
+  const cb  = document.getElementById('cb' + i);
+  const row = document.getElementById('row' + i);
+  if (checked.has(i)) { checked.delete(i); cb.checked = false; row.classList.remove('checked'); }
+  else               { checked.add(i);    cb.checked = true;  row.classList.add('checked'); }
+  setAttachBtn();
+}
+function setAttachBtn() {
+  const n   = checked.size;
+  const btn = document.getElementById('btn-attach');
+  const h   = document.getElementById('sel-hint');
+  const ht  = document.getElementById('sel-hint-text');
+  btn.disabled = n === 0;
+  if (n === 0) {
+    ht.textContent = 'Select one or more articles to attach';
+    h.classList.remove('has-sel');
+  } else {
+    ht.textContent = `${n} article${n > 1 ? 's' : ''} selected`;
+    h.classList.add('has-sel');
+  }
+}
+
+// ── ARTICLE DRAWER ───────────────────────────────────────────
+function openDrawer(i, e) {
+  e.stopPropagation();
+  const a = ARTICLES[i];
+  document.getElementById('drawer-meta').textContent  = `IT · ${a.num} · 1 min read`;
+  document.getElementById('drawer-title').textContent = a.desc;
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+}
+
+// ── MODAL ────────────────────────────────────────────────────
+function openModal() {
+  const sel = [...checked].map(i => ARTICLES[i]);
+  const n   = sel.length;
+  const isAgent = persona === 'agent';
+  document.getElementById('modal-title').textContent = isAgent
+    ? `Attach articles to ${SRC}` : 'Confirm — skip article creation';
+  document.getElementById('modal-desc').textContent = n === 1
+    ? `The following article will be ${isAgent ? 'attached to this incident' : 'linked as the existing coverage'}. Is this your final selection?`
+    : `The following ${n} articles will be ${isAgent ? 'attached to this incident' : 'linked as existing coverage'}. Is this your final selection?`;
+  document.getElementById('modal-arts').innerHTML = sel.map(a => `
+    <div class="modal-art">
+      <div><div class="ma-num">${a.num}</div><div class="ma-desc">${a.desc}</div></div>
+      <div class="ma-chips">${a.kb.split(',').map(k => `<span class="kb-chip">${k.trim()}</span>`).join('')}</div>
+    </div>`).join('');
+  document.getElementById('modal-ov').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-ov').classList.remove('open'); }
+function confirmAttach() {
+  closeModal();
+  if (window._fromDupModal) {
+    window._fromDupModal = false;
+    closeDupModal();
+    const n = dmChecked.size;
+    showToast(`${n} article${n > 1 ? 's' : ''} attached to ${SRC}`);
+    setTimeout(resetFlow, 2200);
+    return;
+  }
+  const n = checked.size;
+  const isAgent = persona === 'agent';
+  showToast(isAgent
+    ? `${n} article${n > 1 ? 's' : ''} attached to ${SRC}`
+    : `Creation cancelled — ${n} existing article${n > 1 ? 's' : ''} found`);
+  setTimeout(resetFlow, 2200);
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── DOT MENU ─────────────────────────────────────────────────
+function toggleDotMenu(e) {
+  e.stopPropagation();
+  document.getElementById('dot-menu').classList.toggle('open');
+}
+function closeDotMenu() {
+  document.getElementById('dot-menu').classList.remove('open');
+}
+document.addEventListener('click', () => closeDotMenu());
+
+// ── DUP MODAL ────────────────────────────────────────────────
+let dmChecked = new Set();
+
+function openDupModal() {
+  closeDotMenu();
+  document.getElementById('dm-search-input').value = 'OKTA install problem on new iPhone.';
+  dmChecked = new Set();
+  dmShowResults();
+  document.getElementById('dup-modal-ov').classList.add('open');
+}
+function closeDupModal() {
+  document.getElementById('dup-modal-ov').classList.remove('open');
+}
+function dmProceedCreate() {
+  closeDupModal();
+  document.getElementById('step0').classList.remove('active');
+  document.getElementById('step1').classList.add('active');
+  document.getElementById('ctx-pill-text').textContent = 'Knowledge';
+  document.getElementById('tab-source').classList.remove('active');
+  document.getElementById('tab-create').classList.add('active');
+  setStepLabel(1);
+}
+function dmShowResults() {
+  dmChecked = new Set(); dmSetAttachBtn();
+  dmSetResBadge(ARTICLES.length);
+  document.getElementById('dm-banner').style.display = 'flex';
+  document.getElementById('dm-toolbar').style.display = 'flex';
+  document.getElementById('dm-rt-header').style.display = 'grid';
+  document.getElementById('dm-res-ts').style.display = '';
+  document.getElementById('dm-res-body').innerHTML = ARTICLES.map((a, i) => `
+    <div class="rt-row" id="dm-row${i}" onclick="dmToggleRow(${i},event)">
+      <div><input type="checkbox" class="nx-cb" id="dm-cb${i}"></div>
+      <div><span class="cell-link">${a.num}</span></div>
+      <div><span class="cell-desc">${a.desc}</span></div>
+      <div class="cell-kb">${fmtKBs(a.kb)}</div>
+    </div>`).join('');
+}
+function dmSetResBadge(n) {
+  const b = document.getElementById('dm-res-badge');
+  b.textContent = n;
+  b.className = 'res-badge' + (n === 0 ? ' zero' : '');
+}
+function onDmSearchInput(val) {
+  if (!val.trim()) return;
+  if (val.length >= 4) dmTriggerSearch();
+}
+function dmTriggerSearch() {
+  const val = document.getElementById('dm-search-input').value.trim();
+  if (!val) return;
+  dmShowResults();
+}
+function dmToggleRow(i, e) {
+  if (e.target.type === 'checkbox') e.preventDefault();
+  const cb  = document.getElementById('dm-cb' + i);
+  const row = document.getElementById('dm-row' + i);
+  if (dmChecked.has(i)) { dmChecked.delete(i); cb.checked = false; row.classList.remove('checked'); }
+  else                  { dmChecked.add(i);    cb.checked = true;  row.classList.add('checked'); }
+  dmSetAttachBtn();
+}
+function dmSetAttachBtn() {
+  const n   = dmChecked.size;
+  const btn = document.getElementById('dm-btn-attach');
+  const h   = document.getElementById('dm-sel-hint');
+  const ht  = document.getElementById('dm-sel-hint-text');
+  btn.disabled = n === 0;
+  if (n === 0) {
+    ht.textContent = 'Select one or more articles to attach';
+    h.classList.remove('has-sel');
+  } else {
+    ht.textContent = `${n} article${n > 1 ? 's' : ''} selected`;
+    h.classList.add('has-sel');
+  }
+}
+function dmOpenConfirmModal() {
+  const sel = [...dmChecked].map(i => ARTICLES[i]);
+  const n   = sel.length;
+  document.getElementById('modal-title').textContent = `Attach articles to ${SRC}`;
+  document.getElementById('modal-desc').textContent = n === 1
+    ? 'The following article will be attached to this incident. Is this your final selection?'
+    : `The following ${n} articles will be attached to this incident. Is this your final selection?`;
+  document.getElementById('modal-arts').innerHTML = sel.map(a => `
+    <div class="modal-art">
+      <div><div class="ma-num">${a.num}</div><div class="ma-desc">${a.desc}</div></div>
+      <div class="ma-chips">${a.kb.split(',').map(k => `<span class="kb-chip">${k.trim()}</span>`).join('')}</div>
+    </div>`).join('');
+  window._fromDupModal = true;
+  document.getElementById('modal-ov').classList.add('open');
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+setPersona('agent');
+</script>
+</body>
+</html>

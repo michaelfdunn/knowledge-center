@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Article Optimization — Knowledge Center</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── Janus Design Tokens ─── */
+:root{
+  --bg:        #f4f3f0;
+  --surface:   #ffffff;
+  --input-bg:  #edece9;
+  --border:    #e3e2df;
+  --border-sub:#edece9;
+  --nav-active:#c2c1be;
+  --dark:      #172b3e;
+  --text-h:    #000000;
+  --text-b:    #172b3e;
+  --text-s:    #656462;
+  --text-d:    #94a3b8;
+  --teal:      #1389aa;
+  --green:     #4edf61;
+  --amber:     #ca8a04;
+  --amber-bg:  #fef9c3;
+  --red:       #dc2626;
+  --red-bg:    #fee2e2;
+  --badge-red: #e2161c;
+  --r-card:    24px;
+  --r-dark:    32px;
+  --r-pill:    9999px;
+}
+
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;
+  color:var(--text-b);background:var(--bg);}
+a{color:var(--teal);text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:underline;}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+select{font-family:'Inter',sans-serif;cursor:pointer;}
+svg{display:block;}
+
+/* ─── APP SHELL ─── */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:280px;flex-shrink:0;background:var(--bg);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sb-logo{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px;flex-shrink:0;}
+.sb-logo-text{font-size:14px;font-weight:600;color:var(--dark);letter-spacing:-.2px;}
+.sb-hamburger{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;flex-shrink:0;}
+.sb-hamburger:hover{background:var(--border-sub);}
+.sb-nav{padding:8px 16px 0;}
+.nav-item{height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:var(--r-pill);cursor:pointer;font-size:14px;color:var(--text-h);user-select:none;}
+.nav-item:hover{background:var(--border-sub);}
+.nav-item.active{background:var(--nav-active);}
+.nav-item svg{flex-shrink:0;opacity:.85;}
+.sb-section-label{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px;font-size:12px;color:var(--text-s);}
+.sb-section-label-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;}
+.sb-section-label-btn:hover{background:var(--border-sub);}
+.sb-recent-item{height:40px;display:flex;align-items:center;padding:0 10px;margin:0 16px;border-radius:var(--r-pill);font-size:14px;color:var(--text-h);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-recent-item:hover{background:var(--border-sub);}
+.sb-recent-see-all{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;margin:0 16px;border-radius:var(--r-pill);font-size:14px;color:var(--text-h);cursor:pointer;}
+.sb-recent-see-all:hover{background:var(--border-sub);}
+.sb-divider{height:1px;background:var(--border);margin:8px 16px;}
+.sb-bottom{margin-top:auto;padding-bottom:8px;border-top:1px solid var(--border);}
+.sb-notif{height:40px;display:flex;align-items:center;gap:8px;padding:0 10px;margin:8px 16px 0;border-radius:var(--r-pill);font-size:14px;color:var(--text-h);cursor:pointer;position:relative;}
+.sb-notif:hover{background:var(--border-sub);}
+.notif-badge{position:absolute;top:7px;left:26px;width:12px;height:12px;border-radius:6px;background:var(--badge-red);border:1.5px solid var(--bg);}
+.sb-user{height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;margin:0 16px;border-radius:var(--r-pill);font-size:13px;color:var(--text-b);cursor:pointer;}
+.sb-user:hover{background:var(--border-sub);}
+.user-avatar{width:24px;height:24px;border-radius:12px;background:rgba(0,123,158,0.16);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--dark);}
+
+/* ─── MAIN ─── */
+.main{flex:1;overflow-y:auto;background:var(--bg);display:flex;flex-direction:column;min-width:0;}
+
+/* ─── PAGE HEADER ─── */
+.page-header{padding:28px 32px 0;flex-shrink:0;}
+.page-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-s);margin-bottom:8px;}
+.page-breadcrumb a{color:var(--teal);font-size:13px;}
+.page-breadcrumb-sep{opacity:.5;}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+.page-title{font-size:28px;font-weight:600;color:var(--text-b);line-height:1.2;}
+.page-meta{font-size:13px;color:var(--text-s);margin-top:2px;}
+.header-actions{display:flex;align-items:center;gap:8px;}
+
+/* ─── BUTTONS ─── */
+.btn-primary{
+  height:36px;padding:0 18px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:14px;font-weight:500;
+  display:flex;align-items:center;gap:6px;transition:background .15s;
+}
+.btn-primary:hover{background:#1e3a52;}
+.btn-ghost{
+  height:36px;padding:0 14px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text-b);font-size:14px;
+  display:flex;align-items:center;gap:6px;transition:border-color .15s;
+}
+.btn-ghost:hover{border-color:var(--nav-active);}
+
+/* ─── PAGE BODY ─── */
+.page-body{padding:16px 32px 32px;display:flex;flex-direction:column;gap:16px;}
+
+/* ─── AI BANNER ─── */
+.ai-banner{
+  border-radius:var(--r-card);border:1px solid rgba(78,223,97,.35);
+  background:linear-gradient(90deg,rgba(78,223,97,.08),rgba(19,137,170,.06));
+  display:flex;align-items:center;gap:12px;padding:12px 18px;
+}
+.ai-banner-dot{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ai-banner-text{flex:1;font-size:13px;color:var(--text-b);line-height:1.5;}
+.ai-banner-text strong{font-weight:600;}
+.ai-banner-text a{color:var(--teal);}
+
+/* ─── STATS ROW ─── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);padding:20px 24px;}
+.stat-num{font-size:36px;font-weight:700;color:var(--text-b);line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:13px;color:var(--text-s);}
+
+/* ─── LIST CARD ─── */
+.list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;}
+
+/* ─── LIST ROW ─── */
+.list-row{border-bottom:1px solid var(--border-sub);}
+.list-row:last-child{border-bottom:none;}
+.list-row-main{
+  display:grid;
+  grid-template-columns:40px 40px 1fr 180px 160px 110px;
+  align-items:center;padding:0 16px;min-height:52px;
+  cursor:pointer;transition:background .1s;gap:4px;
+}
+.list-row-main:hover{background:var(--bg);}
+.list-row.expanded .list-row-main{background:rgba(19,137,170,.04);}
+
+.row-chevron{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--text-s);}
+.row-chevron svg{transition:transform .2s;}
+.list-row.expanded .row-chevron svg{transform:rotate(90deg);}
+
+.cb{
+  appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border-radius:4px;
+  border:1px solid var(--text-d);background:var(--surface);cursor:pointer;
+  transition:border-color .15s,background .15s;flex-shrink:0;position:relative;
+}
+.cb:hover{border-color:var(--teal);}
+.cb:checked{background:var(--teal);border-color:var(--teal);}
+.cb:checked::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:8px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(40deg);}
+
+.row-issue{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.row-issue-name{font-size:13px;font-weight:500;color:var(--text-b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.row-meta{font-size:12px;color:var(--text-s);}
+
+.review-badge{flex-shrink:0;height:22px;padding:0 10px;border-radius:var(--r-pill);font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px;}
+.badge-amber{background:var(--amber-bg);color:var(--amber);}
+.badge-teal{background:rgba(19,137,170,.1);color:var(--teal);}
+
+.row-actions{display:flex;align-items:center;gap:6px;justify-content:flex-end;}
+
+.btn-row-primary{
+  height:28px;padding:0 12px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:12px;font-weight:500;
+  display:inline-flex;align-items:center;transition:background .15s;
+}
+.btn-row-primary:hover{background:#1e3a52;}
+
+.btn-row-ghost{
+  height:28px;padding:0 12px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text-b);font-size:12px;
+  display:inline-flex;align-items:center;transition:border-color .15s;
+}
+.btn-row-ghost:hover{border-color:var(--nav-active);}
+
+/* ─── EXPANDED PANEL ─── */
+.list-expand{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.list-expand.open{max-height:500px;}
+.expand-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  padding:20px 20px 20px 96px;
+  border-top:1px solid var(--border-sub);
+  background:rgba(19,137,170,.03);
+}
+.expand-panel{padding-right:24px;}
+.expand-panel+.expand-panel{padding-left:24px;padding-right:0;border-left:1px solid var(--border-sub);}
+.expand-panel-title{font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+
+.fix-title{font-size:13px;font-weight:600;color:var(--text-b);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.fix-example{
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font-size:12px;color:var(--text-s);
+}
+.fix-example-arrow{color:var(--teal);font-weight:700;font-size:14px;}
+.fix-tag{
+  display:inline-flex;align-items:center;height:22px;padding:0 8px;
+  border-radius:6px;font-size:11px;font-weight:600;
+}
+.fix-tag-h1{background:#fee2e2;color:var(--red);}
+.fix-tag-h2{background:#dcfce7;color:#166534;}
+.fix-desc{font-size:12px;color:var(--text-s);line-height:1.6;margin-bottom:10px;}
+
+.affected-header{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;
+}
+.affected-count{font-size:12px;color:var(--text-s);}
+.view-all-link{font-size:12px;color:var(--teal);cursor:pointer;}
+
+.affected-list{display:flex;flex-direction:column;gap:6px;}
+.affected-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:12px;
+  border:1px solid var(--border);background:var(--surface);
+  font-size:12px;cursor:pointer;transition:border-color .15s;
+}
+.affected-item:hover{border-color:var(--teal);}
+.affected-kb{color:var(--teal);font-weight:600;flex-shrink:0;min-width:80px;}
+.affected-title{flex:1;color:var(--text-b);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.affected-issues{font-size:11px;color:var(--text-s);flex-shrink:0;}
+.affected-status{flex-shrink:0;height:18px;padding:0 7px;border-radius:var(--r-pill);background:#dcfce7;color:#166534;font-size:11px;font-weight:500;display:inline-flex;align-items:center;}
+
+/* ─── PAGINATION ─── */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border-sub);}
+.pagination-info{font-size:13px;color:var(--text-s);}
+.pagination-pages{display:flex;align-items:center;gap:4px;}
+.page-btn{min-width:28px;height:28px;padding:0 6px;border-radius:8px;border:1px solid transparent;background:transparent;font-size:13px;color:var(--teal);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Inter',sans-serif;transition:border-color .15s,background .15s;}
+.page-btn:hover{border-color:var(--border);background:var(--bg);}
+.page-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+.page-btn.arrow{color:var(--text-s);}
+.page-ellipsis{font-size:13px;color:var(--text-s);padding:0 4px;}
+.page-size-wrap{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-s);}
+.page-size-select{
+  appearance:none;-webkit-appearance:none;
+  height:28px;padding:0 24px 0 8px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%23656462' stroke-width='1.3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") no-repeat right 6px center;
+  font-size:13px;color:var(--text-b);font-family:'Inter',sans-serif;cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
+  <nav class="sidebar">
+    <div class="sb-logo">
+      <span class="sb-logo-text">servicenow</span>
+      <button class="sb-hamburger" title="Collapse sidebar">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path stroke="#343331" stroke-width="1.5" stroke-linecap="round" d="M4 6h12M4 10h12M4 14h12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sb-nav">
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path fill="#343331" d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4a1 1 0 001-1v-3h2v3a1 1 0 001 1h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        Home
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="3" y="4" width="14" height="14" rx="2"/>
+          <path stroke-linecap="round" d="M3 8h14M7 2v4M13 2v4"/>
+        </svg>
+        Calendar Management
+      </div>
+      <div class="nav-item active" onclick="window.location='knowledge-center-ainpx.html'" style="cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <circle cx="10" cy="10" r="8"/>
+          <path d="M10 2C10 2 7 6 7 10s3 8 3 8M10 2c0 0 3 4 3 8s-3 8-3 8M2 10h16"/>
+        </svg>
+        Knowledge Center
+      </div>
+    </div>
+
+    <div class="sb-section-label">
+      <span>Recent</span>
+      <button class="sb-section-label-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2v10M2 7h10" stroke="#343331" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sb-recent-item">VPN configuration failing with Mac</div>
+    <div class="sb-recent-item">Password reset in windows desktop</div>
+    <div class="sb-recent-item">Don't forget to review KB health...</div>
+    <div class="sb-recent-see-all">
+      <span>See all</span>
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#656462" stroke-width="1.5">
+        <path stroke-linecap="round" d="M6 4l4 4-4 4"/>
+      </svg>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-section-label"><span>My Apps</span></div>
+    <div class="sb-nav" style="padding-top:0">
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <circle cx="9" cy="9" r="6"/><path stroke-linecap="round" d="M15 15l3 3"/>
+        </svg>
+        Enterprise Search
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/>
+          <rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/>
+        </svg>
+        My canvas
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11.5 2L4.5 11H10L8.5 18.5L16.5 9H11L11.5 2Z"/>
+        </svg>
+        Activity hub
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="8" y="1" width="4" height="4" rx="1"/>
+          <rect x="2" y="14" width="4" height="4" rx="1"/>
+          <rect x="14" y="14" width="4" height="4" rx="1"/>
+          <path d="M10 5v4M4 14V11h12v3"/>
+        </svg>
+        Org chart
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-notif">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <path stroke-linecap="round" d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z"/>
+          <path d="M8.5 17.5a1.5 1.5 0 003 0" stroke-linecap="round"/>
+        </svg>
+        <span>Notifications</span>
+        <div class="notif-badge"></div>
+      </div>
+      <div class="sb-user">
+        <div class="user-avatar">MD</div>
+        <span>Michael Dunn</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════ MAIN ═══════════════════════════════ -->
+  <main class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-breadcrumb">
+        <a href="knowledge-center-ainpx.html">Knowledge Center</a>
+        <span class="page-breadcrumb-sep">›</span>
+        <span>Article optimization</span>
+      </div>
+      <div class="page-header-top">
+        <div>
+          <div class="page-title">Article optimization</div>
+          <div class="page-meta">Last refreshed 5m ago</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-ghost">View top issues</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- AI BANNER -->
+      <div class="ai-banner">
+        <div class="ai-banner-dot">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6l3 3 5-5" stroke="#172b3e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="ai-banner-text">
+          Now Assist scanned <strong>1512</strong> flagged articles <strong>2</strong> auto-fixable issue types with pre-generated fixes ready · <a>2 need manual review</a>
+        </div>
+        <button class="btn-primary" onclick="fixAllAutoFixable()">Fix all auto-fixable</button>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">1512</div>
+          <div class="stat-lbl">Flagged articles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">383</div>
+          <div class="stat-lbl">Auto-fixable</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">10,370</div>
+          <div class="stat-lbl">Manual review</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">10,753</div>
+          <div class="stat-lbl">Total findings</div>
+        </div>
+      </div>
+
+      <!-- LIST CARD -->
+      <div class="list-card">
+        <div id="listBody"></div>
+        <div class="pagination">
+          <div class="pagination-info">Showing 1–10 of 165</div>
+          <div class="pagination-pages" id="pagPages"></div>
+          <div class="page-size-wrap">
+            Records per page:
+            <select class="page-size-select">
+              <option selected>10</option>
+              <option>25</option>
+              <option>50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-body -->
+
+  </main>
+</div>
+
+<script>
+const ISSUES = [
+  {id:1,name:'Heading 1 Tags in Article Content',type:'auto',articles:127,views:381,
+   fix:{from:'H1',to:'H2',title:'Convert H1 → H2',
+     desc:'All H1 headings in article body content will be automatically converted to H2. H1 tags in article body create duplicate heading hierarchy. Converting to H2 improves structure, accessibility, and search indexing.'},
+   affected:[
+     {kb:'KB0900001',title:'Landing Page | ServiceNow Common Vulnerabilities & Exposures (CVE)',issues:2,status:'Published'},
+     {kb:'KB0900002',title:'bash - How to Install/use Bastion Host SSH utilities',issues:7,status:'Published'},
+     {kb:'KB0900003',title:'Landing Page | Global Cloud Change Management',issues:5,status:'Published'},
+   ]},
+  {id:2,name:'Duplicate topic: How to use Now Support | Developer',type:'manual',articles:2,views:5155,
+   fix:{title:'Review duplicate content',
+     desc:'These articles have been identified as covering the same topic. Manual review is required to determine the best course of action.'},
+   affected:[
+     {kb:'KB0010023',title:'Now Support Developer Guide',issues:3,status:'Published'},
+     {kb:'KB0019841',title:'Developer Portal — Getting Started',issues:3,status:'Published'},
+   ]},
+  {id:3,name:'Heading 1 Tags in Article Content',type:'auto',articles:127,views:381,
+   fix:{from:'H1',to:'H2',title:'Convert H1 → H2',
+     desc:'All H1 headings in article body content will be automatically converted to H2.'},
+   affected:[
+     {kb:'KB0900001',title:'Landing Page | ServiceNow CVE',issues:2,status:'Published'},
+   ]},
+  {id:4,name:'Duplicate topic: How to use Now Support | Developer',type:'manual',articles:2,views:5155,
+   fix:{title:'Review duplicate content',
+     desc:'Manual review required to determine correct merge strategy.'},
+   affected:[
+     {kb:'KB0010023',title:'Now Support Developer Guide',issues:1,status:'Published'},
+   ]},
+  {id:5,name:'Heading 1 Tags in Article Content',type:'auto',articles:127,views:381,
+   fix:{from:'H1',to:'H2',title:'Convert H1 → H2',
+     desc:'H1 tags in article body create duplicate heading hierarchy.'},
+   affected:[
+     {kb:'KB0900002',title:'Bastion Host SSH utilities',issues:4,status:'Published'},
+   ]},
+  {id:6,name:'Duplicate topic: How to use Now Support | Developer',type:'manual',articles:2,views:5155,
+   fix:{title:'Review duplicate content',
+     desc:'These articles have substantial content overlap that requires manual review.'},
+   affected:[
+     {kb:'KB0020001',title:'Developer Support Documentation',issues:2,status:'Published'},
+   ]},
+  {id:7,name:'Heading 1 Tags in Article Content',type:'auto',articles:127,views:381,
+   fix:{from:'H1',to:'H2',title:'Convert H1 → H2',
+     desc:'Converting to H2 improves structure, accessibility, and search indexing.'},
+   affected:[
+     {kb:'KB0900003',title:'Global Cloud Change Management',issues:3,status:'Published'},
+   ]},
+  {id:8,name:'Duplicate topic: How to use Now Support | Developer',type:'manual',articles:2,views:5155,
+   fix:{title:'Review duplicate content',
+     desc:'Articles flagged for manual content review and potential merge.'},
+   affected:[
+     {kb:'KB0010100',title:'Support Portal User Guide',issues:2,status:'Published'},
+   ]},
+  {id:9,name:'Heading 1 Tags in Article Content',type:'auto',articles:127,views:381,
+   fix:{from:'H1',to:'H2',title:'Convert H1 → H2',
+     desc:'All H1 headings in article body will be converted to H2.'},
+   affected:[
+     {kb:'KB0900004',title:'Security Configuration Guide',issues:1,status:'Published'},
+   ]},
+  {id:10,name:'Duplicate topic: How to use Now Support | Developer',type:'manual',articles:2,views:5155,
+   fix:{title:'Review duplicate content',
+     desc:'Manual review needed — overlapping content detected.'},
+   affected:[
+     {kb:'KB0010023',title:'Now Support Quick Reference',issues:2,status:'Published'},
+   ]},
+];
+
+let expanded = new Set([1]);
+let selected = new Set();
+
+function renderList(){
+  const body = document.getElementById('listBody');
+  body.innerHTML = '';
+  ISSUES.forEach(r => {
+    const isExp = expanded.has(r.id);
+    const isSel = selected.has(r.id);
+    const isAuto = r.type === 'auto';
+    const badgeHtml = isAuto
+      ? `<span class="review-badge badge-teal">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5l2.5 2.5L8 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Auto-fixable</span>`
+      : `<span class="review-badge badge-amber">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M5 3v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Manual review</span>`;
+    const actionBtn = isAuto
+      ? `<button class="btn-row-primary" onclick="event.stopPropagation();fixAll(${r.id})">Fix all</button>`
+      : `<button class="btn-row-ghost" onclick="event.stopPropagation();viewArticles(${r.id})">View articles</button>`;
+
+    const rowDiv = document.createElement('div');
+    rowDiv.className = `list-row${isExp?' expanded':''}`;
+    rowDiv.id = `row-${r.id}`;
+    rowDiv.innerHTML = `
+      <div class="list-row-main" onclick="toggleExpand(${r.id})">
+        <div style="display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation()">
+          <input type="checkbox" class="cb" ${isSel?'checked':''} onchange="toggleSel(${r.id},this)" />
+        </div>
+        <div class="row-chevron">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="row-issue">
+          <span class="row-issue-name">${r.name}</span>
+        </div>
+        <div class="row-meta">${r.articles} articles ${r.views.toLocaleString()} views</div>
+        <div>${badgeHtml}</div>
+        <div class="row-actions" onclick="event.stopPropagation()">${actionBtn}</div>
+      </div>
+      <div class="list-expand${isExp?' open':''}" id="exp-${r.id}">
+        <div class="expand-inner">
+          <div class="expand-panel">
+            <div class="expand-panel-title">Recommended fix</div>
+            ${isAuto ? `
+            <div class="fix-title">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="#1389aa" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              ${r.fix.title}
+            </div>
+            <div class="fix-example">
+              <span class="fix-tag fix-tag-h1">${r.fix.from}</span>
+              <span class="fix-example-arrow">→</span>
+              <span class="fix-tag fix-tag-h2">${r.fix.to}</span>
+            </div>` : `
+            <div class="fix-title">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="${r.amber||'#ca8a04'}" stroke-width="1.4"/><path d="M7 4.5v3M7 9.5v.5" stroke="${r.amber||'#ca8a04'}" stroke-width="1.4" stroke-linecap="round"/></svg>
+              ${r.fix.title}
+            </div>`}
+            <div class="fix-desc">${r.fix.desc}</div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-panel-title">Affected articles (${r.articles}) — Sorted by views</div>
+            <div class="affected-header">
+              <span class="affected-count">Showing top ${Math.min(r.affected.length,3)}</span>
+              <a class="view-all-link">View all</a>
+            </div>
+            <div class="affected-list">
+              ${r.affected.map(a=>`
+                <div class="affected-item">
+                  <span class="affected-kb">${a.kb}</span>
+                  <span class="affected-title">${a.title}</span>
+                  <span class="affected-issues">${a.issues} issues</span>
+                  <span class="affected-status">${a.status}</span>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    body.appendChild(rowDiv);
+  });
+  renderPagination();
+}
+
+function toggleExpand(id){
+  if(expanded.has(id)) expanded.delete(id); else expanded.add(id);
+  const row=document.getElementById(`row-${id}`);
+  const exp=document.getElementById(`exp-${id}`);
+  const chev=row.querySelector('.row-chevron svg');
+  if(expanded.has(id)){row.classList.add('expanded');exp.classList.add('open');chev.style.transform='rotate(90deg)';}
+  else{row.classList.remove('expanded');exp.classList.remove('open');chev.style.transform='';}
+}
+
+function toggleSel(id,cb){
+  if(cb.checked) selected.add(id); else selected.delete(id);
+}
+
+function renderPagination(){
+  const el=document.getElementById('pagPages');
+  el.innerHTML=[
+    `<button class="page-btn arrow">‹</button>`,
+    `<button class="page-btn active">1</button>`,
+    `<button class="page-btn">2</button>`,
+    `<button class="page-btn">3</button>`,
+    `<span class="page-ellipsis">…</span>`,
+    `<button class="page-btn">10</button>`,
+    `<button class="page-btn arrow">›</button>`
+  ].join('');
+}
+
+function fixAll(id){alert('Auto-fix applied to all articles for this issue.');}
+function viewArticles(id){alert('Opening affected articles list.');}
+function fixAllAutoFixable(){alert('Applying all auto-fixable fixes (383 articles).');}
+
+renderList();
+</script>
+</body>
+</html>

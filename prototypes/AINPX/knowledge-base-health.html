@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Knowledge Base Health — Knowledge Center</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── Janus Design Tokens ─── */
+:root{
+  --bg:        #f4f3f0;
+  --surface:   #ffffff;
+  --input-bg:  #edece9;
+  --border:    #e3e2df;
+  --border-sub:#edece9;
+  --nav-active:#c2c1be;
+  --dark:      #172b3e;
+  --text-h:    #000000;
+  --text-b:    #172b3e;
+  --text-s:    #656462;
+  --text-d:    #94a3b8;
+  --teal:      #1389aa;
+  --green:     #4edf61;
+  --amber:     #ca8a04;
+  --amber-bg:  #fef9c3;
+  --red:       #dc2626;
+  --red-bg:    #fee2e2;
+  --badge-red: #e2161c;
+  --r-card:    24px;
+  --r-pill:    9999px;
+}
+
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;
+  color:var(--text-b);background:var(--bg);}
+a{color:var(--teal);text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:underline;}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+select{font-family:'Inter',sans-serif;cursor:pointer;}
+svg{display:block;}
+
+/* ─── APP SHELL ─── */
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:280px;flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sb-logo{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px;flex-shrink:0;}
+.sb-logo-text{font-size:14px;font-weight:600;color:var(--dark);letter-spacing:-.2px;}
+.sb-hamburger{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;}
+.sb-hamburger:hover{background:var(--border-sub);}
+.sb-nav{padding:8px 16px 0;}
+.nav-item{height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:var(--r-pill);cursor:pointer;font-size:14px;color:var(--text-h);user-select:none;}
+.nav-item:hover{background:var(--border-sub);}
+.nav-item.active{background:var(--nav-active);}
+.nav-item svg{flex-shrink:0;opacity:.85;}
+.sb-section-label{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 4px;font-size:12px;color:var(--text-s);}
+.sb-section-label-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;}
+.sb-section-label-btn:hover{background:var(--border-sub);}
+.sb-recent-item{height:40px;display:flex;align-items:center;padding:0 10px;margin:0 16px;border-radius:var(--r-pill);font-size:14px;color:var(--text-h);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-recent-item:hover{background:var(--border-sub);}
+.sb-recent-see-all{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;margin:0 16px;border-radius:var(--r-pill);font-size:14px;color:var(--text-h);cursor:pointer;}
+.sb-recent-see-all:hover{background:var(--border-sub);}
+.sb-divider{height:1px;background:var(--border);margin:8px 16px;}
+.sb-bottom{margin-top:auto;padding-bottom:8px;border-top:1px solid var(--border);}
+.sb-notif{height:40px;display:flex;align-items:center;gap:8px;padding:0 10px;margin:8px 16px 0;border-radius:var(--r-pill);font-size:14px;color:var(--text-h);cursor:pointer;position:relative;}
+.sb-notif:hover{background:var(--border-sub);}
+.notif-badge{position:absolute;top:7px;left:26px;width:12px;height:12px;border-radius:6px;background:var(--badge-red);border:1.5px solid var(--bg);}
+.sb-user{height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;margin:0 16px;border-radius:var(--r-pill);font-size:13px;color:var(--text-b);cursor:pointer;}
+.sb-user:hover{background:var(--border-sub);}
+.user-avatar{width:24px;height:24px;border-radius:12px;background:rgba(0,123,158,0.16);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--dark);}
+
+/* ─── MAIN ─── */
+.main{flex:1;overflow-y:auto;background:var(--bg);display:flex;flex-direction:column;min-width:0;}
+
+/* ─── PAGE HEADER ─── */
+.page-header{padding:28px 32px 0;flex-shrink:0;}
+.page-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-s);margin-bottom:8px;}
+.page-breadcrumb a{color:var(--teal);font-size:13px;}
+.page-breadcrumb-sep{opacity:.5;}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;}
+.page-title{font-size:28px;font-weight:600;color:var(--text-b);line-height:1.2;}
+.page-meta{font-size:12px;color:var(--text-s);margin-top:2px;text-align:right;line-height:1.5;}
+.page-meta a{color:var(--teal);font-size:12px;}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{padding:12px 32px 0;flex-shrink:0;}
+.filter-group{display:flex;flex-direction:column;gap:4px;}
+.filter-label{font-size:11px;color:var(--text-s);font-weight:500;}
+.filter-chip{
+  appearance:none;-webkit-appearance:none;
+  height:32px;padding:0 28px 0 12px;border-radius:var(--r-pill);
+  border:1px solid var(--border);
+  background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%23656462' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+  font-size:13px;color:var(--text-b);font-family:'Inter',sans-serif;cursor:pointer;min-width:140px;
+}
+.filter-chip:focus{outline:none;border-color:var(--teal);}
+
+/* ─── PAGE BODY ─── */
+.page-body{padding:16px 32px 32px;display:flex;flex-direction:column;gap:16px;}
+
+/* ─── NEEDS ATTENTION + HEALTH SCORE ROW ─── */
+.top-row{display:flex;gap:16px;align-items:flex-start;}
+.needs-attention{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);padding:20px;}
+.na-title{font-size:15px;font-weight:600;color:var(--text-b);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.na-subtitle{font-size:12px;color:var(--text-s);margin-bottom:14px;}
+.na-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.na-card{
+  background:var(--bg);border:1px solid var(--border);border-radius:16px;
+  padding:14px 16px;cursor:pointer;transition:border-color .15s;
+}
+.na-card:hover{border-color:var(--teal);}
+.na-card-name{font-size:13px;font-weight:600;color:var(--text-b);margin-bottom:4px;}
+.na-card-meta{font-size:12px;color:var(--text-s);}
+
+/* ─── HEALTH SCORE PANEL ─── */
+.health-panel{
+  width:260px;flex-shrink:0;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--r-card);
+  padding:20px;display:flex;flex-direction:column;align-items:center;
+}
+.health-panel-title{font-size:14px;font-weight:600;color:var(--text-b);margin-bottom:12px;text-align:center;display:flex;align-items:center;gap:5px;}
+.ico-info{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--text-d);font-size:9px;color:var(--text-s);font-style:normal;cursor:help;flex-shrink:0;}
+.health-score-label{font-size:12px;color:var(--text-s);text-align:center;margin-top:6px;}
+
+/* ─── SECTION TITLE ─── */
+.section-title{font-size:16px;font-weight:600;color:var(--text-b);margin-bottom:0;}
+
+/* ─── TABLE CARD ─── */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);overflow:hidden;}
+.table-header{
+  display:grid;align-items:center;
+  padding:0 20px;height:36px;
+  background:var(--bg);border-bottom:1px solid var(--border-sub);
+  font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.05em;
+}
+.table-header.kb-cols{grid-template-columns:1.5fr 2fr 1.5fr 100px;}
+.table-header.art-cols{grid-template-columns:100px 1.5fr 110px 80px 1.5fr 100px;}
+
+.table-row{
+  display:grid;align-items:center;
+  padding:0 20px;min-height:44px;
+  border-bottom:1px solid var(--border-sub);
+  font-size:13px;transition:background .1s;
+}
+.table-row:last-child{border-bottom:none;}
+.table-row:hover{background:var(--bg);}
+.table-row.kb-cols{grid-template-columns:1.5fr 2fr 1.5fr 100px;}
+.table-row.art-cols{grid-template-columns:100px 1.5fr 110px 80px 1.5fr 100px;}
+
+.cell-link{color:var(--teal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;}
+.cell-desc{color:var(--text-s);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;}
+.cell-owner{color:var(--teal);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;}
+.cell-meta{color:var(--text-s);font-size:12px;}
+
+.health-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:20px;border-radius:6px;
+  font-size:11px;font-weight:700;
+}
+.hb-red{background:var(--red-bg);color:var(--red);}
+.hb-amber{background:var(--amber-bg);color:var(--amber);}
+.hb-green{background:#dcfce7;color:#166534;}
+
+/* Stars */
+.stars{display:flex;gap:1px;}
+.star{font-size:11px;color:var(--border);}
+.star.lit{color:#f59e0b;}
+
+/* ─── PAGINATION ─── */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid var(--border-sub);}
+.pagination-info{font-size:13px;color:var(--text-s);}
+.pagination-pages{display:flex;align-items:center;gap:3px;}
+.page-btn{min-width:26px;height:26px;padding:0 5px;border-radius:7px;border:1px solid transparent;background:transparent;font-size:12px;color:var(--teal);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Inter',sans-serif;}
+.page-btn:hover{border-color:var(--border);background:var(--bg);}
+.page-btn.active{background:var(--dark);color:#fff;border-color:var(--dark);}
+.page-btn.arrow{color:var(--text-s);}
+.page-ellipsis{font-size:12px;color:var(--text-s);padding:0 2px;}
+.page-size-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-s);}
+.page-size-select{
+  appearance:none;-webkit-appearance:none;height:26px;padding:0 22px 0 8px;border-radius:7px;
+  border:1px solid var(--border);
+  background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%23656462' stroke-width='1.3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") no-repeat right 5px center;
+  font-size:12px;color:var(--text-b);font-family:'Inter',sans-serif;cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
+  <nav class="sidebar">
+    <div class="sb-logo">
+      <span class="sb-logo-text">servicenow</span>
+      <button class="sb-hamburger" title="Collapse sidebar">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path stroke="#343331" stroke-width="1.5" stroke-linecap="round" d="M4 6h12M4 10h12M4 14h12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sb-nav">
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path fill="#343331" d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4a1 1 0 001-1v-3h2v3a1 1 0 001 1h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        Home
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="3" y="4" width="14" height="14" rx="2"/>
+          <path stroke-linecap="round" d="M3 8h14M7 2v4M13 2v4"/>
+        </svg>
+        Calendar Management
+      </div>
+      <div class="nav-item active" onclick="window.location='knowledge-center-ainpx.html'" style="cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <circle cx="10" cy="10" r="8"/>
+          <path d="M10 2C10 2 7 6 7 10s3 8 3 8M10 2c0 0 3 4 3 8s-3 8-3 8M2 10h16"/>
+        </svg>
+        Knowledge Center
+      </div>
+    </div>
+
+    <div class="sb-section-label">
+      <span>Recent</span>
+      <button class="sb-section-label-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2v10M2 7h10" stroke="#343331" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sb-recent-item">VPN configuration failing with Mac</div>
+    <div class="sb-recent-item">Password reset in windows desktop</div>
+    <div class="sb-recent-item">Don't forget to review KB health...</div>
+    <div class="sb-recent-see-all">
+      <span>See all</span>
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#656462" stroke-width="1.5">
+        <path stroke-linecap="round" d="M6 4l4 4-4 4"/>
+      </svg>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-section-label"><span>My Apps</span></div>
+    <div class="sb-nav" style="padding-top:0">
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <circle cx="9" cy="9" r="6"/><path stroke-linecap="round" d="M15 15l3 3"/>
+        </svg>
+        Enterprise Search
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/>
+          <rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/>
+        </svg>
+        My canvas
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11.5 2L4.5 11H10L8.5 18.5L16.5 9H11L11.5 2Z"/>
+        </svg>
+        Activity hub
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <rect x="8" y="1" width="4" height="4" rx="1"/>
+          <rect x="2" y="14" width="4" height="4" rx="1"/>
+          <rect x="14" y="14" width="4" height="4" rx="1"/>
+          <path d="M10 5v4M4 14V11h12v3"/>
+        </svg>
+        Org chart
+      </div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-notif">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#343331" stroke-width="1.5">
+          <path stroke-linecap="round" d="M10 2a6 6 0 00-6 6v3l-1.5 2.5h15L16 11V8a6 6 0 00-6-6z"/>
+          <path d="M8.5 17.5a1.5 1.5 0 003 0" stroke-linecap="round"/>
+        </svg>
+        <span>Notifications</span>
+        <div class="notif-badge"></div>
+      </div>
+      <div class="sb-user">
+        <div class="user-avatar">MD</div>
+        <span>Michael Dunn</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════ MAIN ═══════════════════════════════ -->
+  <main class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-breadcrumb">
+        <a href="knowledge-center-ainpx.html">Knowledge Center</a>
+        <span class="page-breadcrumb-sep">›</span>
+        <span>Knowledge base health</span>
+      </div>
+      <div class="page-header-top">
+        <div class="page-title">Knowledge base health</div>
+        <div class="page-meta">
+          Some insights are generated by Now Assist. Check for accuracy. <i class="ico-info">i</i><br>
+          Last refreshed: 08-01-2026 11:11:10
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Knowledge base</span>
+        <select class="filter-chip">
+          <option>All</option>
+          <option>Customer Service</option>
+          <option>IT</option>
+          <option>Human Resources</option>
+          <option>Field Service Knowledge</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- TOP ROW: Needs Attention + Health Score -->
+      <div class="top-row">
+
+        <!-- Needs Attention -->
+        <div class="needs-attention">
+          <div class="na-title">
+            Needs attention <i class="ico-info">i</i>
+          </div>
+          <div class="na-subtitle">Fix these quality issues to improve your knowledge health score.</div>
+          <div class="na-grid">
+            <div class="na-card" onclick="window.location='article-optimization.html'">
+              <div class="na-card-name">Image alt tags (20)</div>
+              <div class="na-card-meta">Articles affected (23)</div>
+            </div>
+            <div class="na-card" onclick="window.location='article-optimization.html'">
+              <div class="na-card-name">Bad links (15)</div>
+              <div class="na-card-meta">Articles affected (10)</div>
+            </div>
+            <div class="na-card" onclick="window.location='article-optimization.html'">
+              <div class="na-card-name">Missing H1 tags (8)</div>
+              <div class="na-card-meta">Articles affected (10)</div>
+            </div>
+            <div class="na-card" onclick="window.location='article-optimization.html'">
+              <div class="na-card-name">Article Readability (6)</div>
+              <div class="na-card-meta">Articles affected (10)</div>
+            </div>
+            <div class="na-card" onclick="window.location='article-optimization.html'">
+              <div class="na-card-name">Article length (12)</div>
+              <div class="na-card-meta">Articles affected (10)</div>
+            </div>
+            <div class="na-card">
+              <div class="na-card-name">Title relevancy (0)</div>
+              <div class="na-card-meta">Articles affected (0)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Knowledge Health Score -->
+        <div class="health-panel">
+          <div class="health-panel-title">
+            Knowledge health score <i class="ico-info">i</i>
+          </div>
+          <svg id="gauge-svg" width="220" height="145" viewBox="0 0 296 195">
+            <!-- Track -->
+            <path d="M 33 160 A 115 115 0 0 1 263 160" fill="none" stroke="#e3e2df" stroke-width="24" stroke-linecap="butt"/>
+            <!-- Red zone -->
+            <path d="M 33 160 A 115 115 0 0 1 96 55" fill="none" stroke="#dc2626" stroke-width="24" stroke-linecap="butt"/>
+            <!-- Amber zone -->
+            <path d="M 96 55 A 115 115 0 0 1 200 55" fill="none" stroke="#ca8a04" stroke-width="24" stroke-linecap="butt"/>
+            <!-- Green zone -->
+            <path d="M 200 55 A 115 115 0 0 1 263 160" fill="none" stroke="#16a34a" stroke-width="24" stroke-linecap="butt"/>
+            <!-- Needle -->
+            <line id="gauge-needle" x1="148" y1="160" x2="148" y2="60" stroke="#172b3e" stroke-width="2.5" stroke-linecap="round" transform="rotate(-72 148 160)"/>
+            <circle cx="148" cy="160" r="5" fill="#172b3e"/>
+            <!-- Score -->
+            <text id="gauge-score" x="148" y="148" font-size="36" font-weight="700" fill="#172b3e" font-family="Inter,sans-serif" text-anchor="middle">47</text>
+            <!-- Labels -->
+            <text x="20" y="193" font-size="10" fill="#172b3e" font-family="Inter,sans-serif" text-anchor="middle">0</text>
+            <text x="276" y="193" font-size="10" fill="#172b3e" font-family="Inter,sans-serif" text-anchor="middle">100</text>
+          </svg>
+          <p class="health-score-label">Multiple improvements needed</p>
+        </div>
+
+      </div><!-- /top-row -->
+
+      <!-- KNOWLEDGE BASES TABLE -->
+      <div class="section-title">Knowledge bases</div>
+      <div class="table-card">
+        <div class="table-header kb-cols">
+          <span>Knowledge base</span>
+          <span>Description</span>
+          <span>Owner</span>
+          <span style="text-align:right;">Health score <i class="ico-info" style="font-style:normal;">i</i></span>
+        </div>
+        <div id="kbTableBody"></div>
+        <div class="pagination">
+          <div class="pagination-info">Showing 1–10 of 165</div>
+          <div class="pagination-pages">
+            <button class="page-btn arrow">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span class="page-ellipsis">…</span>
+            <button class="page-btn">7</button>
+            <button class="page-btn arrow">›</button>
+          </div>
+          <div class="page-size-wrap">
+            Records per page:
+            <select class="page-size-select">
+              <option>10</option>
+              <option selected>50</option>
+              <option>100</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARTICLES TABLE -->
+      <div class="section-title">Articles</div>
+      <div class="table-card">
+        <div class="table-header art-cols">
+          <span>Title</span>
+          <span>Description</span>
+          <span>Star rating</span>
+          <span>Low views</span>
+          <span>Knowledge base</span>
+          <span style="text-align:right;">Health score</span>
+        </div>
+        <div id="artTableBody"></div>
+        <div class="pagination">
+          <div class="pagination-info">Showing 1–10 of 165</div>
+          <div class="pagination-pages">
+            <button class="page-btn arrow">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <span class="page-ellipsis">…</span>
+            <button class="page-btn">7</button>
+            <button class="page-btn arrow">›</button>
+          </div>
+          <div class="page-size-wrap">
+            Records per page:
+            <select class="page-size-select">
+              <option>10</option>
+              <option selected>50</option>
+              <option>100</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-body -->
+  </main>
+</div>
+
+<script>
+const KB_DATA = [
+  {name:'Customer Service',desc:'Customer service knowledge base',owner:'System Administrator',score:2,scoreClass:'hb-red'},
+  {name:'KCS Knowledge Base (demo data)',desc:'KCS knowledge base',owner:'Ramon Anical',score:14,scoreClass:'hb-red'},
+  {name:'Security',desc:'Security Knowledge Base',owner:'Rayna Bangin',score:17,scoreClass:'hb-red'},
+  {name:'Human Resources Knowledge – UK',desc:'Human Resources Knowledge Base for the UK',owner:'Bernard Lahoy',score:22,scoreClass:'hb-red'},
+  {name:'Human Resources Knowledge – US',desc:'Human Resources Knowledge Documents …',owner:'System Administrator',score:60,scoreClass:'hb-amber'},
+  {name:'Field Service Knowledge',desc:'Field Service Knowledge',owner:'Bernard Lahoy',score:61,scoreClass:'hb-amber'},
+  {name:'Human Resources General Knowledge',desc:'Human Resources articles, policies, and …',owner:'Rayna Bangin',score:71,scoreClass:'hb-amber'},
+  {name:'Known Error',desc:'This is the default Knowledge base for K…',owner:'Ramon Anical',score:75,scoreClass:'hb-amber'},
+  {name:'IT',desc:'The ACME North America IT Service Desk K…',owner:'System Administrator',score:80,scoreClass:'hb-green'},
+  {name:'Knowledge',desc:'Knowledge Base for "Knowledge" users. An…',owner:'System Administrator',score:88,scoreClass:'hb-green'},
+];
+
+const ART_DATA = [
+  {id:'KB0000001',desc:'Parental leave',stars:1,views:1,kb:'Human Resources',score:15,scoreClass:'hb-red'},
+  {id:'KB0000002',desc:'KCS Demo KB',stars:1,views:3,kb:'KCS Knowledge Base (demo data)',score:20,scoreClass:'hb-red'},
+  {id:'KB0000003',desc:'Consumer Service Knowledge Base',stars:2,views:5,kb:'Consumer Service',score:26,scoreClass:'hb-red'},
+  {id:'KB0000004',desc:'Human Resources Knowledge Base for the…',stars:2,views:5,kb:'Human Resources Knowledge – UK',score:30,scoreClass:'hb-red'},
+  {id:'KB0000005',desc:'Human Resources Knowledge Documents …',stars:2,views:6,kb:'Human Resources Knowledge – US',score:41,scoreClass:'hb-amber'},
+  {id:'KB0000006',desc:'Field Service Knowledge',stars:3,views:8,kb:'Field Service Knowledge',score:50,scoreClass:'hb-amber'},
+  {id:'KB0000007',desc:'Human Resources articles, policies, and …',stars:3,views:10,kb:'Human Resources General Knowledge',score:56,scoreClass:'hb-amber'},
+  {id:'KB0000008',desc:'This is the default Knowledge base for K…',stars:3,views:11,kb:'Known Error',score:61,scoreClass:'hb-amber'},
+  {id:'KB0000009',desc:'The ACME North America IT Service Desk…',stars:4,views:11,kb:'IT',score:72,scoreClass:'hb-amber'},
+  {id:'KB0000010',desc:'Knowledge Base for "Knowledge" users An…',stars:4,views:12,kb:'Knowledge',score:80,scoreClass:'hb-green'},
+];
+
+function stars(n){
+  return `<div class="stars">${[1,2,3,4,5].map(i=>`<span class="star${i<=n?' lit':''}">★</span>`).join('')}</div>`;
+}
+
+function renderKB(){
+  const body = document.getElementById('kbTableBody');
+  body.innerHTML = KB_DATA.map(r=>`
+    <div class="table-row kb-cols">
+      <a class="cell-link">${r.name}</a>
+      <span class="cell-desc">${r.desc}</span>
+      <a class="cell-owner">${r.owner}</a>
+      <div style="display:flex;justify-content:flex-end;"><span class="health-badge ${r.scoreClass}">${r.score}</span></div>
+    </div>`).join('');
+}
+
+function renderArticles(){
+  const body = document.getElementById('artTableBody');
+  body.innerHTML = ART_DATA.map(r=>`
+    <div class="table-row art-cols">
+      <a class="cell-link">${r.id}</a>
+      <span class="cell-desc">${r.desc}</span>
+      <div>${stars(r.stars)}</div>
+      <span class="cell-meta">${r.views}</span>
+      <a class="cell-link">${r.kb}</a>
+      <div style="display:flex;justify-content:flex-end;"><span class="health-badge ${r.scoreClass}">${r.score}</span></div>
+    </div>`).join('');
+}
+
+renderKB();
+renderArticles();
+</script>
+</body>
+</html>
