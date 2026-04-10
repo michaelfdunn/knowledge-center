@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Potential Duplicates — Knowledge Center</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f4f3f0;
+  --surface:#ffffff;
+  --input-bg:#edece9;
+  --border:#e3e2df;
+  --border-sub:#edece9;
+  --nav-active:#c2c1be;
+  --dark:#172b3e;
+  --text-h:#000000;
+  --text-b:#172b3e;
+  --text-s:#656462;
+  --text-d:#94a3b8;
+  --teal:#1389aa;
+  --teal-light:rgba(19,137,170,.08);
+  --teal-mid:rgba(19,137,170,.15);
+  --green:#16a34a;
+  --green-bg:#dcfce7;
+  --amber:#ca8a04;
+  --amber-bg:#fef9c3;
+  --red:#dc2626;
+  --red-bg:#fee2e2;
+  --badge-red:#e2161c;
+  --r-card:16px;
+  --r-pill:9999px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+}
+
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-b);background:var(--bg);}
+a{color:var(--teal);text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:underline;}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+select{font-family:'Inter',sans-serif;cursor:pointer;}
+svg{display:block;}
+
+/* ─── APP SHELL ─── */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* ─── TOP NAV ─── */
+.top-nav{
+  height:40px;background:var(--dark);display:flex;align-items:center;
+  padding:0 16px;gap:0;flex-shrink:0;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:8px;padding-right:20px;
+  border-right:1px solid rgba(255,255,255,.12);margin-right:4px;
+}
+.nav-logo svg{opacity:.9;}
+.nav-links{display:flex;height:100%;}
+.nav-link{
+  display:flex;align-items:center;padding:0 14px;height:100%;
+  font-size:13px;color:rgba(255,255,255,.6);cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .15s;
+}
+.nav-link:hover{color:rgba(255,255,255,.9);}
+.nav-link.active{color:#fff;border-bottom-color:#fff;}
+.nav-search{
+  margin-left:auto;display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);border-radius:6px;
+  padding:5px 12px;width:220px;border:1px solid rgba(255,255,255,.08);
+}
+.nav-search input{
+  border:none;outline:none;background:transparent;
+  color:rgba(255,255,255,.8);font-size:13px;font-family:'Inter',sans-serif;
+  flex:1;
+}
+.nav-search input::placeholder{color:rgba(255,255,255,.4);}
+.nav-search svg{opacity:.5;flex-shrink:0;}
+.nav-icons{display:flex;align-items:center;gap:4px;margin-left:12px;}
+.nav-icon-btn{
+  width:30px;height:30px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.6);cursor:pointer;
+}
+.nav-icon-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+.nav-avatar{
+  width:26px;height:26px;border-radius:50%;background:#1389aa;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:#fff;cursor:pointer;margin-left:4px;
+}
+
+/* ─── MAIN CONTENT AREA ─── */
+.content-area{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-height:0;}
+
+/* ─── BREADCRUMB + PAGE HEADER ─── */
+.page-top{padding:20px 28px 0;flex-shrink:0;}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-s);margin-bottom:10px;}
+.breadcrumb a{color:var(--text-s);}
+.breadcrumb a:hover{color:var(--teal);}
+.breadcrumb-sep{opacity:.4;}
+.breadcrumb-current{color:var(--text-b);}
+.page-title-row{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+.page-title{font-size:22px;font-weight:700;color:var(--text-h);letter-spacing:-.4px;}
+.page-count-badge{
+  background:var(--dark);color:#fff;font-size:12px;font-weight:600;
+  padding:2px 8px;border-radius:var(--r-pill);
+}
+.page-meta{font-size:12px;color:var(--text-s);display:flex;align-items:center;gap:5px;}
+.pulse-dot{
+  width:6px;height:6px;border-radius:50%;background:#22c55e;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(.85);}}
+
+/* ─── AI BANNER ─── */
+.ai-banner{
+  margin:16px 28px 0;border-radius:var(--r-card);overflow:hidden;
+  border:1px solid rgba(19,137,170,.25);
+  background:linear-gradient(135deg,rgba(19,137,170,.06) 0%,rgba(19,137,170,.02) 100%);
+  flex-shrink:0;
+}
+.ai-banner-main{display:flex;align-items:center;gap:16px;padding:14px 18px;}
+.ai-sparkle{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#1389aa,#0e6d8a);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(19,137,170,.3);
+}
+.ai-text{flex:1;}
+.ai-text-primary{font-size:13px;font-weight:600;color:var(--text-b);margin-bottom:3px;}
+.ai-text-primary strong{color:var(--teal);}
+.ai-text-secondary{font-size:12px;color:var(--text-s);}
+.ai-text-secondary .link{color:var(--teal);cursor:pointer;}
+.ai-text-secondary .link:hover{text-decoration:underline;}
+.ai-stats{display:flex;align-items:center;gap:0;flex-shrink:0;}
+.ai-stat{
+  display:flex;align-items:center;gap:6px;padding:0 16px;
+  border-left:1px solid rgba(19,137,170,.15);
+}
+.ai-stat-num{font-size:18px;font-weight:700;color:var(--text-b);line-height:1;}
+.ai-stat-label{font-size:11px;color:var(--text-s);line-height:1.3;}
+.ai-stat-num.green{color:var(--green);}
+.ai-stat-num.amber{color:var(--amber);}
+.ai-actions{padding:10px 18px;border-top:1px solid rgba(19,137,170,.12);
+  display:flex;align-items:center;gap:8px;background:rgba(19,137,170,.03);}
+.ai-progress-wrap{flex:1;display:flex;align-items:center;gap:10px;}
+.ai-progress-label{font-size:11px;color:var(--text-s);white-space:nowrap;}
+.ai-progress-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;max-width:200px;}
+.ai-progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#1389aa,#22c55e);width:67%;}
+.ai-progress-pct{font-size:11px;color:var(--text-s);white-space:nowrap;}
+
+/* ─── STATS ROW ─── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;margin:16px 28px 0;
+  border:1px solid var(--border);border-radius:var(--r-card);
+  background:var(--surface);overflow:hidden;flex-shrink:0;
+  box-shadow:var(--shadow-sm);
+}
+.stat-card{
+  padding:16px 20px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:2px;position:relative;
+  transition:background .15s;cursor:default;
+}
+.stat-card:last-child{border-right:none;}
+.stat-card.clickable{cursor:pointer;}
+.stat-card.clickable:hover{background:var(--bg);}
+.stat-card.active{background:var(--teal-light);}
+.stat-card.active::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--teal);
+}
+.stat-value{font-size:24px;font-weight:700;color:var(--text-h);line-height:1;margin-bottom:2px;}
+.stat-value.amber{color:var(--amber);}
+.stat-label{font-size:12px;color:var(--text-s);}
+.stat-delta{font-size:11px;color:var(--text-s);margin-top:4px;display:flex;align-items:center;gap:3px;}
+.stat-delta.up{color:var(--green);}
+.stat-delta.down{color:var(--red);}
+
+/* ─── TOOLBAR ─── */
+.toolbar{
+  display:flex;align-items:center;gap:8px;padding:14px 28px;flex-shrink:0;
+}
+.toolbar-left{display:flex;align-items:center;gap:8px;flex:1;}
+.toolbar-right{display:flex;align-items:center;gap:8px;}
+
+.tb-search{
+  display:flex;align-items:center;gap:8px;height:34px;padding:0 12px;
+  border:1px solid var(--border);border-radius:var(--r-pill);
+  background:var(--surface);width:240px;transition:border-color .15s;
+}
+.tb-search:focus-within{border-color:var(--teal);}
+.tb-search input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text-b);font-family:'Inter',sans-serif;flex:1;}
+.tb-search input::placeholder{color:var(--text-d);}
+.tb-search svg{flex-shrink:0;color:var(--text-d);}
+
+.tb-btn{
+  height:34px;padding:0 14px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:13px;color:var(--text-b);
+  display:flex;align-items:center;gap:6px;
+  transition:border-color .15s,background .15s;
+}
+.tb-btn:hover{border-color:var(--nav-active);background:var(--bg);}
+.tb-btn.active{border-color:var(--teal);color:var(--teal);background:var(--teal-light);}
+.tb-btn svg{flex-shrink:0;}
+
+.tb-sort-select{
+  appearance:none;-webkit-appearance:none;
+  height:34px;padding:0 30px 0 12px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5l3 3 3-3' stroke='%23656462' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 10px center;
+  font-size:13px;color:var(--text-b);font-family:'Inter',sans-serif;cursor:pointer;
+  transition:border-color .15s;
+}
+.tb-sort-select:focus{outline:none;border-color:var(--teal);}
+.tb-sort-select:hover{border-color:var(--nav-active);}
+.tb-sort-label{font-size:12px;color:var(--text-s);}
+
+.btn-accept-all{
+  height:34px;padding:0 18px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:6px;transition:background .15s;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.btn-accept-all:hover{background:#1e3a52;}
+.btn-accept-all svg{flex-shrink:0;}
+
+.showing-label{font-size:12px;color:var(--text-s);}
+.showing-label strong{color:var(--text-b);}
+
+/* ─── TABLE WRAPPER ─── */
+.table-wrap{
+  margin:0 28px 28px;border:1px solid var(--border);border-radius:var(--r-card);
+  background:var(--surface);overflow:hidden;flex:1;
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow-sm);
+}
+
+/* ─── TABLE HEADER ─── */
+.tbl-head{
+  display:grid;
+  grid-template-columns:30px 28px 1fr 120px 90px 72px;
+  align-items:center;gap:0;
+  padding:0 16px;height:38px;
+  background:var(--bg);border-bottom:2px solid var(--border);
+  flex-shrink:0;position:sticky;top:0;z-index:10;
+}
+.th{font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.04em;user-select:none;}
+.th.sortable{cursor:pointer;display:flex;align-items:center;gap:4px;}
+.th.sortable:hover{color:var(--text-b);}
+.th.sorted{color:var(--teal);}
+.th-check{display:flex;align-items:center;}
+
+/* ─── TABLE ROWS ─── */
+.tbl-body{overflow-y:auto;flex:1;}
+
+.tbl-group-header{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px 6px;
+  font-size:11px;font-weight:600;color:var(--text-s);
+  text-transform:uppercase;letter-spacing:.05em;
+  background:var(--bg);border-bottom:1px solid var(--border-sub);
+  position:sticky;top:0;z-index:5;
+}
+.group-badge{
+  height:18px;padding:0 8px;border-radius:var(--r-pill);
+  background:var(--border);font-size:10px;font-weight:600;
+  color:var(--text-s);display:flex;align-items:center;
+}
+.group-badge.it{background:#dbeafe;color:#1d4ed8;}
+.group-badge.hr{background:#fce7f3;color:#be185d;}
+
+.tbl-row{
+  display:grid;
+  grid-template-columns:30px 28px 1fr 120px 90px 72px;
+  align-items:center;gap:0;padding:0 16px;
+  border-bottom:1px solid var(--border-sub);
+  min-height:52px;cursor:pointer;
+  transition:background .1s;
+  position:relative;
+}
+.tbl-row:hover{background:#fafaf9;}
+.tbl-row.selected{background:rgba(19,137,170,.05);}
+.tbl-row.selected::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--teal);border-radius:0 2px 2px 0;
+}
+.tbl-row.expanded{background:#fafaf9;}
+.tbl-row:last-child{border-bottom:none;}
+
+.row-check{display:flex;align-items:center;}
+.row-expand{
+  display:flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:5px;color:var(--text-d);
+  transition:transform .2s,color .15s,background .15s;
+}
+.row-expand:hover{background:var(--border-sub);color:var(--text-s);}
+.row-expand.open{transform:rotate(90deg);color:var(--text-s);}
+
+.row-main{display:flex;flex-direction:column;gap:3px;padding:10px 12px 10px 0;}
+.row-topic{font-size:13px;font-weight:500;color:var(--text-b);display:flex;align-items:center;gap:8px;}
+.row-topic-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conf-badge{
+  flex-shrink:0;height:20px;padding:0 7px;border-radius:var(--r-pill);
+  font-size:11px;font-weight:600;display:flex;align-items:center;
+}
+.conf-badge.high{background:#dcfce7;color:#15803d;}
+.conf-badge.med{background:var(--amber-bg);color:#92400e;}
+.conf-badge.low{background:var(--red-bg);color:#991b1b;}
+.row-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-s);}
+.row-meta-item{display:flex;align-items:center;gap:3px;}
+.cat-badge{
+  height:16px;padding:0 6px;border-radius:3px;font-size:10px;font-weight:600;
+  display:flex;align-items:center;
+}
+.cat-badge.it{background:#dbeafe;color:#1d4ed8;}
+.cat-badge.hr{background:#fce7f3;color:#be185d;}
+
+.row-conf-bar{padding:0 12px 0 0;}
+.conf-bar-wrap{display:flex;flex-direction:column;gap:3px;}
+.conf-bar-pct{font-size:12px;font-weight:600;color:var(--text-b);text-align:right;}
+.conf-bar-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.conf-bar-fill{height:100%;border-radius:2px;transition:width .3s;}
+.conf-bar-fill.high{background:#22c55e;}
+.conf-bar-fill.med{background:#f59e0b;}
+.conf-bar-fill.low{background:#ef4444;}
+
+.row-actions{
+  display:flex;align-items:center;gap:6px;padding:4px 0;
+  flex-direction:column;align-items:flex-end;
+}
+.row-action-top{display:flex;align-items:center;gap:4px;}
+.row-action-bot{display:flex;align-items:center;gap:4px;}
+
+.btn-view{
+  height:26px;padding:0 10px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:12px;color:var(--text-b);display:flex;align-items:center;gap:4px;
+  transition:border-color .15s;white-space:nowrap;
+}
+.btn-view:hover{border-color:var(--teal);color:var(--teal);}
+
+.btn-accept{
+  height:26px;padding:0 12px;border-radius:var(--r-pill);
+  background:var(--green);color:#fff;font-size:12px;font-weight:500;
+  display:flex;align-items:center;gap:4px;
+  transition:background .15s;white-space:nowrap;
+}
+.btn-accept:hover{background:#15803d;}
+
+.btn-dismiss{
+  height:26px;padding:0 10px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:12px;color:var(--text-s);
+  transition:border-color .15s,color .15s;white-space:nowrap;
+}
+.btn-dismiss:hover{border-color:var(--red);color:var(--red);}
+
+.kb-link{
+  font-size:11px;color:var(--teal);display:flex;align-items:center;gap:3px;
+  white-space:nowrap;
+}
+.kb-link:hover{text-decoration:underline;}
+
+/* ─── EXPANDED ROW ─── */
+.tbl-expand-row{
+  border-bottom:1px solid var(--border-sub);
+  background:#fafaf9;
+  padding:0 16px 0 76px;
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .25s ease,padding .25s ease;
+}
+.tbl-expand-row.open{max-height:400px;padding:12px 16px 16px 76px;}
+
+.expand-section-label{
+  font-size:11px;font-weight:600;color:var(--text-s);text-transform:uppercase;
+  letter-spacing:.05em;margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.expand-articles{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.expand-article{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;
+  border:1px solid var(--border-sub);border-radius:8px;background:var(--surface);
+  font-size:12px;cursor:pointer;transition:border-color .15s;
+}
+.expand-article:hover{border-color:var(--teal);}
+.article-icon{width:24px;height:24px;border-radius:6px;background:var(--teal-light);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.article-title{flex:1;color:var(--text-b);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.article-kb{color:var(--teal);font-size:11px;white-space:nowrap;}
+.article-views{color:var(--text-s);font-size:11px;white-space:nowrap;}
+.article-keep{
+  height:20px;padding:0 8px;border-radius:var(--r-pill);
+  font-size:10px;font-weight:600;background:var(--green-bg);color:var(--green);
+  display:flex;align-items:center;
+}
+.expand-merge-into{
+  display:flex;align-items:center;gap:8px;padding:10px 12px;
+  border:1px solid rgba(19,137,170,.2);border-radius:8px;
+  background:var(--teal-light);font-size:12px;
+}
+.expand-merge-into svg{color:var(--teal);flex-shrink:0;}
+.merge-label{color:var(--text-s);}
+.merge-target{color:var(--teal);font-weight:500;}
+
+/* ─── CHECKBOXES ─── */
+.cb-wrap{position:relative;display:inline-flex;align-items:center;cursor:pointer;}
+.cb-wrap input[type="checkbox"]{
+  appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s;
+  flex-shrink:0;
+}
+.cb-wrap input[type="checkbox"]:hover{border-color:var(--teal);}
+.cb-wrap input[type="checkbox"]:checked{
+  background:var(--teal);border-color:var(--teal);
+}
+.cb-wrap input[type="checkbox"]:checked::after{
+  content:'';display:block;width:9px;height:6px;
+  border-left:2px solid #fff;border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translate(2px,-1px);
+}
+.cb-wrap input[type="checkbox"]:indeterminate{
+  background:var(--teal);border-color:var(--teal);
+}
+.cb-wrap input[type="checkbox"]:indeterminate::after{
+  content:'';display:block;width:8px;height:2px;background:#fff;
+  margin:5px auto;border-radius:1px;
+}
+
+/* ─── BOTTOM ACTION BAR ─── */
+.action-bar{
+  height:52px;background:var(--surface);border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:10px;flex-shrink:0;
+  box-shadow:0 -2px 8px rgba(0,0,0,.05);
+  position:relative;
+}
+.action-bar-selection{
+  font-size:13px;color:var(--text-s);min-width:140px;
+  display:flex;align-items:center;gap:6px;
+}
+.action-bar-selection strong{color:var(--text-b);}
+.action-bar-divider{width:1px;height:24px;background:var(--border);}
+.btn-retire{
+  height:34px;padding:0 16px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:13px;color:var(--text-s);transition:all .15s;
+}
+.btn-retire:hover{border-color:var(--text-s);color:var(--text-b);}
+.btn-unmark{
+  height:34px;padding:0 16px;border-radius:var(--r-pill);
+  border:1px solid var(--border);background:var(--surface);
+  font-size:13px;color:var(--text-s);transition:all .15s;
+}
+.btn-unmark:hover{border-color:var(--text-s);color:var(--text-b);}
+.btn-merge-new{
+  height:34px;padding:0 18px;border-radius:var(--r-pill);
+  background:var(--dark);color:#fff;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:6px;transition:background .15s;
+  margin-left:auto;
+}
+.btn-merge-new:hover{background:#1e3a52;}
+
+.action-bar-tip{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-size:12px;color:var(--text-s);pointer-events:none;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav">
+    <div class="nav-logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect width="22" height="22" rx="5" fill="white" fill-opacity=".9"/>
+        <path d="M4 11C4 7.13 7.13 4 11 4s7 3.13 7 7-3.13 7-7 7-7-3.13-7-7z" fill="#1389aa"/>
+        <path d="M8 11c0-1.66 1.34-3 3-3s3 1.34 3 3-1.34 3-3 3-3-1.34-3-3z" fill="white"/>
+      </svg>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link">All</div>
+      <div class="nav-link">Favorites</div>
+      <div class="nav-link">History</div>
+      <div class="nav-link">Workspace</div>
+      <div class="nav-link active">Knowledge</div>
+    </div>
+    <div class="nav-search">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="rgba(255,255,255,.5)" stroke-width="1.3"/><path d="M9.5 9.5l2.5 2.5" stroke="rgba(255,255,255,.5)" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <input placeholder="Search" />
+    </div>
+    <div class="nav-icons">
+      <div class="nav-icon-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1a5 5 0 0 1 5 5c0 2.5-1 4-1 5H4c0-1-1-2.5-1-5a5 5 0 0 1 5-5z" stroke="currentColor" stroke-width="1.3"/><path d="M6 11c0 1.1.9 2 2 2s2-.9 2-2" stroke="currentColor" stroke-width="1.3"/></svg>
+      </div>
+      <div class="nav-icon-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="nav-avatar">MD</div>
+    </div>
+  </nav>
+
+  <!-- SCROLLABLE CONTENT -->
+  <div class="content-area">
+
+    <!-- PAGE TOP -->
+    <div class="page-top">
+      <div class="breadcrumb">
+        <a href="#">Knowledge Center</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Potential duplicates</span>
+      </div>
+      <div class="page-title-row">
+        <h1 class="page-title">Potential Duplicates</h1>
+        <span class="page-count-badge" id="totalCount">98</span>
+      </div>
+      <div class="page-meta">
+        <span class="pulse-dot"></span>
+        Last refreshed 1m ago
+      </div>
+    </div>
+
+    <!-- AI BANNER -->
+    <div class="ai-banner">
+      <div class="ai-banner-main">
+        <div class="ai-sparkle">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2l1.5 4.5L15 8l-4.5 1.5L9 14l-1.5-4.5L3 8l4.5-1.5L9 2z" fill="white"/>
+          </svg>
+        </div>
+        <div class="ai-text">
+          <div class="ai-text-primary">Now Assist analyzed all <strong>98 duplicate topics</strong></div>
+          <div class="ai-text-secondary">
+            <span class="link">67 recommendations</span> with pre-generated drafts ready · <span class="link">31 need manual review</span>
+          </div>
+        </div>
+        <div class="ai-stats">
+          <div class="ai-stat">
+            <div>
+              <div class="ai-stat-num green">67</div>
+              <div class="ai-stat-label">Ready to accept</div>
+            </div>
+          </div>
+          <div class="ai-stat">
+            <div>
+              <div class="ai-stat-num amber">31</div>
+              <div class="ai-stat-label">Need review</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ai-actions">
+        <div class="ai-progress-wrap">
+          <span class="ai-progress-label">Review progress</span>
+          <div class="ai-progress-bar">
+            <div class="ai-progress-fill" id="progressFill"></div>
+          </div>
+          <span class="ai-progress-pct" id="progressPct">0 of 98 reviewed</span>
+        </div>
+        <button class="btn-accept-all" onclick="acceptAll()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5l3.5 3.5L11 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Accept all recommendations
+        </button>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value" id="statDup">98</div>
+        <div class="stat-label">Duplicate topics</div>
+        <div class="stat-delta">across 306 articles</div>
+      </div>
+      <div class="stat-card clickable active" onclick="filterStat(this,'ai')">
+        <div class="stat-value">67</div>
+        <div class="stat-label">AI recommendations</div>
+        <div class="stat-delta up">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3-3 3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Drafts ready
+        </div>
+      </div>
+      <div class="stat-card clickable" onclick="filterStat(this,'review')">
+        <div class="stat-value amber">31</div>
+        <div class="stat-label">Need manual review</div>
+        <div class="stat-delta">requires attention</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">306</div>
+        <div class="stat-label">Articles with recommendations</div>
+        <div class="stat-delta">across IT &amp; HR</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="tb-search">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9 9l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input placeholder="Search topics…" id="searchInput" oninput="filterRows()" />
+        </div>
+        <button class="tb-btn" onclick="toggleFilter(this)">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 3.5h10M3.5 6.5h6M5.5 9.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Filter
+        </button>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="tb-sort-label">Sort by:</span>
+          <select class="tb-sort-select" onchange="sortRows(this.value)">
+            <option value="conf">Confidence</option>
+            <option value="articles">Articles</option>
+            <option value="views">Views</option>
+            <option value="name">Name</option>
+          </select>
+        </div>
+        <button class="tb-btn" onclick="toggleGroup(this)" id="groupBtn">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="1.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1.5" y="7.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="7.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          Group by
+        </button>
+        <span class="showing-label" id="showingLabel">Showing <strong>1–15</strong> of <strong>98</strong> topics</span>
+      </div>
+      <div class="toolbar-right">
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <!-- Table Header -->
+      <div class="tbl-head">
+        <div class="th-check">
+          <label class="cb-wrap">
+            <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" />
+          </label>
+        </div>
+        <div class="th"></div>
+        <div class="th sortable sorted" onclick="sortRows('name')">Topic</div>
+        <div class="th sortable sorted" onclick="sortRows('conf')" style="padding-left:0;">
+          Confidence
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2v6M2 5l3-3 3 3" stroke="#1389aa" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="th">Articles / Views</div>
+        <div class="th" style="text-align:right;">Actions</div>
+      </div>
+
+      <!-- Table Body -->
+      <div class="tbl-body" id="tableBody">
+        <!-- Rows injected by JS -->
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <!-- BOTTOM ACTION BAR -->
+  <div class="action-bar">
+    <div class="action-bar-selection">
+      <span id="selectionLabel">Select items to take bulk action</span>
+    </div>
+    <div class="action-bar-divider"></div>
+    <button class="btn-retire" id="btnRetire" disabled onclick="bulkAction('retire')">Retire</button>
+    <button class="btn-unmark" id="btnUnmark" disabled onclick="bulkAction('unmark')">Unmark as duplicate</button>
+    <button class="btn-merge-new" id="btnMerge" onclick="bulkAction('merge')">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 4.5h4.5m0 0L4 2m2.5 2.5L4 7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8.5h4.5m-4.5 0L9 6m-2 2.5L9 11" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Merge into new
+    </button>
+  </div>
+
+</div>
+
+<script>
+const ROWS = [
+  {id:1,topic:'Password reset',conf:96,articles:6,views:8200,cat:'IT',kb:'KB0010023',action:'update',hasDraft:true,
+   articleList:[
+     {title:'How to reset your password',kb:'KB0010023',views:4100,keep:true},
+     {title:'Password reset via email link',kb:'KB0019841',views:2400,keep:false},
+     {title:'Admin password reset guide',kb:'KB0021037',views:1700,keep:false},
+   ]},
+  {id:2,topic:'Cloud storage migration',conf:96,articles:7,views:8200,cat:'IT',kb:null,action:'create',hasDraft:true,
+   articleList:[
+     {title:'Migrating to cloud storage: overview',kb:'KB0033210',views:3200,keep:true},
+     {title:'OneDrive migration steps',kb:'KB0033848',views:2800,keep:false},
+     {title:'SharePoint migration guide',kb:'KB0034102',views:2200,keep:false},
+   ]},
+  {id:3,topic:'DNS configuration',conf:96,articles:6,views:6117,cat:'IT',kb:null,action:'create',hasDraft:true,
+   articleList:[
+     {title:'Setting up DNS for your domain',kb:'KB0041200',views:2900,keep:true},
+     {title:'DNS troubleshooting guide',kb:'KB0041509',views:1900,keep:false},
+     {title:'Corporate DNS configuration',kb:'KB0042011',views:1317,keep:false},
+   ]},
+  {id:4,topic:'Email setup iOS and Android',conf:98,articles:2,views:3474,cat:'IT',kb:null,action:'create',hasDraft:true,
+   articleList:[
+     {title:'Set up corporate email on iPhone',kb:'KB0051200',views:2100,keep:true},
+     {title:'Set up corporate email on Android',kb:'KB0051340',views:1374,keep:false},
+   ]},
+  {id:5,topic:'Wi-Fi connectivity troubleshooting',conf:96,articles:3,views:1237,cat:'IT',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Can\'t connect to office Wi-Fi',kb:'KB0062100',views:620,keep:true},
+     {title:'Wi-Fi drops frequently on Windows',kb:'KB0062240',views:410,keep:false},
+     {title:'Wireless network troubleshooting',kb:'KB0063001',views:207,keep:false},
+   ]},
+  {id:6,topic:'Company org chart access',conf:95,articles:4,views:3102,cat:'HR',kb:'KB0055621',action:'update',hasDraft:true,
+   articleList:[
+     {title:'How to view the org chart',kb:'KB0055621',views:1800,keep:true},
+     {title:'Org chart in ServiceNow portal',kb:'KB0055840',views:900,keep:false},
+     {title:'People directory access guide',kb:'KB0056100',views:402,keep:false},
+   ]},
+  {id:7,topic:'Exit interview process',conf:94,articles:3,views:6804,cat:'HR',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Exit interview: what to expect',kb:'KB0071200',views:3400,keep:true},
+     {title:'Scheduling your exit interview',kb:'KB0071360',views:2100,keep:false},
+     {title:'HR offboarding checklist',kb:'KB0071580',views:1304,keep:false},
+   ]},
+  {id:8,topic:'USB device not recognized',conf:94,articles:4,views:2810,cat:'IT',kb:'KB0044978',action:'update',hasDraft:true,
+   articleList:[
+     {title:'USB device not detected on Windows',kb:'KB0044978',views:1600,keep:true},
+     {title:'Fix USB not recognized error',kb:'KB0045200',views:800,keep:false},
+     {title:'USB troubleshooting guide',kb:'KB0045310',views:410,keep:false},
+   ]},
+  {id:9,topic:'VPN access setup',conf:93,articles:5,views:9100,cat:'IT',kb:null,action:'create',hasDraft:true,
+   articleList:[
+     {title:'Setting up VPN for remote work',kb:'KB0080100',views:4500,keep:true},
+     {title:'VPN client installation guide',kb:'KB0080320',views:2800,keep:false},
+     {title:'Troubleshoot VPN connection issues',kb:'KB0080540',views:1800,keep:false},
+   ]},
+  {id:10,topic:'Parental leave policy',conf:91,articles:3,views:4200,cat:'HR',kb:null,action:'create',hasDraft:true,
+   articleList:[
+     {title:'Parental leave overview and eligibility',kb:'KB0090100',views:2100,keep:true},
+     {title:'How to apply for parental leave',kb:'KB0090250',views:1400,keep:false},
+     {title:'Parental leave FAQ',kb:'KB0090410',views:700,keep:false},
+   ]},
+  {id:11,topic:'Software license request',conf:89,articles:6,views:5600,cat:'IT',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Requesting a software license',kb:'KB0100210',views:2800,keep:true},
+     {title:'Approved software catalog',kb:'KB0100340',views:1600,keep:false},
+     {title:'License approval workflow',kb:'KB0100510',views:1200,keep:false},
+   ]},
+  {id:12,topic:'Performance review cycle',conf:87,articles:4,views:7300,cat:'HR',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Performance review schedule',kb:'KB0110100',views:3700,keep:true},
+     {title:'How to complete self-assessment',kb:'KB0110290',views:2400,keep:false},
+     {title:'Manager review guide',kb:'KB0110450',views:1200,keep:false},
+   ]},
+  {id:13,topic:'Printer setup and drivers',conf:86,articles:5,views:4100,cat:'IT',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Install office printer on Windows',kb:'KB0120100',views:2000,keep:true},
+     {title:'Install office printer on Mac',kb:'KB0120240',views:1400,keep:false},
+     {title:'Printer driver troubleshooting',kb:'KB0120410',views:700,keep:false},
+   ]},
+  {id:14,topic:'Health insurance enrollment',conf:84,articles:3,views:5800,cat:'HR',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Open enrollment guide',kb:'KB0130100',views:3200,keep:true},
+     {title:'Adding dependents to health plan',kb:'KB0130260',views:1600,keep:false},
+     {title:'Health plan comparison chart',kb:'KB0130400',views:1000,keep:false},
+   ]},
+  {id:15,topic:'Remote desktop access',conf:82,articles:4,views:3900,cat:'IT',kb:null,action:'create',hasDraft:false,
+   articleList:[
+     {title:'Setting up Remote Desktop on Windows',kb:'KB0140100',views:2100,keep:true},
+     {title:'RDP connection guide',kb:'KB0140280',views:1100,keep:false},
+     {title:'Remote desktop troubleshooting',kb:'KB0140420',views:700,keep:false},
+   ]},
+];
+
+let selectedIds = new Set();
+let expandedIds = new Set();
+let reviewedIds = new Set();
+let grouped = false;
+let searchTerm = '';
+let activeStat = 'ai';
+
+function confClass(c){return c>=95?'high':c>=85?'med':'low';}
+
+function renderRows(data){
+  const body = document.getElementById('tableBody');
+  body.innerHTML = '';
+  if(grouped){
+    const it = data.filter(r=>r.cat==='IT');
+    const hr = data.filter(r=>r.cat==='HR');
+    if(it.length){
+      body.appendChild(makeGroupHeader('IT',it.length));
+      it.forEach(r=>appendRow(body,r));
+    }
+    if(hr.length){
+      body.appendChild(makeGroupHeader('HR',hr.length));
+      hr.forEach(r=>appendRow(body,r));
+    }
+  } else {
+    data.forEach(r=>appendRow(body,r));
+  }
+}
+
+function makeGroupHeader(cat,count){
+  const d = document.createElement('div');
+  d.className='tbl-group-header';
+  d.innerHTML=`<span class="group-badge ${cat.toLowerCase()}">${cat}</span> ${cat==='IT'?'Information Technology':'Human Resources'} · <span style="color:var(--text-d)">${count} topics</span>`;
+  return d;
+}
+
+function appendRow(body, r){
+  const cc = confClass(r.conf);
+  const isSelected = selectedIds.has(r.id);
+  const isExpanded = expandedIds.has(r.id);
+
+  // Main row
+  const row = document.createElement('div');
+  row.className = `tbl-row${isSelected?' selected':''}${isExpanded?' expanded':''}`;
+  row.id = `row-${r.id}`;
+
+  const kbHtml = r.kb
+    ? `<span class="kb-link">+ Update ${r.kb}</span>`
+    : `<span class="kb-link">+ Create new merged</span>`;
+
+  const draftBtnHtml = r.hasDraft
+    ? `<button class="btn-view" onclick="event.stopPropagation();viewDraft(${r.id})"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3 4h5M3 6.5h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> View draft</button>`
+    : `<button class="btn-view" onclick="event.stopPropagation()"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 3.5v2l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Review</button>`;
+
+  row.innerHTML = `
+    <div class="row-check">
+      <label class="cb-wrap" onclick="event.stopPropagation()">
+        <input type="checkbox" ${isSelected?'checked':''} onchange="toggleSelect(${r.id},this)" />
+      </label>
+    </div>
+    <div class="row-expand${isExpanded?' open':''}" onclick="event.stopPropagation();toggleExpand(${r.id})">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3.5 2l4 3-4 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="row-main">
+      <div class="row-topic">
+        <span class="row-topic-text">Duplicate topic: ${r.topic}</span>
+        <span class="conf-badge ${cc}">${r.conf}%</span>
+      </div>
+      <div class="row-meta">
+        <span class="row-meta-item">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 2.5h8v6.5H1.5z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M3.5 2.5V1.5M7.5 2.5V1.5M1.5 5h8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          ${r.articles} articles
+        </span>
+        <span class="row-meta-item">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 5.5C2.5 3 4 2 5.5 2s3 1 4.5 3.5C8.5 8 7 9 5.5 9S2.5 8 1 5.5z" stroke="currentColor" stroke-width="1.1"/><circle cx="5.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>
+          ${r.views.toLocaleString()} views
+        </span>
+        <span class="cat-badge ${r.cat.toLowerCase()}">${r.cat}</span>
+      </div>
+    </div>
+    <div class="row-conf-bar">
+      <div class="conf-bar-wrap">
+        <div class="conf-bar-pct">${r.conf}%</div>
+        <div class="conf-bar-bg"><div class="conf-bar-fill ${cc}" style="width:${r.conf}%"></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;padding:4px 0;">
+      <span style="font-size:12px;font-weight:500;color:var(--text-b)">${r.articles} articles</span>
+      <span style="font-size:12px;color:var(--text-s)">${r.views.toLocaleString()} views</span>
+    </div>
+    <div class="row-actions">
+      <div class="row-action-top">${kbHtml}</div>
+      <div class="row-action-bot">
+        ${draftBtnHtml}
+        <button class="btn-accept" onclick="event.stopPropagation();acceptRow(${r.id})">Accept</button>
+        <button class="btn-dismiss" onclick="event.stopPropagation();dismissRow(${r.id})">Dismiss</button>
+      </div>
+    </div>`;
+
+  row.addEventListener('click', ()=>toggleExpand(r.id));
+  body.appendChild(row);
+
+  // Expand row
+  const exp = document.createElement('div');
+  exp.className = `tbl-expand-row${isExpanded?' open':''}`;
+  exp.id = `exp-${r.id}`;
+
+  const artHtml = r.articleList.map(a=>`
+    <div class="expand-article">
+      <div class="article-icon">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1" width="9" height="10" rx="1.5" stroke="#1389aa" stroke-width="1.2"/><path d="M3.5 4h5M3.5 6.5h3.5M3.5 9h2" stroke="#1389aa" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+      <span class="article-title">${a.title}</span>
+      <span class="article-kb">${a.kb}</span>
+      <span class="article-views">${a.views.toLocaleString()} views</span>
+      ${a.keep?'<span class="article-keep">Keep</span>':''}
+    </div>`).join('');
+
+  const mergeHtml = r.kb
+    ? `<div class="expand-merge-into">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h4.5m0 0L4 2.5m2.5 2.5L4 7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 9h4.5m-4.5 0L10 6.5m-2 2.5L10 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="merge-label">Merge into existing article:</span>
+        <span class="merge-target">${r.kb} — ${r.articleList.find(a=>a.keep)?.title||''}</span>
+      </div>`
+    : `<div class="expand-merge-into">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 4.5v5M4.5 7h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span class="merge-label">Action:</span>
+        <span class="merge-target">Create new merged article from ${r.articles} sources</span>
+      </div>`;
+
+  exp.innerHTML = `
+    <div class="expand-section-label">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4 6h4M4 4h4M4 8h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Source articles (${r.articles})
+    </div>
+    <div class="expand-articles">${artHtml}</div>
+    ${mergeHtml}`;
+
+  body.appendChild(exp);
+}
+
+function toggleExpand(id){
+  if(expandedIds.has(id)) expandedIds.delete(id);
+  else expandedIds.add(id);
+  const row = document.getElementById(`row-${id}`);
+  const exp = document.getElementById(`exp-${id}`);
+  if(expandedIds.has(id)){
+    row.classList.add('expanded');
+    exp.classList.add('open');
+    row.querySelector('.row-expand').classList.add('open');
+  } else {
+    row.classList.remove('expanded');
+    exp.classList.remove('open');
+    row.querySelector('.row-expand').classList.remove('open');
+  }
+}
+
+function toggleSelect(id, cb){
+  if(cb.checked) selectedIds.add(id);
+  else selectedIds.delete(id);
+  const row = document.getElementById(`row-${id}`);
+  if(cb.checked) row.classList.add('selected');
+  else row.classList.remove('selected');
+  updateSelectionUI();
+}
+
+function toggleSelectAll(masterCb){
+  const visible = getFilteredRows();
+  if(masterCb.checked){
+    visible.forEach(r=>selectedIds.add(r.id));
+  } else {
+    visible.forEach(r=>selectedIds.delete(r.id));
+  }
+  renderRows(visible);
+  updateSelectionUI();
+}
+
+function updateSelectionUI(){
+  const n = selectedIds.size;
+  const label = document.getElementById('selectionLabel');
+  const retire = document.getElementById('btnRetire');
+  const unmark = document.getElementById('btnUnmark');
+  if(n===0){
+    label.innerHTML = 'Select items to take bulk action';
+    retire.disabled = true;
+    unmark.disabled = true;
+  } else {
+    label.innerHTML = `<strong>${n}</strong> topic${n>1?'s':''} selected`;
+    retire.disabled = false;
+    unmark.disabled = false;
+  }
+  // Update master checkbox
+  const visible = getFilteredRows();
+  const masterCb = document.getElementById('selectAll');
+  const allSelected = visible.length > 0 && visible.every(r=>selectedIds.has(r.id));
+  const someSelected = visible.some(r=>selectedIds.has(r.id));
+  masterCb.checked = allSelected;
+  masterCb.indeterminate = someSelected && !allSelected;
+}
+
+function getFilteredRows(){
+  let data = [...ROWS];
+  if(searchTerm) data = data.filter(r=>r.topic.toLowerCase().includes(searchTerm.toLowerCase()));
+  if(activeStat==='review') data = data.filter(r=>!r.hasDraft);
+  return data;
+}
+
+function filterRows(){
+  searchTerm = document.getElementById('searchInput').value;
+  const data = getFilteredRows();
+  renderRows(data);
+  updateShowing(data.length);
+  updateSelectionUI();
+}
+
+function sortRows(by){
+  const data = getFilteredRows();
+  if(by==='conf') data.sort((a,b)=>b.conf-a.conf);
+  else if(by==='articles') data.sort((a,b)=>b.articles-a.articles);
+  else if(by==='views') data.sort((a,b)=>b.views-a.views);
+  else if(by==='name') data.sort((a,b)=>a.topic.localeCompare(b.topic));
+  renderRows(data);
+}
+
+function filterStat(el, stat){
+  document.querySelectorAll('.stat-card.clickable').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  activeStat = stat;
+  filterRows();
+}
+
+function toggleGroup(btn){
+  grouped = !grouped;
+  btn.classList.toggle('active', grouped);
+  filterRows();
+}
+
+function toggleFilter(btn){
+  btn.classList.toggle('active');
+}
+
+function updateShowing(count){
+  document.getElementById('showingLabel').innerHTML = `Showing <strong>1–${Math.min(15,count)}</strong> of <strong>${count}</strong> topics`;
+}
+
+function acceptRow(id){
+  reviewedIds.add(id);
+  updateProgress();
+  const row = document.getElementById(`row-${id}`);
+  if(row){
+    row.style.transition='opacity .3s,transform .3s';
+    row.style.opacity='0';
+    row.style.transform='translateX(16px)';
+    const exp = document.getElementById(`exp-${id}`);
+    setTimeout(()=>{
+      row.remove();
+      if(exp) exp.remove();
+    },300);
+  }
+}
+
+function dismissRow(id){
+  reviewedIds.add(id);
+  updateProgress();
+  const row = document.getElementById(`row-${id}`);
+  if(row){
+    row.style.transition='opacity .3s';
+    row.style.opacity='0';
+    const exp = document.getElementById(`exp-${id}`);
+    setTimeout(()=>{
+      row.remove();
+      if(exp) exp.remove();
+    },300);
+  }
+}
+
+function viewDraft(id){
+  alert(`Opening draft for topic ID ${id}…`);
+}
+
+function acceptAll(){
+  ROWS.forEach(r=>reviewedIds.add(r.id));
+  updateProgress();
+  document.getElementById('tableBody').innerHTML='<div style="padding:48px 28px;text-align:center;color:var(--text-s);font-size:14px;"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin:0 auto 12px;display:block;opacity:.35"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/><path d="M14 24l7 7 13-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><strong style="color:var(--text-b);font-size:16px;display:block;margin-bottom:6px;">All recommendations accepted</strong>All 67 AI-generated recommendations have been queued for processing.</div>';
+}
+
+function updateProgress(){
+  const total = ROWS.length;
+  const done = reviewedIds.size;
+  const pct = Math.round(done/total*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressPct').textContent = `${done} of ${total} reviewed`;
+}
+
+function bulkAction(type){
+  if(selectedIds.size===0) return;
+  const labels={retire:'Retire',unmark:'Unmark as duplicate',merge:'Merge into new'};
+  alert(`${labels[type]}: ${selectedIds.size} topic(s)`);
+}
+
+// ─── Init ───
+sortRows('conf');
+updateShowing(ROWS.length);
+</script>
+</body>
+</html>

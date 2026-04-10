@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Knowledge Center</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c-bg:#f0f4f5;
+  --c-white:#fff;
+  --c-text-primary:#10171a;
+  --c-text-secondary:#546e7a;
+  --c-text-muted:#8ba7ae;
+  --c-link:#107a91;
+  --c-link-hover:#0c5f70;
+  --c-border:#dde6e8;
+  --c-border-light:#edf2f3;
+  --c-row-alt:#f8fafb;
+  --c-active-green:#2e7d32;
+  --c-ai-green:#27b34b;
+  --c-nav-dark:#172b31;
+  --c-tab-bg:#b8dbe5;
+  --c-amber-bg:#fef3c7;
+  --c-amber-text:#92400e;
+  --c-badge-bg:#243f52;
+  --c-badge-text:#fff;
+  --font-heading:'Cabin',sans-serif;
+  --font-body:'Lato',sans-serif;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font-body);font-size:14px;color:var(--c-text-primary);background:var(--c-bg);}
+a{color:var(--c-link);text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:underline;color:var(--c-link-hover);}
+button{font-family:var(--font-body);cursor:pointer;border:none;background:none;}
+select{font-family:var(--font-body);cursor:pointer;}
+
+/* ── APP NAV ─────────────────────────────────── */
+.app-nav{
+  height:36px;background:#1c3a44;display:flex;align-items:center;
+  padding:0 16px;gap:20px;flex-shrink:0;
+}
+.app-nav .logo{color:#fff;font-family:var(--font-heading);font-weight:700;font-size:15px;letter-spacing:-.3px;}
+.app-nav .nav-links{display:flex;gap:18px;}
+.app-nav .nav-links a{color:rgba(255,255,255,.65);font-size:13px;}
+.app-nav .nav-links a:hover{color:#fff;text-decoration:none;}
+.app-nav .search{
+  margin-left:auto;background:rgba(255,255,255,.12);border-radius:4px;
+  display:flex;align-items:center;gap:6px;padding:4px 10px;width:200px;
+}
+.app-nav .search svg{opacity:.6;}
+.app-nav .search span{color:rgba(255,255,255,.5);font-size:13px;}
+.app-nav .icons{display:flex;gap:12px;align-items:center;margin-left:12px;}
+.app-nav .icons svg{opacity:.65;}
+.app-nav .avatar{
+  width:26px;height:26px;border-radius:50%;background:#5eafc5;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;
+}
+.app-nav .ws-pill{
+  background:rgba(255,255,255,.12);border-radius:4px;padding:3px 8px;
+  color:rgba(255,255,255,.65);font-size:12px;display:flex;align-items:center;gap:4px;
+}
+
+/* ── TAB BAR ─────────────────────────────────── */
+.tab-bar{
+  height:40px;background:var(--c-tab-bg);display:flex;align-items:flex-end;
+  padding:0 4px 0 4px;flex-shrink:0;
+}
+.tab-item{
+  display:flex;align-items:center;gap:6px;padding:0 14px;height:36px;
+  font-size:13px;color:var(--c-text-secondary);cursor:pointer;border-radius:8px 8px 0 0;
+  flex-shrink:0;max-width:180px;
+}
+.tab-item.active{background:var(--c-white);color:var(--c-text-primary);}
+.tab-item svg{flex-shrink:0;opacity:.7;}
+.tab-item .tab-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tab-item .tab-close{opacity:.45;font-size:10px;flex-shrink:0;margin-left:2px;}
+.tab-item.active .tab-close{opacity:.6;}
+.tab-add{
+  display:flex;align-items:center;justify-content:center;width:32px;height:32px;
+  color:var(--c-text-secondary);font-size:18px;cursor:pointer;margin-bottom:2px;
+}
+
+/* ── MAIN LAYOUT ─────────────────────────────── */
+.main-layout{display:flex;height:calc(100vh - 76px);overflow:hidden;}
+
+/* ── PRIMARY NAV ─────────────────────────────── */
+.primary-nav{
+  width:48px;flex-shrink:0;background:var(--c-nav-dark);
+  display:flex;flex-direction:column;align-items:center;padding:6px 0;gap:2px;
+}
+.pnav-icon{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;cursor:pointer;color:rgba(255,255,255,.45);transition:background .15s;
+}
+.pnav-icon:hover{background:rgba(255,255,255,.1);color:#fff;}
+.pnav-icon.active{background:rgba(255,255,255,.15);color:#fff;}
+.pnav-divider{width:24px;height:1px;background:rgba(255,255,255,.1);margin:4px 0;}
+.pnav-bottom{margin-top:auto;}
+
+/* ── CONTENT AREA ────────────────────────────── */
+.content{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-width:0;}
+
+/* ── HERO ────────────────────────────────────── */
+.hero{
+  background:var(--c-white);display:flex;align-items:center;
+  justify-content:space-between;padding:24px 24px 24px 24px;
+  border-bottom:1px solid var(--c-border);flex-shrink:0;min-height:208px;
+}
+.hero-text{display:flex;flex-direction:column;gap:16px;}
+.hero-text h1{font-family:var(--font-heading);font-weight:700;font-size:24px;color:var(--c-text-primary);line-height:1;}
+.hero-text .subtitle{font-size:16px;color:var(--c-text-secondary);}
+.search-box{
+  display:flex;align-items:center;gap:8px;border:1px solid var(--c-border);
+  border-radius:4px;padding:6px 10px;width:399px;background:var(--c-white);
+}
+.search-box input{border:none;outline:none;flex:1;font-family:var(--font-body);font-size:14px;color:var(--c-text-primary);}
+.search-box input::placeholder{color:var(--c-text-muted);}
+.hero-banner{flex-shrink:0;width:572px;height:160px;display:flex;align-items:center;justify-content:center;}
+
+/* ── PAGE BODY ───────────────────────────────── */
+.page-body{padding:0 24px 24px;flex:1;}
+
+/* ── FILTER ROW ──────────────────────────────── */
+.filter-row{display:flex;align-items:center;gap:12px;padding:12px 0 14px;}
+.filter-group{display:flex;align-items:center;gap:6px;}
+.filter-label{font-size:12px;color:var(--c-text-secondary);white-space:nowrap;}
+.filter-select{
+  appearance:none;-webkit-appearance:none;
+  border:1px solid var(--c-border);border-radius:4px;
+  padding:5px 28px 5px 10px;font-size:13px;color:var(--c-text-primary);
+  background:var(--c-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23546e7a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center;
+  cursor:pointer;min-width:90px;
+}
+.filter-select:focus{outline:none;border-color:var(--c-link);}
+
+/* ── FILTER POPOVER ──────────────────────────── */
+.fp-wrap{position:relative;}
+.fp-trigger{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--c-border);border-radius:4px;
+  padding:5px 10px;font-size:13px;color:var(--c-text-primary);
+  background:var(--c-white);cursor:pointer;font-family:var(--font-body);
+  min-width:120px;white-space:nowrap;transition:border-color .15s;
+}
+.fp-trigger:hover,.fp-trigger.active{border-color:var(--c-link);}
+.fp-trigger-caret{margin-left:auto;flex-shrink:0;color:var(--c-text-secondary);}
+.fp-popover{
+  display:none;position:absolute;top:calc(100% + 12px);left:0;
+  width:624px;background:#fff;border:1px solid #cad7db;border-radius:6px;
+  box-shadow:0 8px 12px rgba(56,56,56,.1);z-index:500;flex-direction:column;
+}
+.fp-popover.open{display:flex;}
+.fp-tail{
+  position:absolute;top:-10px;left:14px;width:0;height:0;
+  border-left:10px solid transparent;border-right:10px solid transparent;
+  border-bottom:10px solid #cad7db;
+}
+.fp-tail::after{
+  content:'';position:absolute;top:2px;left:-9px;width:0;height:0;
+  border-left:9px solid transparent;border-right:9px solid transparent;
+  border-bottom:9px solid #fff;
+}
+.fp-search-row{padding:16px 16px 0;flex-shrink:0;}
+.fp-search-box{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid #cad7db;border-radius:4px;padding:7px 12px;background:#fff;
+}
+.fp-search-box input{
+  border:none;outline:none;flex:1;font-family:var(--font-body);
+  font-size:16px;color:var(--c-text-primary);
+}
+.fp-search-box input::placeholder{color:var(--c-text-muted);}
+.fp-body{display:flex;align-items:stretch;padding:0 8px;gap:0;}
+.fp-panel{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;}
+.fp-panel-left{padding:24px 0 8px 8px;}
+.fp-panel-right{padding:24px 8px 8px 0;}
+.fp-panel-header{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.fp-panel-title{font-size:16px;color:#172b31;font-family:var(--font-body);}
+.fp-sort-btn{
+  border:none;background:none;cursor:pointer;padding:4px;
+  color:var(--c-text-secondary);display:flex;align-items:center;border-radius:4px;
+}
+.fp-sort-btn:hover{background:var(--c-bg);}
+.fp-list{border:1px solid #cad7db;overflow-y:auto;min-height:180px;max-height:220px;}
+.fp-item{
+  display:flex;align-items:center;min-height:32px;padding:4px 16px;
+  font-size:16px;color:#10171a;cursor:pointer;user-select:none;
+  font-family:var(--font-body);
+}
+.fp-item:hover{background:#f3f8f9;}
+.fp-item.fp-selected{background:#d9eff5;}
+.fp-arrows{
+  width:48px;flex-shrink:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;padding-top:56px;
+}
+.fp-arrow-btn{
+  width:32px;height:32px;border:none;background:none;cursor:pointer;
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  color:var(--c-text-secondary);
+}
+.fp-arrow-btn:hover{background:var(--c-bg);}
+.fp-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px;flex-shrink:0;
+}
+.fp-footer-right{display:flex;gap:8px;}
+.fp-btn{
+  border:1px solid #cad7db;border-radius:4px;padding:7px 16px;
+  font-size:14px;font-family:var(--font-body);cursor:pointer;
+  background:#fff;color:#172b31;transition:background .15s;
+}
+.fp-btn:hover{background:#f0f4f5;}
+.fp-btn.fp-primary{background:#0080a3;border-color:#0080a3;color:#fff;}
+.fp-btn.fp-primary:hover{background:#006d8c;}
+
+/* ── INSIGHTS SECTION ────────────────────────── */
+.insights-section{
+  background:var(--c-white);border:1px solid var(--c-border);border-radius:6px;
+  margin-bottom:16px;overflow:hidden;position:relative;
+}
+.insights-section::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:#107a91;border-radius:6px 0 0 6px;
+}
+.insights-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px 14px 28px;
+}
+.insights-title{display:flex;align-items:center;gap:8px;}
+.insights-title h2{font-family:var(--font-heading);font-weight:700;font-size:18px;color:var(--c-text-primary);}
+.sparkle{color:#27b34b;font-size:16px;line-height:1;}
+.insights-meta{text-align:right;font-size:11px;color:var(--c-text-muted);line-height:1.5;}
+
+/* priority + health */
+.insights-main{display:flex;border-top:1px solid var(--c-border-light);}
+.priority-panel{flex:1;border-right:1px solid var(--c-border-light);}
+.priority-heading{padding:12px 16px 8px;font-family:var(--font-heading);font-weight:700;font-size:14px;}
+.priority-table{width:100%;}
+.ptable-header{display:grid;grid-template-columns:170px 1fr 120px;padding:6px 16px;background:var(--c-row-alt);}
+.ptable-header span{font-size:11px;font-weight:700;color:var(--c-text-secondary);text-transform:uppercase;letter-spacing:.5px;}
+.ptable-row{display:grid;grid-template-columns:170px 1fr 120px;padding:9px 16px;border-top:1px solid var(--c-border-light);align-items:center;}
+.ptable-row:nth-child(even){background:var(--c-row-alt);}
+.ptable-row .action{display:flex;align-items:center;gap:5px;color:var(--c-link);font-size:13px;}
+.ptable-row .item{font-size:13px;color:var(--c-text-primary);}
+.ptable-row .date{font-size:13px;color:var(--c-text-secondary);}
+
+.health-panel{width:336px;flex-shrink:0;padding:16px 20px 20px;}
+.health-panel h3{font-size:14px;font-weight:700;color:var(--c-text-primary);margin-bottom:2px;display:flex;align-items:center;gap:4px;}
+.health-gauge{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.health-score-label{font-size:14px;color:#4a5e65;font-weight:400;}
+.health-btn{
+  margin-top:4px;border:1px solid var(--c-border);border-radius:4px;padding:7px 20px;
+  font-size:13px;color:var(--c-link);font-weight:700;background:var(--c-white);width:100%;
+}
+.health-btn:hover{border-color:var(--c-link);background:#f0f9fb;}
+
+/* bottom insight cards */
+.insights-cards{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--c-border-light);}
+.ic{padding:16px 20px 20px;position:relative;}
+.ic+.ic{border-left:1px solid var(--c-border-light);}
+.ic-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+
+/* insights drag-and-drop */
+.insights-draggable{cursor:grab;}
+.insights-draggable:active{cursor:grabbing;}
+.insights-draggable.dragging{opacity:.45;}
+.insights-draggable.drag-over{outline:2px dashed var(--c-link);outline-offset:-2px;background:rgba(16,122,145,.05);}
+.ic-header .title{font-size:13px;font-weight:700;color:var(--c-text-primary);display:flex;align-items:center;gap:4px;}
+.ic-header .view-all{font-size:12px;color:var(--c-link);}
+.ic-big{font-family:var(--font-heading);font-weight:700;font-size:26px;color:var(--c-text-primary);}
+.ic-label{font-size:12px;color:var(--c-text-secondary);margin-bottom:2px;}
+
+/* sparkline */
+.sparkline-wrap{margin-top:8px;}
+.sparkline-dates{display:flex;justify-content:space-between;font-size:11px;color:var(--c-text-muted);margin-top:4px;}
+
+/* donut */
+.donut-wrap{display:flex;align-items:center;gap:12px;margin-top:6px;}
+.donut-legend{font-size:12px;color:var(--c-text-secondary);display:flex;flex-direction:column;gap:5px;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* optimization tags */
+.opt-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.opt-tag{
+  background:var(--c-amber-bg);color:var(--c-amber-text);
+  border-radius:12px;padding:3px 10px;font-size:12px;font-weight:600;cursor:pointer;
+}
+.opt-tag:hover{background:#fde68a;}
+.opt-subhead{font-size:12px;color:var(--c-text-secondary);font-weight:600;margin-top:8px;margin-bottom:2px;}
+.gaps-dropdown{
+  appearance:none;-webkit-appearance:none;
+  border:1px solid var(--c-border);border-radius:4px;padding:3px 22px 3px 8px;
+  font-size:12px;color:var(--c-text-primary);background:var(--c-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%23546e7a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 5px center;
+  cursor:pointer;margin-bottom:8px;
+}
+
+/* ── BOTTOM LAYOUT ───────────────────────────── */
+.bottom-layout{display:flex;gap:16px;align-items:stretch;}
+.left-column{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px;}
+.left-column>.card{flex:1;}
+.right-sidebar{width:336px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;}
+.right-sidebar>.card{flex:1;}
+
+/* ── CARD ────────────────────────────────────── */
+.card{background:var(--c-white);border:1px solid var(--c-border);border-radius:6px;overflow:hidden;}
+.card-heading{font-family:var(--font-heading);font-weight:700;font-size:16px;color:var(--c-text-primary);}
+
+/* ── REQUIRES ATTENTION ──────────────────────── */
+.ra-wrap{display:flex;}
+.ra-left{width:260px;flex-shrink:0;padding:16px 0;border-right:1px solid var(--c-border-light);}
+.ra-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 16px 7px 20px;cursor:pointer;position:relative;font-size:13px;
+  color:var(--c-text-primary);
+}
+.ra-row.active{color:var(--c-active-green);}
+.ra-row.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c-active-green);}
+.ra-row:hover:not(.active){background:var(--c-row-alt);}
+.ra-count{font-size:13px;color:var(--c-text-muted);}
+.ra-row.active .ra-count{color:var(--c-active-green);}
+.ra-right{flex:1;padding:16px 20px;}
+.ra-right-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.ra-right-title span{font-size:13px;font-weight:700;color:var(--c-text-primary);}
+
+/* ── ARTICLE ROW ─────────────────────────────── */
+.article-row{padding:8px 0;border-bottom:1px solid var(--c-border-light);}
+.article-row:last-child{border-bottom:none;}
+.article-title{font-size:13px;color:var(--c-link);display:block;margin-bottom:3px;}
+.article-title:hover{text-decoration:underline;}
+.article-meta{font-size:12px;color:var(--c-text-muted);display:flex;align-items:center;gap:4px;}
+.stars{display:inline-flex;gap:1px;}
+.star-filled{color:#f59e0b;font-size:12px;}
+.star-empty{color:#cdd5d7;font-size:12px;}
+
+/* ── QUICK VIEW ──────────────────────────────── */
+.qv-inner{display:flex;gap:0;margin:12px;border:1px solid var(--c-border);border-radius:5px;overflow:hidden;}
+.qv-kbs{width:220px;flex-shrink:0;border-right:1px solid var(--c-border);padding:12px 0;}
+.qv-kbs-header{display:flex;align-items:center;justify-content:space-between;padding:0 14px 8px;}
+.qv-kbs-title{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--c-text-primary);}
+.kb-badge{background:var(--c-badge-bg);color:var(--c-badge-text);border-radius:10px;font-size:11px;font-weight:700;padding:1px 6px;}
+.qv-kb-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 14px;cursor:pointer;font-size:13px;
+}
+.qv-kb-row:hover{background:var(--c-row-alt);}
+.qv-kb-name{display:flex;align-items:center;gap:5px;color:var(--c-link);}
+.qv-kb-count{color:var(--c-text-muted);font-size:13px;}
+.qv-articles{flex:1;padding:12px 14px;}
+.qv-tabs{display:flex;border-bottom:1px solid var(--c-border-light);margin-bottom:10px;gap:0;}
+.qv-tab{
+  padding:6px 14px;font-size:13px;color:var(--c-text-secondary);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.qv-tab.active{color:var(--c-active-green);border-bottom-color:var(--c-active-green);font-weight:700;}
+.qv-tab:hover:not(.active){color:var(--c-text-primary);}
+
+/* ── KNOWLEDGE FEATURES ──────────────────────── */
+.kf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 16px 16px;}
+.kf-card{
+  border:1px solid var(--c-border);border-radius:5px;padding:16px;
+  cursor:pointer;transition:box-shadow .15s;
+}
+.kf-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.kf-icon{width:32px;height:32px;margin-bottom:8px;color:var(--c-text-secondary);}
+.kf-title{font-size:13px;font-weight:700;color:var(--c-text-primary);margin-bottom:4px;}
+.kf-desc{font-size:12px;color:var(--c-text-secondary);line-height:1.5;}
+
+/* ── SIDEBAR CARDS ───────────────────────────── */
+.sc{padding:16px 20px;}
+.sc-title{font-family:var(--font-heading);font-weight:700;font-size:15px;color:var(--c-text-primary);margin-bottom:10px;}
+.sc-link{display:block;padding:4px 0;font-size:13px;color:var(--c-link);}
+.sc-link:hover{text-decoration:underline;}
+.sc-link svg{vertical-align:middle;margin-left:3px;opacity:.7;}
+
+/* ── INFO ICON ───────────────────────────────── */
+.ico-info{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;border:1px solid var(--c-text-muted);color:var(--c-text-muted);font-size:9px;font-style:italic;font-weight:700;vertical-align:middle;cursor:pointer;flex-shrink:0;}
+.doc-icon{display:inline-flex;flex-shrink:0;vertical-align:middle;}
+
+/* ── PERSONALIZE BUTTON ──────────────────────── */
+.personalize-btn{
+  display:flex;align-items:center;gap:6px;border:1px solid var(--c-border);
+  border-radius:4px;padding:5px 12px;font-size:13px;color:var(--c-link);
+  background:var(--c-white);margin-left:auto;cursor:pointer;font-family:var(--font-body);
+  transition:border-color .15s,background .15s;flex-shrink:0;
+}
+.personalize-btn:hover{border-color:var(--c-link);background:#f0f9fb;}
+
+/* ── MODAL OVERLAY ───────────────────────────── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(16,23,26,.5);
+  z-index:1000;align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:#fff;border-radius:8px;width:800px;max-width:800px;
+  border:1px solid #d7e1e5;
+  box-shadow:0 20px 24px rgba(56,56,56,.1);
+  max-height:600px;display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* modal header area */
+.m-head{
+  padding:23px 24px 0;position:relative;flex-shrink:0;
+}
+.m-title{
+  font-family:var(--font-heading);font-weight:700;font-size:20px;
+  color:#172b31;line-height:1;margin-bottom:12px;padding-right:36px;
+}
+.m-desc{
+  font-size:16px;color:#172b31;line-height:1.5;
+  margin-bottom:0;padding-bottom:16px;
+}
+.m-close{
+  position:absolute;top:23px;right:24px;
+  width:28px;height:28px;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:6px;color:#546e7a;font-size:18px;line-height:1;
+}
+.m-close:hover{background:#f0f4f5;}
+
+/* modal scroll body */
+.m-body{
+  overflow-y:auto;flex:1;padding:0 24px 24px;
+  scrollbar-width:thin;scrollbar-color:#c0d0d5 transparent;
+}
+.m-body::-webkit-scrollbar{width:5px;}
+.m-body::-webkit-scrollbar-track{background:transparent;}
+.m-body::-webkit-scrollbar-thumb{background:#c0d0d5;border-radius:100px;}
+
+/* section */
+.m-section{margin-bottom:8px;}
+.m-section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0 10px;cursor:pointer;
+}
+.m-section-title{
+  font-family:var(--font-heading);font-weight:700;font-size:20px;color:#172b31;
+}
+.m-chevron{
+  color:#546e7a;transition:transform .2s;flex-shrink:0;
+  display:flex;align-items:center;
+}
+.m-chevron.collapsed{transform:rotate(180deg);}
+.m-section-body{display:flex;flex-direction:column;gap:8px;}
+.m-section-body.collapsed{display:none;}
+
+/* draggable row */
+.m-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#f3f8f9;border:1px solid #cad7db;border-radius:6px;
+  padding:15px 8px;cursor:grab;user-select:none;
+  transition:box-shadow .15s,opacity .15s;
+}
+.m-row:active{cursor:grabbing;}
+.m-row.dragging{opacity:.4;box-shadow:0 4px 16px rgba(0,0,0,.12);}
+.m-row.drag-over-top{border-top:2px solid #0080a3;}
+.m-row.drag-over-bottom{border-bottom:2px solid #0080a3;}
+.m-row-left{display:flex;align-items:flex-start;gap:0;position:relative;}
+.m-row-label{
+  font-size:16px;color:#172b31;margin-left:24px;
+  font-family:var(--font-body);
+}
+.m-row-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+
+/* drag dots */
+.m-drag-dots{
+  position:absolute;left:0;top:2px;color:#8ba7ae;
+  display:flex;align-items:center;flex-shrink:0;
+}
+
+/* SN-style toggle */
+.sn-toggle{position:relative;display:inline-flex;align-items:center;flex-shrink:0;}
+.sn-toggle input{position:absolute;opacity:0;width:0;height:0;}
+.sn-toggle-track{
+  display:block;width:32px;height:16px;border-radius:12px;
+  background:#8ba7ae;border:1px solid #6a8a94;
+  position:relative;cursor:pointer;transition:background .15s,border-color .15s;
+  flex-shrink:0;
+}
+.sn-toggle input:checked + .sn-toggle-track{
+  background:#0080a3;border-color:#002631;
+}
+.sn-toggle-track::after{
+  content:'';position:absolute;top:1px;left:1px;
+  width:12px;height:12px;border-radius:12px;
+  background:#fff;border:1px solid #bdcbd0;
+  box-shadow:0 1px 3px rgba(56,56,56,.15);
+  transition:transform .15s;
+}
+.sn-toggle input:checked + .sn-toggle-track::after{
+  transform:translateX(16px);
+}
+
+/* chevron button inside row */
+.m-chevron-btn{
+  background:none;border:none;cursor:pointer;padding:0;
+  display:flex;align-items:center;color:#546e7a;
+  transition:transform .2s;
+}
+.m-chevron-btn.open{transform:rotate(0deg);}
+.m-chevron-btn.closed{transform:rotate(180deg);}
+
+/* insights children — flat 2-col grid, all 5 items are direct children */
+.m-insights-children{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  padding:0 0 0 40px;margin-top:8px;
+}
+.m-insights-children.collapsed{display:none;}
+
+/* child row item */
+.m-child-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#fff;border:1px solid #cad7db;border-radius:6px;
+  padding:15px 8px;cursor:grab;user-select:none;
+  transition:opacity .15s;
+}
+.m-child-row:active{cursor:grabbing;}
+.m-child-row.dragging{opacity:.4;}
+.m-child-row.drag-over-top{border-top:2px solid #0080a3;}
+.m-child-row.drag-over-bottom{border-bottom:2px solid #0080a3;}
+.m-child-row-left{display:flex;align-items:flex-start;position:relative;}
+.m-child-label{font-size:16px;color:#172b31;margin-left:24px;white-space:nowrap;font-family:var(--font-body);}
+
+/* reset link */
+.m-reset-link{
+  display:inline-block;margin-top:16px;font-size:13px;color:var(--c-link);
+  cursor:pointer;text-decoration:underline;
+}
+.m-reset-link:hover{color:var(--c-link-hover);}
+
+/* modal sticky footer */
+.m-footer{
+  flex-shrink:0;padding:12px 24px;
+  border-top:1px solid #d7e1e5;background:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.m-footer .m-reset-link{margin-top:0;}
+.m-apply-btn{
+  background:#0080a3;color:#fff;border:none;border-radius:4px;
+  padding:8px 24px;font-size:14px;font-weight:600;font-family:inherit;
+  cursor:pointer;transition:background .15s;
+}
+.m-apply-btn:hover{background:#006d8c;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ APP NAV ═══════════════════════════════ -->
+<nav class="app-nav">
+  <span class="logo">servicenow</span>
+  <div class="nav-links">
+    <a href="#">All</a>
+    <a href="#">Favorites</a>
+    <a href="#">History</a>
+    <a href="#">Workspaces</a>
+  </div>
+  <span class="ws-pill" style="margin-left:24px">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2C4.686 2 2 4.686 2 8s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 2a4 4 0 110 8A4 4 0 018 4z" fill="rgba(255,255,255,.7)"/></svg>
+    Knowledge
+    <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 3.5l3 3 3-3" stroke="rgba(255,255,255,.7)" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+  </span>
+  <div class="search">
+    <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><circle cx="7" cy="7" r="5" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span>Search</span>
+  </div>
+  <div class="icons">
+    <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,.6)" stroke-width="1.4"/><path d="M6 6c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2m0 2v.5" stroke="rgba(255,255,255,.6)" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 2a5 5 0 015 5c0 3 1.5 4 1.5 4h-13S3 10 3 7a5 5 0 015-5zm0 11a1.5 1.5 0 01-1.5-1.5h3A1.5 1.5 0 018 13z" stroke="rgba(255,255,255,.6)" stroke-width="1.4"/></svg>
+    <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,.6)" stroke-width="1.4"/><path d="M8 5v3l2 2" stroke="rgba(255,255,255,.6)" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <div class="avatar">MD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ TAB BAR ════════════════════════════════ -->
+<div class="tab-bar">
+  <div class="tab-item active">
+    <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="1" stroke="#107a91" stroke-width="1.5"/><path d="M5 6h6M5 9h4" stroke="#107a91" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <span class="tab-label">Knowledge C...</span>
+    <span class="tab-close">✕</span>
+  </div>
+  <div class="tab-item">
+    <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5" stroke="#546e7a" stroke-width="1.4"/><path d="M10.5 10.5l2 2" stroke="#546e7a" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <span class="tab-label">INC000002</span>
+    <span class="tab-close">✕</span>
+  </div>
+  <div class="tab-add">+</div>
+</div>
+
+<!-- ═══════════════════════════════ MAIN ══════════════════════════════════ -->
+<div class="main-layout">
+
+  <!-- Primary Nav -->
+  <aside class="primary-nav">
+    <div class="pnav-icon active">
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M2 8L8 2l6 6M3 7.5V13h3.5v-3h3v3H13V7.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="pnav-icon">
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h7" stroke="rgba(255,255,255,.45)" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </div>
+    <div class="pnav-divider"></div>
+    <div class="pnav-icon">
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M5 8h6M8 5l3 3-3 3" stroke="rgba(255,255,255,.45)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="pnav-bottom">
+      <div class="pnav-icon">
+        <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,.35)" stroke-width="1.4"/><circle cx="8" cy="8" r="2" fill="rgba(255,255,255,.35)"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text">
+        <div>
+          <h1>Knowledge Center</h1>
+          <p class="subtitle">Set up, manage, and monitor your knowledge bases</p>
+        </div>
+        <div class="search-box">
+          <input type="text" placeholder="Search for an article" />
+          <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke="#8ba7ae" stroke-width="1.5"/><path d="M11 11l3 3" stroke="#8ba7ae" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="hero-banner">
+        <svg width="520" height="155" viewBox="0 0 520 155" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- dashed lines background -->
+          <line x1="0" y1="100" x2="160" y2="100" stroke="#cfd5d7" stroke-width="1" stroke-dasharray="5 4"/>
+          <line x1="0" y1="110" x2="100" y2="110" stroke="#cfd5d7" stroke-width="1" stroke-dasharray="5 4"/>
+          <line x1="360" y1="118" x2="520" y2="118" stroke="#cfd5d7" stroke-width="1" stroke-dasharray="5 4"/>
+          <!-- stack on left (closed books) -->
+          <rect x="60" y="90" width="92" height="14" rx="3" fill="#b0cdd5" stroke="#96b8c2" stroke-width="1"/>
+          <rect x="65" y="77" width="82" height="15" rx="3" fill="#c6dde3" stroke="#96b8c2" stroke-width="1"/>
+          <rect x="68" y="63" width="76" height="16" rx="3" fill="#d8eaee" stroke="#96b8c2" stroke-width="1"/>
+          <rect x="63" y="100" width="88" height="8" rx="2" fill="#a0c4cc"/>
+          <!-- main open book center -->
+          <rect x="186" y="18" width="78" height="105" rx="4" fill="#daedf2" stroke="#9dc5ce" stroke-width="1.5"/>
+          <rect x="264" y="18" width="78" height="105" rx="4" fill="#daedf2" stroke="#9dc5ce" stroke-width="1.5"/>
+          <!-- book spine -->
+          <rect x="260" y="18" width="8" height="105" rx="2" fill="#9dc5ce"/>
+          <!-- left page lines -->
+          <rect x="196" y="32" width="60" height="5" rx="1.5" fill="#cfd5d7"/>
+          <rect x="196" y="42" width="45" height="4" rx="1.5" fill="#5eafc5"/>
+          <rect x="196" y="51" width="60" height="4" rx="1.5" fill="#cfd5d7"/>
+          <rect x="196" y="60" width="30" height="4" rx="1.5" fill="#5eafc5"/>
+          <rect x="196" y="69" width="60" height="4" rx="1.5" fill="#cfd5d7"/>
+          <rect x="196" y="78" width="50" height="4" rx="1.5" fill="#cfd5d7"/>
+          <rect x="196" y="87" width="40" height="4" rx="1.5" fill="#5eafc5"/>
+          <rect x="196" y="96" width="60" height="4" rx="1.5" fill="#cfd5d7"/>
+          <!-- right page lines -->
+          <rect x="272" y="32" width="60" height="5" rx="1.5" fill="#cfd5d7"/>
+          <rect x="272" y="42" width="45" height="4" rx="1.5" fill="#5eafc5"/>
+          <rect x="272" y="51" width="60" height="4" rx="1.5" fill="#cfd5d7"/>
+          <rect x="272" y="60" width="30" height="4" rx="1.5" fill="#5eafc5"/>
+          <rect x="272" y="69" width="60" height="4" rx="1.5" fill="#cfd5d7"/>
+          <rect x="272" y="78" width="50" height="4" rx="1.5" fill="#cfd5d7"/>
+          <rect x="272" y="87" width="40" height="4" rx="1.5" fill="#5eafc5"/>
+          <!-- bookmark -->
+          <polygon points="255,120 264,138 273,120" fill="#5eafc5"/>
+          <!-- bookshelf right -->
+          <rect x="390" y="28" width="10" height="60" rx="2" fill="#cfd5d7" stroke="#b8c8cc" stroke-width="1"/>
+          <rect x="402" y="22" width="10" height="66" rx="2" fill="#d8e8ec" stroke="#b8c8cc" stroke-width="1"/>
+          <rect x="414" y="32" width="10" height="56" rx="2" fill="#c0d4d8" stroke="#b8c8cc" stroke-width="1"/>
+          <rect x="426" y="18" width="10" height="70" rx="2" fill="#daedf2" stroke="#b8c8cc" stroke-width="1"/>
+          <rect x="438" y="26" width="10" height="62" rx="2" fill="#cfd5d7" stroke="#b8c8cc" stroke-width="1"/>
+          <rect x="388" y="87" width="62" height="8" rx="2" fill="#b0cdd5"/>
+          <!-- stacked pages on right -->
+          <rect x="448" y="62" width="68" height="8" rx="2" fill="#c6dde3" stroke="#9dc5ce" stroke-width="1"/>
+          <rect x="448" y="71" width="68" height="8" rx="2" fill="#d8eaee" stroke="#9dc5ce" stroke-width="1"/>
+          <rect x="448" y="80" width="68" height="8" rx="2" fill="#daedf2" stroke="#9dc5ce" stroke-width="1"/>
+          <rect x="448" y="89" width="68" height="7" rx="2" fill="#e8f3f6" stroke="#9dc5ce" stroke-width="1"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- FILTER ROW -->
+      <div class="filter-row">
+        <div class="filter-group fp-wrap">
+          <span class="filter-label">Knowledge base</span>
+          <button class="fp-trigger" id="fp-trigger" onclick="toggleFilterPopover(event)">
+            <span id="fp-trigger-text">Select</span>
+            <svg class="fp-trigger-caret" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 4l4 4 4-4" stroke="#546e7a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="fp-popover" id="fp-popover" onclick="event.stopPropagation()">
+            <div class="fp-tail"></div>
+            <div class="fp-search-row">
+              <div class="fp-search-box">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="6.5" cy="6.5" r="4.5" stroke="#8ba7ae" stroke-width="1.5"/>
+                  <path d="M10 10l3.5 3.5" stroke="#8ba7ae" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <input type="text" placeholder="Search" id="fp-search" oninput="fpFilterSearch()">
+              </div>
+            </div>
+            <div class="fp-body">
+              <div class="fp-panel fp-panel-left">
+                <div class="fp-panel-header">
+                  <span class="fp-panel-title">Available filters</span>
+                  <button class="fp-sort-btn" onclick="fpSortAvail()" title="Sort">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 3h10M4 7h6M6 11h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="fp-list" id="fp-avail-list"></div>
+              </div>
+              <div class="fp-arrows">
+                <button class="fp-arrow-btn" onclick="fpMoveRight()" title="Add to applied">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <button class="fp-arrow-btn" onclick="fpMoveLeft()" title="Remove from applied">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="fp-panel fp-panel-right">
+                <div class="fp-panel-header">
+                  <span class="fp-panel-title">Applied</span>
+                  <button class="fp-sort-btn" title="Sort">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 3h10M4 7h6M6 11h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="fp-list" id="fp-applied-list"></div>
+              </div>
+            </div>
+            <div class="fp-footer">
+              <button class="fp-btn" onclick="fpClear()">Clear</button>
+              <div class="fp-footer-right">
+                <button class="fp-btn" onclick="fpCancel()">Cancel</button>
+                <button class="fp-btn fp-primary" onclick="fpApply()">Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Knowledge ownership group</span>
+          <select class="filter-select" id="ownership-filter">
+            <option value="all">Select</option>
+          </select>
+        </div>
+        <button class="personalize-btn" onclick="openModal()">
+          <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3zm0 2a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-3 5.5c0-1.657 1.343-2.5 3-2.5s3 .843 3 2.5H5z" fill="#107a91"/></svg>
+          Personalize
+        </button>
+      </div>
+
+      <!-- PERSONALIZE MODAL -->
+      <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+          <!-- Header -->
+          <div class="m-head">
+            <div class="m-title">Personalization page</div>
+            <p class="m-desc">To customize the page you can turn on/off widgets or drag and drop to re-order the page.&nbsp; If you want to revert back to the original state you can click 'Reset setting' to go back.</p>
+            <button class="m-close" onclick="closeModal()">
+              <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+
+          <!-- Scrollable body -->
+          <div class="m-body" id="modal-body">
+
+            <!-- MAIN CONTENT section -->
+            <div class="m-section">
+              <div class="m-section-header" onclick="toggleSection('main')">
+                <span class="m-section-title">Main content</span>
+                <span class="m-chevron" id="chevron-main">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 10l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+              <div class="m-section-body" id="section-main">
+
+                <!-- Insights parent row -->
+                <div class="m-row" id="mrow-insights" draggable="true"
+                  ondragstart="mDragStart(event,'insights')"
+                  ondragover="mDragOver(event,'insights')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'insights')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><?xml version="1.0"?><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Insights</span>
+                  </div>
+                  <div class="m-row-right">
+                    <label class="sn-toggle" onclick="event.stopPropagation()">
+                      <input type="checkbox" checked id="tog-insights" onchange="widgetToggle('insights',this.checked)">
+                      <div class="sn-toggle-track"></div>
+                    </label>
+                    <button class="m-chevron-btn open" id="insights-chevron-btn" onclick="event.stopPropagation();toggleInsights()" title="Expand/collapse sub-widgets">
+                      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 10l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Insights children — flat 2-col grid, all draggable -->
+                <div class="m-insights-children" id="insights-children">
+                  <div class="m-child-row" id="mchild-priority" draggable="true"
+                    ondragstart="cDragStart(event,'priority')" ondragover="cDragOver(event,'priority')"
+                    ondragleave="cDragLeave(event)" ondrop="cDrop(event,'priority')" ondragend="cDragEnd()">
+                    <div class="m-child-row-left">
+                      <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                      <span class="m-child-label">Suggested priority changes</span>
+                    </div>
+                    <label class="sn-toggle" onclick="event.stopPropagation()">
+                      <input type="checkbox" checked id="tog-priority" onchange="subWidgetToggle('priority',this.checked)">
+                      <div class="sn-toggle-track"></div>
+                    </label>
+                  </div>
+                  <div class="m-child-row" id="mchild-health" draggable="true"
+                    ondragstart="cDragStart(event,'health')" ondragover="cDragOver(event,'health')"
+                    ondragleave="cDragLeave(event)" ondrop="cDrop(event,'health')" ondragend="cDragEnd()">
+                    <div class="m-child-row-left">
+                      <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                      <span class="m-child-label">Knowledge base health score</span>
+                    </div>
+                    <label class="sn-toggle" onclick="event.stopPropagation()">
+                      <input type="checkbox" checked id="tog-health" onchange="subWidgetToggle('health',this.checked)">
+                      <div class="sn-toggle-track"></div>
+                    </label>
+                  </div>
+                  <div class="m-child-row" id="mchild-duplicates" draggable="true"
+                    ondragstart="cDragStart(event,'duplicates')" ondragover="cDragOver(event,'duplicates')"
+                    ondragleave="cDragLeave(event)" ondrop="cDrop(event,'duplicates')" ondragend="cDragEnd()">
+                    <div class="m-child-row-left">
+                      <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                      <span class="m-child-label">Potential duplicates</span>
+                    </div>
+                    <label class="sn-toggle" onclick="event.stopPropagation()">
+                      <input type="checkbox" checked id="tog-duplicates" onchange="subWidgetToggle('duplicates',this.checked)">
+                      <div class="sn-toggle-track"></div>
+                    </label>
+                  </div>
+                  <div class="m-child-row" id="mchild-gaps" draggable="true"
+                    ondragstart="cDragStart(event,'gaps')" ondragover="cDragOver(event,'gaps')"
+                    ondragleave="cDragLeave(event)" ondrop="cDrop(event,'gaps')" ondragend="cDragEnd()">
+                    <div class="m-child-row-left">
+                      <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                      <span class="m-child-label">Potential gaps</span>
+                    </div>
+                    <label class="sn-toggle" onclick="event.stopPropagation()">
+                      <input type="checkbox" checked id="tog-gaps" onchange="subWidgetToggle('gaps',this.checked)">
+                      <div class="sn-toggle-track"></div>
+                    </label>
+                  </div>
+                  <div class="m-child-row" id="mchild-opt" draggable="true"
+                    ondragstart="cDragStart(event,'opt')" ondragover="cDragOver(event,'opt')"
+                    ondragleave="cDragLeave(event)" ondrop="cDrop(event,'opt')" ondragend="cDragEnd()">
+                    <div class="m-child-row-left">
+                      <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                      <span class="m-child-label">Article optimization</span>
+                    </div>
+                    <label class="sn-toggle" onclick="event.stopPropagation()">
+                      <input type="checkbox" checked id="tog-opt" onchange="subWidgetToggle('opt',this.checked)">
+                      <div class="sn-toggle-track"></div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Requires attention -->
+                <div class="m-row" id="mrow-requires" draggable="true"
+                  ondragstart="mDragStart(event,'requires')"
+                  ondragover="mDragOver(event,'requires')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'requires')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Requires attention</span>
+                  </div>
+                  <label class="sn-toggle" onclick="event.stopPropagation()">
+                    <input type="checkbox" checked id="tog-requires" onchange="widgetToggle('requires',this.checked)">
+                    <div class="sn-toggle-track"></div>
+                  </label>
+                </div>
+
+                <!-- Quick view -->
+                <div class="m-row" id="mrow-quickview" draggable="true"
+                  ondragstart="mDragStart(event,'quickview')"
+                  ondragover="mDragOver(event,'quickview')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'quickview')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Quick view</span>
+                  </div>
+                  <label class="sn-toggle" onclick="event.stopPropagation()">
+                    <input type="checkbox" checked id="tog-quickview" onchange="widgetToggle('quickview',this.checked)">
+                    <div class="sn-toggle-track"></div>
+                  </label>
+                </div>
+
+                <!-- Knowledge features -->
+                <div class="m-row" id="mrow-features" draggable="true"
+                  ondragstart="mDragStart(event,'features')"
+                  ondragover="mDragOver(event,'features')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'features')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Knowledge features</span>
+                  </div>
+                  <label class="sn-toggle" onclick="event.stopPropagation()">
+                    <input type="checkbox" checked id="tog-features" onchange="widgetToggle('features',this.checked)">
+                    <div class="sn-toggle-track"></div>
+                  </label>
+                </div>
+
+              </div><!-- /section-main -->
+            </div>
+
+            <!-- RIGHT RAIL section -->
+            <div class="m-section">
+              <div class="m-section-header" onclick="toggleSection('rail')">
+                <span class="m-section-title">Right rail</span>
+                <span class="m-chevron" id="chevron-rail">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 10l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+              <div class="m-section-body" id="section-rail">
+
+                <!-- Actions -->
+                <div class="m-row" id="mrow-actions" draggable="true"
+                  ondragstart="mDragStart(event,'actions')"
+                  ondragover="mDragOver(event,'actions')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'actions')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Actions</span>
+                  </div>
+                  <label class="sn-toggle" onclick="event.stopPropagation()">
+                    <input type="checkbox" checked id="tog-actions" onchange="widgetToggle('actions',this.checked)">
+                    <div class="sn-toggle-track"></div>
+                  </label>
+                </div>
+
+                <!-- Configurations -->
+                <div class="m-row" id="mrow-configs" draggable="true"
+                  ondragstart="mDragStart(event,'configs')"
+                  ondragover="mDragOver(event,'configs')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'configs')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Configurations</span>
+                  </div>
+                  <label class="sn-toggle" onclick="event.stopPropagation()">
+                    <input type="checkbox" checked id="tog-configs" onchange="widgetToggle('configs',this.checked)">
+                    <div class="sn-toggle-track"></div>
+                  </label>
+                </div>
+
+                <!-- Knowledge resources -->
+                <div class="m-row" id="mrow-resources" draggable="true"
+                  ondragstart="mDragStart(event,'resources')"
+                  ondragover="mDragOver(event,'resources')"
+                  ondragleave="mDragLeave(event)"
+                  ondrop="mDrop(event,'resources')"
+                  ondragend="mDragEnd()">
+                  <div class="m-row-left">
+                    <span class="m-drag-dots"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><circle cx="2.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="2.5" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="8" r="1.5" fill="#8ba7ae"/><circle cx="2.5" cy="13.5" r="1.5" fill="#8ba7ae"/><circle cx="7.5" cy="13.5" r="1.5" fill="#8ba7ae"/></svg></span>
+                    <span class="m-row-label">Knowledge resources</span>
+                  </div>
+                  <label class="sn-toggle" onclick="event.stopPropagation()">
+                    <input type="checkbox" checked id="tog-resources" onchange="widgetToggle('resources',this.checked)">
+                    <div class="sn-toggle-track"></div>
+                  </label>
+                </div>
+
+              </div><!-- /section-rail -->
+            </div>
+
+          </div><!-- /m-body -->
+
+          <!-- Sticky modal footer -->
+          <div class="m-footer">
+            <a class="m-reset-link" onclick="resetWidgets()">Reset setting</a>
+            <button class="m-apply-btn" onclick="closeModal()">Apply</button>
+          </div>
+        </div><!-- /modal -->
+      </div><!-- /modal-overlay -->
+
+      <!-- INSIGHTS SECTION -->
+      <div class="insights-section">
+        <div class="insights-header">
+          <div class="insights-title">
+            <span class="sparkle">✦</span>
+            <h2>Insights</h2>
+          </div>
+          <div class="insights-meta">
+            Generated by Now Assist. Check for accuracy. <i class="ico-info">i</i><br>
+            Last refreshed: <span id="refresh-time">08-01-2026 11:11:10</span>
+          </div>
+        </div>
+
+        <div class="insights-main">
+          <!-- Priority Changes -->
+          <div class="priority-panel insights-draggable" draggable="true"
+            ondragstart="iDragStart(event)" ondragover="iDragOver(event)"
+            ondragleave="iDragLeave(event)" ondrop="iDrop(event)" ondragend="iDragEnd(event)">
+            <div class="priority-heading">Suggested priority changes</div>
+            <div class="priority-table">
+              <div class="ptable-header">
+                <span>Knowledge actions</span>
+                <span>Most impacted item</span>
+                <span>Created date</span>
+              </div>
+              <div id="priority-rows"></div>
+            </div>
+          </div>
+          <!-- Health Score -->
+          <div class="health-panel insights-draggable" draggable="true"
+            ondragstart="iDragStart(event)" ondragover="iDragOver(event)"
+            ondragleave="iDragLeave(event)" ondrop="iDrop(event)" ondragend="iDragEnd(event)">
+            <h3>Knowledge base health score <i class="ico-info">i</i></h3>
+            <div class="health-gauge">
+              <svg id="gauge-svg" width="296" height="195" viewBox="0 0 296 195">
+                <!--
+                  cx=148 cy=160 R=115 sw=24
+                  half-circumference = π×115 = 361.3 → each 25% segment = 90.3
+                  arc: M 33 160 A 115 115 0 0 1 263 160
+                -->
+                <!-- background track -->
+                <path d="M 33 160 A 115 115 0 0 1 263 160" fill="none" stroke="#E4ECEE" stroke-width="24" stroke-linecap="butt"/>
+                <!-- Bad  0–25  red -->
+                <path d="M 33 160 A 115 115 0 0 1 263 160" fill="none" stroke="#D9534F" stroke-width="24" stroke-linecap="butt"
+                  stroke-dasharray="90.3 271.0" stroke-dashoffset="0"/>
+                <!-- Okay 25–50 amber -->
+                <path d="M 33 160 A 115 115 0 0 1 263 160" fill="none" stroke="#E8A800" stroke-width="24" stroke-linecap="butt"
+                  stroke-dasharray="90.3 271.0" stroke-dashoffset="-90.3"/>
+                <!-- Good 50–75 silver-gray -->
+                <path d="M 33 160 A 115 115 0 0 1 263 160" fill="none" stroke="#C4CFD3" stroke-width="24" stroke-linecap="butt"
+                  stroke-dasharray="90.3 271.0" stroke-dashoffset="-180.6"/>
+                <!-- Great 75–100 green -->
+                <path d="M 33 160 A 115 115 0 0 1 263 160" fill="none" stroke="#3DB55E" stroke-width="24" stroke-linecap="butt"
+                  stroke-dasharray="90.3 271.0" stroke-dashoffset="-270.9"/>
+                <!-- white tick dividers at 25 / 50 / 75 (inner r=103, outer r=127) -->
+                <!-- 135°: inner=(75,88) outer=(58,71) -->
+                <line x1="75" y1="88" x2="58" y2="71" stroke="white" stroke-width="3"/>
+                <!-- 90°:  inner=(148,57) outer=(148,33) -->
+                <line x1="148" y1="57" x2="148" y2="33" stroke="white" stroke-width="3"/>
+                <!-- 45°:  inner=(221,88) outer=(238,71) -->
+                <line x1="221" y1="88" x2="238" y2="71" stroke="white" stroke-width="3"/>
+                <!-- needle (score=47 → angle=95.4° → x2≈140, y2≈70) -->
+                <line id="gauge-needle" x1="148" y1="160" x2="140" y2="70"
+                  stroke="#0d1a1e" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="148" cy="160" r="5" fill="#0d1a1e"/>
+                <!-- large score number -->
+                <text id="gauge-score" x="148" y="152" font-size="46" font-weight="700"
+                  fill="#0d1a1e" text-anchor="middle" font-family="Lato,sans-serif">47</text>
+                <!-- zone labels (Bad/Okay/Good/Great) -->
+                <text x="3"   y="163" font-size="11" fill="#597178" font-family="Lato,sans-serif" text-anchor="start">Bad</text>
+                <text x="293" y="163" font-size="11" fill="#597178" font-family="Lato,sans-serif" text-anchor="end">Great</text>
+                <text x="82"  y="47"  font-size="11" fill="#597178" font-family="Lato,sans-serif" text-anchor="middle">Okay</text>
+                <text x="214" y="47"  font-size="11" fill="#597178" font-family="Lato,sans-serif" text-anchor="middle">Good</text>
+                <!-- numeric tick labels -->
+                <text x="20"  y="178" font-size="10" fill="#0d1a1e" font-family="Lato,sans-serif" text-anchor="middle">0</text>
+                <text x="62"  y="109" font-size="10" fill="#0d1a1e" font-family="Lato,sans-serif" text-anchor="middle">25</text>
+                <text x="148" y="20"  font-size="10" fill="#0d1a1e" font-family="Lato,sans-serif" text-anchor="middle">50</text>
+                <text x="234" y="109" font-size="10" fill="#0d1a1e" font-family="Lato,sans-serif" text-anchor="middle">75</text>
+                <text x="276" y="178" font-size="10" fill="#0d1a1e" font-family="Lato,sans-serif" text-anchor="middle">100</text>
+              </svg>
+              <p id="health-label" class="health-score-label">Multiple improvements needed</p>
+              <button class="health-btn">View Knowledge base health</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom 3 Cards -->
+        <div class="insights-cards">
+          <!-- Potential Duplicates -->
+          <div class="ic insights-draggable" draggable="true"
+            ondragstart="iDragStart(event)" ondragover="iDragOver(event)"
+            ondragleave="iDragLeave(event)" ondrop="iDrop(event)" ondragend="iDragEnd(event)">
+            <div class="ic-header">
+              <span class="title">Potential duplicates <i class="ico-info">i</i></span>
+              <a class="view-all">View all</a>
+            </div>
+            <div style="display:flex;gap:24px;margin-bottom:10px">
+              <div>
+                <div class="ic-label">Articles</div>
+                <div class="ic-big" id="dup-articles">18.9K</div>
+              </div>
+              <div>
+                <div class="ic-label">Topics</div>
+                <div class="ic-big" id="dup-topics">674</div>
+              </div>
+            </div>
+            <div class="ic-label">Trend over time</div>
+            <div class="sparkline-wrap">
+              <svg id="sparkline-svg" width="100%" height="56" viewBox="0 0 280 56" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#5eafc5" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#5eafc5" stop-opacity="0.04"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,42 C20,38 40,35 60,30 C80,25 90,32 110,28 C130,24 140,18 160,22 C180,26 200,16 220,14 C240,12 260,20 280,22 L280,56 L0,56 Z" fill="url(#sg)"/>
+                <path d="M0,42 C20,38 40,35 60,30 C80,25 90,32 110,28 C130,24 140,18 160,22 C180,26 200,16 220,14 C240,12 260,20 280,22" fill="none" stroke="#5eafc5" stroke-width="2"/>
+                <circle cx="280" cy="22" r="3.5" fill="#5eafc5"/>
+              </svg>
+              <div class="sparkline-dates"><span>Jul 24</span><span>Sep 20</span><span>Nov 8</span></div>
+            </div>
+          </div>
+
+          <!-- Potential Knowledge Gaps -->
+          <div class="ic insights-draggable" draggable="true"
+            ondragstart="iDragStart(event)" ondragover="iDragOver(event)"
+            ondragleave="iDragLeave(event)" ondrop="iDrop(event)" ondragend="iDragEnd(event)">
+            <div class="ic-header">
+              <span class="title">Potential knowledge gaps <i class="ico-info">i</i></span>
+              <a class="view-all">View all</a>
+            </div>
+            <select class="gaps-dropdown" id="gaps-type">
+              <option>Incidents</option>
+              <option>Requests</option>
+              <option>Cases</option>
+            </select>
+            <div class="donut-wrap">
+              <div class="donut-legend">
+                <div class="legend-item"><span class="legend-dot" style="background:#5eafc5"></span>Search query...</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#e53935"></span>How to Troubleshoot...</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#1565c0"></span>Password recovery</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#9c27b0"></span>Guidelines for ...</div>
+                <div class="legend-item"><span class="legend-dot" style="background:#2e7d32"></span>Remote work ...</div>
+              </div>
+              <div style="flex-shrink:0">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <!-- bg -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#f0f4f5" stroke-width="18"/>
+                  <!-- segments: total circumference = 226.2 -->
+                  <!-- teal 15% = 33.9 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#5eafc5" stroke-width="18"
+                    stroke-dasharray="33.9 192.3" stroke-dashoffset="56.5" transform="rotate(-90 50 50)"/>
+                  <!-- red 30% = 67.8 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#e53935" stroke-width="18"
+                    stroke-dasharray="67.8 158.4" stroke-dashoffset="22.6" transform="rotate(-90 50 50)"/>
+                  <!-- blue 20% = 45.2 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#1565c0" stroke-width="18"
+                    stroke-dasharray="45.2 181.0" stroke-dashoffset="-45.2" transform="rotate(-90 50 50)"/>
+                  <!-- purple 25% = 56.5 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#9c27b0" stroke-width="18"
+                    stroke-dasharray="56.5 169.7" stroke-dashoffset="-90.4" transform="rotate(-90 50 50)"/>
+                  <!-- green 10% = 22.6 -->
+                  <circle cx="50" cy="50" r="36" fill="none" stroke="#2e7d32" stroke-width="18"
+                    stroke-dasharray="22.6 203.6" stroke-dashoffset="-146.9" transform="rotate(-90 50 50)"/>
+                  <text id="gaps-num" x="50" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#10171a" font-family="Cabin,sans-serif">34</text>
+                  <text x="50" y="62" text-anchor="middle" font-size="10" fill="#546e7a" font-family="Lato,sans-serif">Gaps</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Article Optimization -->
+          <div class="ic insights-draggable" draggable="true"
+            ondragstart="iDragStart(event)" ondragover="iDragOver(event)"
+            ondragleave="iDragLeave(event)" ondrop="iDrop(event)" ondragend="iDragEnd(event)">
+            <div class="ic-header">
+              <span class="title">Article optimization <i class="ico-info">i</i></span>
+              <a class="view-all">View all</a>
+            </div>
+            <div class="ic-label">Flagged articles</div>
+            <div class="ic-big" id="flagged-count" style="margin-bottom:2px">366</div>
+            <div class="opt-subhead">Priority issues to resolve</div>
+            <div class="opt-tags" id="opt-tags">
+              <span class="opt-tag">Alt tag (47)</span>
+              <span class="opt-tag">Multiple H2 (30)</span>
+              <span class="opt-tag">Title relevancy (12)</span>
+              <span class="opt-tag">Bad links (7)</span>
+              <span class="opt-tag">Title relevancy (12)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM LAYOUT -->
+      <div class="bottom-layout">
+
+        <!-- LEFT COLUMN -->
+        <div class="left-column">
+
+          <!-- REQUIRES ATTENTION -->
+          <div class="card">
+            <div style="padding:16px 20px 12px;border-bottom:1px solid var(--c-border-light)">
+              <span class="card-heading">Requires attention</span>
+            </div>
+            <div class="ra-wrap">
+              <div class="ra-left">
+                <div class="ra-row active" data-panel="expiring" onclick="selectRA(this,'expiring')">
+                  <span>Articles expiring in 90 days</span><span class="ra-count" id="ra-expiring">(17)</span>
+                </div>
+                <div class="ra-row" data-panel="feedback" onclick="selectRA(this,'feedback')">
+                  <span>My Feedback Tasks</span><span class="ra-count" id="ra-feedback">(11)</span>
+                </div>
+                <div class="ra-row" data-panel="approvals" onclick="selectRA(this,'approvals')">
+                  <span>My Approvals</span><span class="ra-count" id="ra-approvals">(10)</span>
+                </div>
+                <div class="ra-row" data-panel="pending" onclick="selectRA(this,'pending')">
+                  <span>My Pending Group Requests</span><span class="ra-count" id="ra-pending">(9)</span>
+                </div>
+                <div class="ra-row" data-panel="flagged" onclick="selectRA(this,'flagged')">
+                  <span>My Flagged</span><span class="ra-count" id="ra-flagged">(7)</span>
+                </div>
+                <div class="ra-row" data-panel="translation" onclick="selectRA(this,'translation')">
+                  <span>My Translation Requests</span><span class="ra-count" id="ra-translation">(4)</span>
+                </div>
+                <div class="ra-row" data-panel="checklist" onclick="selectRA(this,'checklist')">
+                  <span>My Article Checklist (AQI)</span><span class="ra-count" id="ra-checklist">(3)</span>
+                </div>
+              </div>
+              <div class="ra-right">
+                <div class="ra-right-title">
+                  <span id="ra-panel-title">Articles expiring in 90 days (17)</span>
+                  <a class="view-all" style="font-size:12px;color:var(--c-link)">View all</a>
+                </div>
+                <div id="ra-articles"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK VIEW -->
+          <div class="card">
+            <div style="padding:16px 20px 0">
+              <span class="card-heading">Quick view</span>
+            </div>
+            <div class="qv-inner">
+              <div class="qv-kbs">
+                <div class="qv-kbs-header">
+                  <div class="qv-kbs-title">
+                    Knowledge bases <span class="kb-badge" id="kb-count">10</span>
+                  </div>
+                  <a style="font-size:12px;color:var(--c-link)">View all</a>
+                </div>
+                <div id="qv-kb-list"></div>
+              </div>
+              <div class="qv-articles">
+                <div class="qv-tabs">
+                  <div class="qv-tab active" onclick="selectTab(this,'viewed')">Most viewed</div>
+                  <div class="qv-tab" onclick="selectTab(this,'useful')">Most useful</div>
+                  <div class="qv-tab" onclick="selectTab(this,'featured')">Featured articles</div>
+                </div>
+                <div id="qv-articles"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KNOWLEDGE FEATURES -->
+          <div class="card">
+            <div style="padding:16px 20px 12px">
+              <div class="card-heading" style="margin-bottom:4px">Knowledge features</div>
+              <p style="font-size:13px;color:var(--c-text-secondary);line-height:1.5">Explore other knowledge management workflows, supporting processes for viewing, configuring, providing feedbacks, defining reusable components, etc.</p>
+            </div>
+            <div class="kf-grid">
+              <div class="kf-card">
+                <svg class="kf-icon" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5"/><path d="M16 16 L16 8 A8 8 0 0 1 22.9 20Z" fill="currentColor" opacity=".25"/><path d="M16 16 L8.5 20 A8 8 0 0 1 16 8Z" fill="currentColor" opacity=".15"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg>
+                <div class="kf-title">Knowledge analytics dashboards</div>
+                <div class="kf-desc">Analytics dashboards help analyse the business processes and identify areas of improvement.</div>
+              </div>
+              <div class="kf-card">
+                <svg class="kf-icon" viewBox="0 0 32 32" fill="none"><rect x="7" y="4" width="18" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M11 10h10M11 14h10M11 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <div class="kf-title">My articles</div>
+                <div class="kf-desc">You will contribute to all the knowledge articles assigned to you.</div>
+              </div>
+              <div class="kf-card">
+                <svg class="kf-icon" viewBox="0 0 32 32" fill="none"><rect x="6" y="8" width="20" height="4" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="6" y="14" width="20" height="4" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="6" y="20" width="20" height="4" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+                <div class="kf-title">Knowledge blocks</div>
+                <div class="kf-desc">You and contribute to knowledge blocks, reusable pieces of content.</div>
+              </div>
+              <div class="kf-card">
+                <svg class="kf-icon" viewBox="0 0 32 32" fill="none"><path d="M16 4L19 13H28L21 18.5L23.5 28L16 22.5L8.5 28L11 18.5L4 13H13L16 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                <div class="kf-title">Article Quality Index</div>
+                <div class="kf-desc">Configure article quality index (AQI) to assess the quality of knowledge articles.</div>
+              </div>
+              <div class="kf-card">
+                <svg class="kf-icon" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="1.5"/><ellipse cx="16" cy="16" rx="5" ry="11" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="16" x2="27" y2="16" stroke="currentColor" stroke-width="1.5"/><path d="M11 22l5-6 5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <div class="kf-title">Article translations</div>
+                <div class="kf-desc">View and Translate knowledge articles into different languages.</div>
+              </div>
+              <div class="kf-card">
+                <svg class="kf-icon" viewBox="0 0 32 32" fill="none"><path d="M6 16l7 7L26 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="kf-title">My approvals</div>
+                <div class="kf-desc">Review your knowledge article approval tasks.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="right-sidebar">
+          <div class="card">
+            <div class="sc">
+              <div class="sc-title">Actions</div>
+              <a class="sc-link" href="#">Create an article</a>
+              <a class="sc-link" href="#">Create a block</a>
+              <a class="sc-link" href="#">Manage groups</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sc">
+              <div class="sc-title">Configurations</div>
+              <a class="sc-link" href="#">Now Assist config <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">Article Optimization config <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">Guided setup <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">Knowledge management properties <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">User criteria diagnosis <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sc">
+              <div class="sc-title">Knowledge resources</div>
+              <a class="sc-link" href="#">Academy sessions <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">KM community <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">On demand training <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+              <a class="sc-link" href="#">Product documentation <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 8L8 2M8 2H4M8 2V6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div><!-- /page-body -->
+  </main>
+</div>
+
+
+<script>
+// ═══════════════════════════════ DATA STORE ═══════════════════════════════
+const DOC_ICON = `<svg class="doc-icon" width="13" height="13" fill="none" viewBox="0 0 14 14"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="#546e7a" stroke-width="1.2"/><path d="M4 4h6M4 7h6M4 10h3" stroke="#546e7a" stroke-width="1.2" stroke-linecap="round"/></svg>`;
+const FLAG_ICON = `<svg class="doc-icon" width="13" height="13" fill="none" viewBox="0 0 14 14"><path d="M3 2v10M3 2h7l-2 3.5 2 3.5H3" stroke="#107a91" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+const ownershipGroups = {
+  all: ['Select','IT Team','CS Team','HR Team','Network Team','Security Team'],
+  IT: ['Select','IT Team','Network Team','Security Team'],
+  'Customer Service': ['Select','CS Team A','CS Team B'],
+  'Consumer Service': ['Select','CS Consumer Team'],
+  HR: ['Select','HR Team','People Ops'],
+  Operations: ['Select','Ops Team'],
+  'Known error': ['Select','IT Team'],
+};
+
+const DB = {
+  all: {
+    healthScore: 47, healthLabel: 'Multiple improvements needed',
+    priorityChanges: [
+      { action:'IT low score', icon:'flag', item:'IT knowledge base', date:'2026-02-14' },
+      { action:'Duplicates', icon:'doc', item:'Device stops charging when running specific applications or tasks', date:'2026-02-14' },
+      { action:'Gap', icon:'doc', item:'How to reset an iPhone', date:'2026-02-14' },
+      { action:'Low Article Score', icon:'flag', item:'Parental leave', date:'2026-02-14' },
+      { action:'Duplicates', icon:'doc', item:'Device stops charging when running specific applications or tasks', date:'2026-02-14' },
+      { action:'Gap', icon:'doc', item:'How to reset an iPhone', date:'2026-02-14' },
+    ],
+    dupArticles:'18.9K', dupTopics:674,
+    gaps:34, flagged:366,
+    optTags:['Alt tag (47)','Multiple H2 (30)','Title relevancy (12)','Bad links (7)','Title relevancy (12)'],
+    ra: { expiring:17, feedback:11, approvals:10, pending:9, flagged:7, translation:4, checklist:3 },
+    raArticles: {
+      expiring:[
+        { title:'VPN configuration is failing with Mac', kb:'KB0010016', views:'3198', stars:3 },
+        { title:'Password reset in the windows desktop', kb:'KB0100013', views:'1450', stars:3 },
+        { title:'Issue with password reset', kb:'KB0010011', views:'903', stars:2 },
+        { title:'What are phishing scams and how can I avoid them?', kb:'KB0100039', views:'883', stars:3 },
+      ],
+      feedback:[
+        { title:'Router not connecting after firmware update', kb:'KB0030021', views:'2100', stars:4 },
+        { title:'Printer offline after Windows update', kb:'KB0030045', views:'1860', stars:3 },
+      ],
+      approvals:[
+        { title:'New employee onboarding checklist', kb:'KB0020011', views:'980', stars:4 },
+        { title:'Remote desktop setup guide', kb:'KB0020033', views:'750', stars:3 },
+      ],
+      pending:[], flagged:[], translation:[], checklist:[],
+    },
+    kbs:[
+      { name:'Customer Service', count:132 },
+      { name:'Consumer Service', count:80 },
+      { name:'IT', count:62 },
+      { name:'HR', count:51 },
+      { name:'Operations', count:22 },
+      { name:'Known error', count:15 },
+    ],
+    articles: {
+      viewed:[
+        { title:'Email Interruption Tonight at 11:00 PM Eastern', kb:'KB0010016', views:'3198', stars:3 },
+        { title:'Router blinking after heating', kb:'KB0010016', views:'2134', stars:3 },
+        { title:'Cleaning the water inlet filters', kb:'KB0010016', views:'1082', stars:3 },
+        { title:'What are phishing scams and how can I avoid them?', kb:'KB0010016', views:'1112', stars:3 },
+      ],
+      useful:[
+        { title:'How to reset your password step by step', kb:'KB0020011', views:'4200', stars:5 },
+        { title:'Setting up two-factor authentication', kb:'KB0020035', views:'3100', stars:4 },
+        { title:'Connecting to VPN remotely', kb:'KB0030016', views:'2800', stars:4 },
+      ],
+      featured:[
+        { title:'New AI features in the platform – What you need to know', kb:'KB0040001', views:'5100', stars:5 },
+        { title:'Getting started with Knowledge Center', kb:'KB0040002', views:'3900', stars:4 },
+      ],
+    },
+  },
+  IT: {
+    healthScore: 63, healthLabel: 'Needs some improvements',
+    priorityChanges: [
+      { action:'IT low score', icon:'flag', item:'IT knowledge base', date:'2026-02-14' },
+      { action:'Duplicates', icon:'doc', item:'Device stops charging when running specific applications or tasks', date:'2026-03-01' },
+      { action:'Low Article Score', icon:'flag', item:'VPN setup guide', date:'2026-03-05' },
+    ],
+    dupArticles:'4.2K', dupTopics:198,
+    gaps:11, flagged:89,
+    optTags:['Alt tag (18)','Bad links (7)','Title relevancy (5)'],
+    ra: { expiring:6, feedback:4, approvals:3, pending:3, flagged:2, translation:1, checklist:1 },
+    raArticles: {
+      expiring:[
+        { title:'VPN configuration is failing with Mac', kb:'KB0010016', views:'3198', stars:3 },
+        { title:'Password reset in the windows desktop', kb:'KB0100013', views:'1450', stars:3 },
+      ],
+      feedback:[], approvals:[], pending:[], flagged:[], translation:[], checklist:[],
+    },
+    kbs:[{ name:'IT', count:62 },{ name:'Known error', count:15 }],
+    articles: {
+      viewed:[
+        { title:'VPN configuration is failing with Mac', kb:'KB0010016', views:'3198', stars:3 },
+        { title:'Password reset in the windows desktop', kb:'KB0100013', views:'1450', stars:3 },
+        { title:'Issue with password reset', kb:'KB0010011', views:'903', stars:2 },
+      ],
+      useful:[
+        { title:'Setting up two-factor authentication', kb:'KB0020035', views:'3100', stars:4 },
+        { title:'Connecting to VPN remotely', kb:'KB0030016', views:'2800', stars:4 },
+      ],
+      featured:[
+        { title:'Getting started with Knowledge Center', kb:'KB0040002', views:'3900', stars:4 },
+      ],
+    },
+  },
+  'Customer Service': {
+    healthScore: 72, healthLabel: 'Good – minor improvements needed',
+    priorityChanges: [
+      { action:'Gap', icon:'doc', item:'Refund policy clarification', date:'2026-02-20' },
+      { action:'Duplicates', icon:'doc', item:'Return process article', date:'2026-02-25' },
+      { action:'Low Article Score', icon:'flag', item:'Customer complaint handling', date:'2026-03-01' },
+    ],
+    dupArticles:'6.1K', dupTopics:241,
+    gaps:9, flagged:112,
+    optTags:['Title relevancy (22)','Multiple H2 (15)','Bad links (4)'],
+    ra: { expiring:8, feedback:5, approvals:4, pending:3, flagged:3, translation:2, checklist:1 },
+    raArticles: {
+      expiring:[
+        { title:'Email Interruption Tonight at 11:00 PM Eastern', kb:'KB0010016', views:'3198', stars:3 },
+        { title:'Router blinking after heating', kb:'KB0010016', views:'2134', stars:3 },
+      ],
+      feedback:[], approvals:[], pending:[], flagged:[], translation:[], checklist:[],
+    },
+    kbs:[{ name:'Customer Service', count:132 },{ name:'Consumer Service', count:80 }],
+    articles: {
+      viewed:[
+        { title:'Email Interruption Tonight at 11:00 PM Eastern', kb:'KB0010016', views:'3198', stars:3 },
+        { title:'Cleaning the water inlet filters', kb:'KB0010016', views:'1082', stars:3 },
+        { title:'What are phishing scams and how can I avoid them?', kb:'KB0010016', views:'1112', stars:3 },
+      ],
+      useful:[
+        { title:'How to reset your password step by step', kb:'KB0020011', views:'4200', stars:5 },
+        { title:'Customer escalation process', kb:'KB0010020', views:'2100', stars:4 },
+      ],
+      featured:[
+        { title:'New AI features in the platform – What you need to know', kb:'KB0040001', views:'5100', stars:5 },
+      ],
+    },
+  },
+  HR: {
+    healthScore: 81, healthLabel: 'Great – well maintained',
+    priorityChanges: [
+      { action:'Gap', icon:'doc', item:'Parental leave policy', date:'2026-01-15' },
+      { action:'Low Article Score', icon:'flag', item:'Benefits enrollment guide', date:'2026-01-22' },
+    ],
+    dupArticles:'2.3K', dupTopics:87,
+    gaps:5, flagged:43,
+    optTags:['Title relevancy (8)','Alt tag (3)'],
+    ra: { expiring:3, feedback:2, approvals:2, pending:1, flagged:1, translation:1, checklist:0 },
+    raArticles: {
+      expiring:[
+        { title:'New employee onboarding checklist', kb:'KB0020011', views:'980', stars:4 },
+      ],
+      feedback:[], approvals:[], pending:[], flagged:[], translation:[], checklist:[],
+    },
+    kbs:[{ name:'HR', count:51 }],
+    articles: {
+      viewed:[
+        { title:'New employee onboarding checklist', kb:'KB0020011', views:'980', stars:4 },
+        { title:'Remote desktop setup guide', kb:'KB0020033', views:'750', stars:3 },
+      ],
+      useful:[
+        { title:'Benefits enrollment guide 2026', kb:'KB0020044', views:'1200', stars:5 },
+      ],
+      featured:[
+        { title:'HR Policy updates Q1 2026', kb:'KB0020050', views:'660', stars:4 },
+      ],
+    },
+  },
+};
+// fallback for unspecified KBs
+['Consumer Service','Operations','Known error'].forEach(k => {
+  if(!DB[k]) DB[k] = { ...DB['IT'], healthScore: 55, healthLabel:'Needs improvements',
+    kbs: DB.all.kbs.filter(x=>x.name===k) };
+});
+
+// ═══════════════════════════════ STATE ════════════════════════════════════
+let currentKB = 'all';
+let currentOwnership = 'all';
+let currentRAPanel = 'expiring';
+let currentTab = 'viewed';
+
+// ═══════════════════════════════ HELPERS ══════════════════════════════════
+function stars(n) {
+  let s = '';
+  for(let i=1;i<=5;i++) s += `<span class="${i<=n?'star-filled':'star-empty'}">★</span>`;
+  return `<span class="stars">${s}</span>`;
+}
+function articleHTML(a) {
+  return `<div class="article-row">
+    <a class="article-title">${a.title}</a>
+    <div class="article-meta">${a.kb} &nbsp;•&nbsp; ${a.views} views &nbsp;•&nbsp; ${stars(a.stars)}</div>
+  </div>`;
+}
+function setGauge(score) {
+  const angle = 180 - score * 1.8;
+  const rad = angle * Math.PI / 180;
+  const cx=148, cy=160, r=92;
+  const x = (cx + r * Math.cos(rad)).toFixed(1);
+  const y = (cy - r * Math.sin(rad)).toFixed(1);
+  document.getElementById('gauge-needle').setAttribute('x2', x);
+  document.getElementById('gauge-needle').setAttribute('y2', y);
+  document.getElementById('gauge-score').textContent = score;
+}
+
+// ═══════════════════════════════ RENDER ═══════════════════════════════════
+function getData() {
+  return DB[currentKB] || DB['all'];
+}
+
+function renderAll() {
+  const d = getData();
+  // gauge
+  setGauge(d.healthScore);
+  document.getElementById('health-label').textContent = d.healthLabel;
+  // priority table
+  const rows = d.priorityChanges.map((r,i) => `
+    <div class="ptable-row" style="${i%2===0?'':'background:var(--c-row-alt)'}">
+      <div class="action">${r.icon==='flag'?FLAG_ICON:DOC_ICON}<a>${r.action}</a></div>
+      <div class="item">${r.item}</div>
+      <div class="date">${r.date}</div>
+    </div>`).join('');
+  document.getElementById('priority-rows').innerHTML = rows;
+  // duplicates
+  document.getElementById('dup-articles').textContent = d.dupArticles;
+  document.getElementById('dup-topics').textContent = d.dupTopics;
+  // gaps
+  document.getElementById('gaps-num').textContent = d.gaps;
+  // optimization
+  document.getElementById('flagged-count').textContent = d.flagged;
+  document.getElementById('opt-tags').innerHTML = d.optTags.map(t=>`<span class="opt-tag">${t}</span>`).join('');
+  // ra counts
+  const ra = d.ra;
+  document.getElementById('ra-expiring').textContent  = `(${ra.expiring})`;
+  document.getElementById('ra-feedback').textContent  = `(${ra.feedback})`;
+  document.getElementById('ra-approvals').textContent = `(${ra.approvals})`;
+  document.getElementById('ra-pending').textContent   = `(${ra.pending})`;
+  document.getElementById('ra-flagged').textContent   = `(${ra.flagged})`;
+  document.getElementById('ra-translation').textContent = `(${ra.translation})`;
+  document.getElementById('ra-checklist').textContent = `(${ra.checklist})`;
+  // ra panel
+  renderRAPanel();
+  // kbs
+  document.getElementById('kb-count').textContent = d.kbs.length;
+  document.getElementById('qv-kb-list').innerHTML = d.kbs.map(k=>`
+    <div class="qv-kb-row">
+      <span class="qv-kb-name">${DOC_ICON} <a>${k.name}</a></span>
+      <span class="qv-kb-count">(${k.count})</span>
+    </div>`).join('');
+  // articles
+  renderArticles();
+}
+
+function renderRAPanel() {
+  const d = getData();
+  const articles = (d.raArticles[currentRAPanel] || []);
+  const count = d.ra[currentRAPanel] || 0;
+  const labelMap = {
+    expiring:'Articles expiring in 90 days',
+    feedback:'My Feedback Tasks',
+    approvals:'My Approvals',
+    pending:'My Pending Group Requests',
+    flagged:'My Flagged',
+    translation:'My Translation Requests',
+    checklist:'My Article Checklist (AQI)',
+  };
+  document.getElementById('ra-panel-title').textContent = `${labelMap[currentRAPanel]} (${count})`;
+  document.getElementById('ra-articles').innerHTML = articles.length
+    ? articles.map(articleHTML).join('')
+    : `<p style="font-size:13px;color:var(--c-text-muted);padding:12px 0">No items to display.</p>`;
+}
+
+function renderArticles() {
+  const d = getData();
+  const articles = (d.articles[currentTab] || []);
+  document.getElementById('qv-articles').innerHTML = articles.length
+    ? articles.map(articleHTML).join('')
+    : `<p style="font-size:13px;color:var(--c-text-muted);padding:12px 0">No articles to display.</p>`;
+}
+
+function populateOwnership(kb) {
+  const groups = ownershipGroups[kb] || ownershipGroups['all'];
+  const sel = document.getElementById('ownership-filter');
+  sel.innerHTML = groups.map(g=>`<option value="${g==='Select'?'all':g}">${g}</option>`).join('');
+}
+
+// ═══════════════════════════════ EVENT HANDLERS ══════════════════════════
+function selectRA(el, panel) {
+  document.querySelectorAll('.ra-row').forEach(r=>r.classList.remove('active'));
+  el.classList.add('active');
+  currentRAPanel = panel;
+  renderRAPanel();
+}
+function selectTab(el, tab) {
+  document.querySelectorAll('.qv-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = tab;
+  renderArticles();
+}
+
+// ═══════════════════════════════ FILTER POPOVER ══════════════════════════
+const FP_ALL_ITEMS = ['Customer Service','Consumer Service','IT','HR','Operations','Known error'];
+let fpAvailable = [...FP_ALL_ITEMS];
+let fpApplied = [];
+let fpSelectedAvail = new Set();
+let fpSelectedApplied = new Set();
+let fpCommitted = [];
+
+function toggleFilterPopover(e) {
+  e.stopPropagation();
+  const pop = document.getElementById('fp-popover');
+  if(pop.classList.contains('open')) {
+    closeFilterPopover();
+  } else {
+    fpCommitted = [...fpApplied];
+    document.getElementById('fp-search').value = '';
+    fpRenderAvail('');
+    fpRenderApplied();
+    pop.classList.add('open');
+    document.getElementById('fp-trigger').classList.add('active');
+  }
+}
+function closeFilterPopover() {
+  document.getElementById('fp-popover').classList.remove('open');
+  document.getElementById('fp-trigger').classList.remove('active');
+}
+function fpRenderAvail(query) {
+  const filtered = fpAvailable.filter(i => i.toLowerCase().includes(query.toLowerCase()));
+  document.getElementById('fp-avail-list').innerHTML = filtered.map(item =>
+    `<div class="fp-item${fpSelectedAvail.has(item)?' fp-selected':''}" onclick="fpToggleAvail('${item}')">${item}</div>`
+  ).join('');
+}
+function fpRenderApplied() {
+  document.getElementById('fp-applied-list').innerHTML = fpApplied.map(item =>
+    `<div class="fp-item${fpSelectedApplied.has(item)?' fp-selected':''}" onclick="fpToggleApplied('${item}')">${item}</div>`
+  ).join('');
+}
+function fpToggleAvail(item) {
+  if(fpSelectedAvail.has(item)) fpSelectedAvail.delete(item); else fpSelectedAvail.add(item);
+  fpRenderAvail(document.getElementById('fp-search').value);
+}
+function fpToggleApplied(item) {
+  if(fpSelectedApplied.has(item)) fpSelectedApplied.delete(item); else fpSelectedApplied.add(item);
+  fpRenderApplied();
+}
+function fpFilterSearch() {
+  fpRenderAvail(document.getElementById('fp-search').value);
+}
+function fpMoveRight() {
+  if(!fpSelectedAvail.size) return;
+  fpSelectedAvail.forEach(item => { fpAvailable = fpAvailable.filter(i=>i!==item); fpApplied.push(item); });
+  fpSelectedAvail.clear();
+  fpRenderAvail(document.getElementById('fp-search').value);
+  fpRenderApplied();
+}
+function fpMoveLeft() {
+  if(!fpSelectedApplied.size) return;
+  fpSelectedApplied.forEach(item => { fpApplied = fpApplied.filter(i=>i!==item); fpAvailable.push(item); });
+  fpSelectedApplied.clear();
+  fpRenderAvail(document.getElementById('fp-search').value);
+  fpRenderApplied();
+}
+function fpSortAvail() {
+  fpAvailable.sort();
+  fpRenderAvail(document.getElementById('fp-search').value);
+}
+function fpApply() {
+  currentKB = fpApplied.length === 1 ? fpApplied[0] : 'all';
+  currentOwnership = 'all';
+  populateOwnership(currentKB);
+  renderAll();
+  const label = fpApplied.length === 0 ? 'Select'
+    : fpApplied.length === 1 ? fpApplied[0]
+    : fpApplied.length + ' selected';
+  document.getElementById('fp-trigger-text').textContent = label;
+  closeFilterPopover();
+}
+function fpClear() {
+  fpAvailable = [...FP_ALL_ITEMS];
+  fpApplied = [];
+  fpSelectedAvail.clear();
+  fpSelectedApplied.clear();
+  fpRenderAvail(document.getElementById('fp-search').value);
+  fpRenderApplied();
+}
+function fpCancel() {
+  fpApplied = [...fpCommitted];
+  fpAvailable = FP_ALL_ITEMS.filter(i => !fpApplied.includes(i));
+  fpSelectedAvail.clear();
+  fpSelectedApplied.clear();
+  closeFilterPopover();
+}
+document.addEventListener('click', function() {
+  if(document.getElementById('fp-popover').classList.contains('open')) closeFilterPopover();
+});
+document.getElementById('ownership-filter').addEventListener('change', function() {
+  currentOwnership = this.value;
+  // ownership sub-filter: in a real app would refine data; here we just re-render
+  renderAll();
+});
+
+// ═══════════════════════════════ INIT ════════════════════════════════════
+populateOwnership('all');
+renderAll();
+
+// ═══════════════════════════════ PERSONALIZATION ══════════════════════════
+
+// Sub-widget selectors within .insights-section
+const SUB_SELECTORS = {
+  priority:   '.priority-panel',
+  health:     '.health-panel',
+  duplicates: '.insights-cards .ic:nth-child(1)',
+  gaps:       '.insights-cards .ic:nth-child(2)',
+  opt:        '.insights-cards .ic:nth-child(3)',
+};
+
+// Tag page cards with data-widget for reliable post-reorder selection
+(function initWidgetTags() {
+  document.querySelectorAll('.left-column .card').forEach((card, i) => {
+    const ids = ['requires','quickview','features'];
+    if(ids[i]) card.dataset.widget = ids[i];
+  });
+  document.querySelectorAll('.right-sidebar .card').forEach((card, i) => {
+    const ids = ['actions','configs','resources'];
+    if(ids[i]) card.dataset.widget = ids[i];
+  });
+})();
+
+let mainOrder = ['insights','requires','quickview','features'];
+let railOrder = ['actions','configs','resources'];
+let mDragSrcId = null;
+
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if(e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function toggleSection(id) {
+  const body = document.getElementById('section-' + id);
+  const chevron = document.getElementById('chevron-' + id);
+  body.classList.toggle('collapsed');
+  chevron.classList.toggle('collapsed');
+}
+
+function toggleInsights() {
+  const children = document.getElementById('insights-children');
+  const btn = document.getElementById('insights-chevron-btn');
+  const nowCollapsed = children.classList.toggle('collapsed');
+  btn.classList.toggle('open', !nowCollapsed);
+  btn.classList.toggle('closed', nowCollapsed);
+}
+
+function widgetToggle(id, checked) {
+  if(id === 'insights') {
+    document.querySelector('.insights-section').style.display = checked ? '' : 'none';
+    return;
+  }
+  const card = document.querySelector('[data-widget="' + id + '"]');
+  if(card) card.style.display = checked ? '' : 'none';
+}
+
+function subWidgetToggle(id, checked) {
+  const el = document.querySelector(SUB_SELECTORS[id]);
+  if(el) el.style.display = checked ? '' : 'none';
+}
+
+// Modal drag-and-drop
+function mDragStart(event, id) {
+  mDragSrcId = id;
+  event.currentTarget.classList.add('dragging');
+  event.dataTransfer.effectAllowed = 'move';
+}
+
+function mDragOver(event, id) {
+  event.preventDefault();
+  if(mDragSrcId === id) return;
+  document.querySelectorAll('.m-row').forEach(el => el.classList.remove('drag-over-top','drag-over-bottom'));
+  const rect = event.currentTarget.getBoundingClientRect();
+  if(event.clientY < rect.top + rect.height / 2) {
+    event.currentTarget.classList.add('drag-over-top');
+  } else {
+    event.currentTarget.classList.add('drag-over-bottom');
+  }
+}
+
+function mDragLeave(event) {
+  event.currentTarget.classList.remove('drag-over-top','drag-over-bottom');
+}
+
+function mDrop(event, targetId) {
+  event.preventDefault();
+  if(!mDragSrcId || mDragSrcId === targetId) { mDragEnd(); return; }
+
+  const mainIds = ['insights','requires','quickview','features'];
+  const inMain = mainIds.includes(mDragSrcId);
+  const orderArr = inMain ? mainOrder : railOrder;
+
+  const srcIdx = orderArr.indexOf(mDragSrcId);
+  const tgtIdx = orderArr.indexOf(targetId);
+  if(srcIdx === -1 || tgtIdx === -1) { mDragEnd(); return; }
+
+  orderArr.splice(srcIdx, 1);
+  orderArr.splice(tgtIdx, 0, mDragSrcId);
+
+  // Reorder modal rows in DOM
+  const sectionEl = document.getElementById(inMain ? 'section-main' : 'section-rail');
+  orderArr.forEach(id => {
+    const row = document.getElementById('mrow-' + id);
+    if(row) sectionEl.appendChild(row);
+    if(id === 'insights') {
+      const ch = document.getElementById('insights-children');
+      if(ch) sectionEl.appendChild(ch);
+    }
+  });
+
+  // Reorder page elements immediately
+  if(inMain) {
+    const leftCol = document.querySelector('.left-column');
+    mainOrder.filter(id => ['requires','quickview','features'].includes(id)).forEach(id => {
+      const card = document.querySelector('[data-widget="' + id + '"]');
+      if(card) leftCol.appendChild(card);
+    });
+  } else {
+    const rightSidebar = document.querySelector('.right-sidebar');
+    railOrder.forEach(id => {
+      const card = document.querySelector('[data-widget="' + id + '"]');
+      if(card) rightSidebar.appendChild(card);
+    });
+  }
+
+  mDragEnd();
+}
+
+function mDragEnd() {
+  document.querySelectorAll('.m-row').forEach(el =>
+    el.classList.remove('dragging','drag-over-top','drag-over-bottom')
+  );
+  mDragSrcId = null;
+}
+
+/* ── Child (Insights) drag-and-drop ── */
+const CHILD_DEFAULT_ORDER = ['priority','health','duplicates','gaps','opt'];
+let childOrder = [...CHILD_DEFAULT_ORDER];
+let cDragSrcId = null;
+
+function cDragStart(event, id) {
+  event.stopPropagation();
+  cDragSrcId = id;
+  event.currentTarget.classList.add('dragging');
+  event.dataTransfer.effectAllowed = 'move';
+}
+function cDragOver(event, id) {
+  event.preventDefault(); event.stopPropagation();
+  if (cDragSrcId === id) return;
+  document.querySelectorAll('.m-child-row').forEach(el => el.classList.remove('drag-over-top','drag-over-bottom'));
+  const rect = event.currentTarget.getBoundingClientRect();
+  event.currentTarget.classList.add(event.clientY < rect.top + rect.height / 2 ? 'drag-over-top' : 'drag-over-bottom');
+}
+function cDragLeave(event) {
+  event.currentTarget.classList.remove('drag-over-top','drag-over-bottom');
+}
+function cDrop(event, targetId) {
+  event.preventDefault(); event.stopPropagation();
+  if (!cDragSrcId || cDragSrcId === targetId) { cDragEnd(); return; }
+  const srcIdx = childOrder.indexOf(cDragSrcId);
+  const tgtIdx = childOrder.indexOf(targetId);
+  childOrder.splice(srcIdx, 1);
+  childOrder.splice(tgtIdx, 0, cDragSrcId);
+  const container = document.getElementById('insights-children');
+  childOrder.forEach(id => { const el = document.getElementById('mchild-' + id); if (el) container.appendChild(el); });
+  cDragEnd();
+}
+function cDragEnd() {
+  document.querySelectorAll('.m-child-row').forEach(el => el.classList.remove('dragging','drag-over-top','drag-over-bottom'));
+  cDragSrcId = null;
+}
+
+function resetWidgets() {
+  // Reset all toggles + visibility
+  ['insights','requires','quickview','features','actions','configs','resources'].forEach(id => {
+    const tog = document.getElementById('tog-' + id);
+    if(tog) tog.checked = true;
+    widgetToggle(id, true);
+  });
+  ['priority','health','duplicates','gaps','opt'].forEach(id => {
+    const tog = document.getElementById('tog-' + id);
+    if(tog) tog.checked = true;
+    subWidgetToggle(id, true);
+  });
+
+  // Reset order arrays
+  mainOrder = ['insights','requires','quickview','features'];
+  railOrder = ['actions','configs','resources'];
+  childOrder = [...CHILD_DEFAULT_ORDER];
+
+  // Restore child row order
+  const childContainer = document.getElementById('insights-children');
+  childOrder.forEach(id => { const el = document.getElementById('mchild-' + id); if (el) childContainer.appendChild(el); });
+
+  // Restore modal section-main row order
+  const sectionMain = document.getElementById('section-main');
+  mainOrder.forEach(id => {
+    const row = document.getElementById('mrow-' + id);
+    if(row) sectionMain.appendChild(row);
+    if(id === 'insights') {
+      const ch = document.getElementById('insights-children');
+      if(ch) sectionMain.appendChild(ch);
+    }
+  });
+
+  // Restore modal section-rail row order
+  const sectionRail = document.getElementById('section-rail');
+  railOrder.forEach(id => {
+    const row = document.getElementById('mrow-' + id);
+    if(row) sectionRail.appendChild(row);
+  });
+
+  // Restore page left-column order
+  const leftCol = document.querySelector('.left-column');
+  ['requires','quickview','features'].forEach(id => {
+    const card = document.querySelector('[data-widget="' + id + '"]');
+    if(card) leftCol.appendChild(card);
+  });
+
+  // Restore page right-sidebar order
+  const rightSidebar = document.querySelector('.right-sidebar');
+  ['actions','configs','resources'].forEach(id => {
+    const card = document.querySelector('[data-widget="' + id + '"]');
+    if(card) rightSidebar.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════ INSIGHTS DRAG-AND-DROP ══════════════════════
+let iDragSrc = null;
+
+function iDragStart(e) {
+  iDragSrc = e.currentTarget;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  // Prevent the event from bubbling to any outer drag handlers
+  e.stopPropagation();
+}
+
+function iDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!iDragSrc || iDragSrc === e.currentTarget) return;
+  // Only allow drops within the same parent container
+  if (iDragSrc.parentNode !== e.currentTarget.parentNode) return;
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function iDragLeave(e) {
+  // Only remove if leaving the element itself, not a child
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+
+function iDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const target = e.currentTarget;
+  target.classList.remove('drag-over');
+  if (!iDragSrc || iDragSrc === target) return;
+  if (iDragSrc.parentNode !== target.parentNode) return;
+
+  const parent = target.parentNode;
+  const children = [...parent.children];
+  const srcIdx = children.indexOf(iDragSrc);
+  const tgtIdx = children.indexOf(target);
+
+  if (srcIdx < tgtIdx) {
+    parent.insertBefore(iDragSrc, target.nextSibling);
+  } else {
+    parent.insertBefore(iDragSrc, target);
+  }
+}
+
+function iDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.insights-draggable').forEach(el => el.classList.remove('drag-over'));
+  iDragSrc = null;
+}
+</script>
+</body>
+</html>

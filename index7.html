@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Potential Duplicates — Knowledge Center</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<!-- ServiceNow Sans is proprietary; Source Sans Pro is the closest available fallback -->
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── NX Design System Tokens (verified from next-experience-ui-skill-v4) ─── */
+:root{
+  /* Canvas & surface */
+  --nx-canvas:          #e5edf0;   /* background--secondary — page canvas */
+  --nx-surface:         #ffffff;   /* background--primary — cards, panels */
+  --nx-surface-2:       #f3f8f9;   /* lighter secondary — hover, table header */
+  --nx-inner:           #e2e5e7;   /* background--tertiary — progress track */
+
+  /* Borders */
+  --nx-border:          #d7e1e5;   /* border--tertiary — cards, table, nav right edge */
+  --nx-border-2:        #cfd5d7;   /* inner panel border, sub-header bottom */
+  --nx-border-ctrl:     #69838c;   /* form control default border */
+
+  /* Nav chrome */
+  --nx-nav-bg:          #032d42;   /* global top nav — 52px strip ONLY */
+  --nx-tabs-bg:         #021f2e;   /* page tab bar (sn-canvas-tabs) */
+  --nx-tabs-border:     #365a6d;   /* tab bar bottom border */
+  --nx-tab-active-pill: #bddee7;   /* active nav item pill */
+
+  /* Text */
+  --nx-text:            #172b31;   /* text--primary */
+  --nx-text-2:          #294149;   /* text--secondary */
+  --nx-text-3:          #4a5e65;   /* text--tertiary — captions, table headers */
+  --nx-text-inv:        #ffffff;   /* on dark surfaces */
+
+  /* Interactive */
+  --nx-primary:         #0080a3;   /* primary-1 — buttons, links, progress fill */
+  --nx-primary-dk:      #006d8c;   /* hover darken of primary */
+  --nx-link:            #1955be;   /* link-2 — hyperlinks */
+  --nx-active-green:    #2d7524;   /* active tab underline / text */
+  --nx-focus:           #248a13;   /* focus ring — ALL form controls */
+  --nx-focus-ring:      rgba(36,138,19,.15);
+
+  /* Semantic — highlighted value / badge colors */
+  --nx-hv-green-bg:     #cadfc0;   /* Low priority / positive */
+  --nx-hv-green-tx:     #107a3e;
+  --nx-hv-yellow-bg:    #fbf7bf;   /* Warning / needs setup */
+  --nx-hv-yellow-tx:    #172b31;
+  --nx-hv-blue-bg:      #bddcf2;   /* Info / auto / AI */
+  --nx-hv-blue-tx:      #172b31;
+  --nx-hv-red-bg:       #f8c8cd;   /* Critical / error */
+  --nx-hv-red-tx:       #b61c2d;
+  --nx-hv-teal-bg:      #e0f3f7;   /* Teal badge bg */
+  --nx-hv-teal-tx:      #0080a3;
+
+  /* AI / Now Assist */
+  --nx-wasabi:          #62d84e;
+  --nx-ai-grad-start:   rgba(134,246,115,.12);
+  --nx-ai-grad-end:     rgba(113,213,254,.12);
+
+  /* Progress bar */
+  --nx-prog-fill:       #0080a3;
+  --nx-prog-track:      #e2e5e7;
+  --nx-prog-border:     #737f84;
+
+  /* Typography */
+  --font: 'ServiceNow Sans','Source Sans 3',system-ui,sans-serif;
+
+  /* Radius */
+  --r-sm: 4px;   /* small controls, pills message */
+  --r-md: 6px;   /* inputs, nav pills */
+  --r-lg: 12px;  /* highlighted values / badges */
+  --r-card: 8px; /* cards — hardcoded between sm/md */
+}
+
+html,body{
+  height:100%;
+  font-family:var(--font);font-size:14px;font-weight:400;
+  color:var(--nx-text);background:var(--nx-canvas);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--nx-link);text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:underline;}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;}
+select{font-family:var(--font);cursor:pointer;}
+svg{display:block;}
+
+/* ─── NX SHELL (Mode 2 spec) ─── */
+.shell{display:flex;flex-direction:column;width:100%;min-width:1440px;min-height:100vh;}
+
+/* ─── GLOBAL NAV — 52px, #032d42 ONLY ─── */
+.header{
+  position:sticky;top:0;z-index:100;flex-shrink:0;
+  width:100%;height:52px;background:var(--nx-nav-bg);
+  display:flex;align-items:center;padding:0 16px;
+}
+.nav-logo{display:flex;align-items:center;padding-right:20px;margin-right:4px;}
+.nav-logo-mark{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  background:#fff;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;
+}
+.nav-logo-mark svg{color:var(--nx-nav-bg);}
+.nav-links{display:flex;height:100%;align-items:center;}
+.nav-link{
+  display:flex;align-items:center;gap:4px;
+  padding:0 14px;height:52px;font-size:14px;font-weight:400;
+  color:rgba(255,255,255,.75);cursor:pointer;
+  border-bottom:3px solid transparent;transition:color .15s;
+  white-space:nowrap;
+}
+.nav-link:hover{color:#fff;}
+.nav-link.active{color:#fff;border-bottom-color:#fff;}
+.nav-link .caret{font-size:10px;opacity:.7;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:4px;}
+.nav-search{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);border-radius:var(--r-sm);
+  padding:5px 10px;width:180px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.nav-search input{
+  border:none;outline:none;background:transparent;
+  color:rgba(255,255,255,.85);font-size:13px;
+  font-family:var(--font);flex:1;min-width:0;
+}
+.nav-search input::placeholder{color:rgba(255,255,255,.38);}
+.nav-search svg{flex-shrink:0;color:rgba(255,255,255,.5);}
+.nav-icon{
+  width:32px;height:32px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.7);cursor:pointer;
+}
+.nav-icon:hover{background:rgba(255,255,255,.1);color:#fff;}
+.nav-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:#5eafc5;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;
+  color:#fff;cursor:pointer;margin-left:4px;
+  border:2px solid rgba(255,255,255,.25);
+}
+.nav-notif{position:relative;}
+.nav-notif-badge{
+  position:absolute;top:4px;right:4px;
+  width:8px;height:8px;border-radius:50%;
+  background:#e2161c;border:1.5px solid var(--nx-nav-bg);
+}
+
+/* ─── PAGE TABS — sn-canvas-tabs, #021f2e ─── */
+.page-tabs{
+  flex-shrink:0;height:36px;
+  background:var(--nx-tabs-bg);
+  border-bottom:1px solid var(--nx-tabs-border);
+  display:flex;align-items:flex-end;
+  padding:0 0 0 8px;
+}
+.tab-item{
+  display:flex;align-items:center;gap:6px;
+  padding:0 10px;height:30px;
+  font-size:13px;font-weight:400;
+  color:rgba(255,255,255,.6);cursor:pointer;
+  border-radius:var(--r-md) var(--r-md) 0 0;
+  background:transparent;flex-shrink:0;
+  border:1px solid transparent;border-bottom:none;
+  transition:color .15s;
+  max-width:200px;
+}
+.tab-item:hover{color:rgba(255,255,255,.9);}
+.tab-item.active{
+  color:var(--nx-text);background:var(--nx-canvas);
+  border-color:var(--nx-tabs-border);border-bottom-color:var(--nx-canvas);
+  margin-bottom:-1px;
+  font-weight:500;
+}
+.tab-item svg{opacity:.6;flex-shrink:0;}
+.tab-item.active svg{opacity:.8;}
+.tab-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tab-close{
+  font-size:11px;margin-left:4px;flex-shrink:0;opacity:.5;
+  color:rgba(255,255,255,.7);
+}
+.tab-item.active .tab-close{color:var(--nx-text-3);}
+
+/* ─── CANVAS (page background #e5edf0) ─── */
+.canvas{flex:1;background:var(--nx-canvas);overflow-y:auto;padding:24px 48px;}
+
+/* ─── PAGE HEADER — title ON canvas (not in a card) ─── */
+.page-head{margin-bottom:16px;}
+.page-breadcrumb{
+  font-size:12px;font-weight:300;color:var(--nx-text-3);
+  margin-bottom:8px;display:flex;align-items:center;gap:4px;
+}
+.page-breadcrumb a{color:var(--nx-link);font-size:12px;font-weight:400;}
+.page-breadcrumb-sep{opacity:.5;font-size:11px;}
+.page-title-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:2px;
+}
+/* heading/large — Bold 32px per NX typography scale */
+.page-title{font-size:24px;font-weight:700;color:var(--nx-text);line-height:1.25;letter-spacing:-.2px;}
+.page-meta{font-size:12px;font-weight:300;color:var(--nx-text-3);}
+
+/* ─── NX BUTTON VARIANTS ─── */
+/* Primary — now-button primary md */
+.btn-primary{
+  height:32px;padding:0 16px;border-radius:var(--r-md);
+  background:var(--nx-primary);color:#fff;
+  font-size:14px;font-weight:500;font-family:var(--font);
+  border:1px solid var(--nx-primary);white-space:nowrap;
+  transition:background .15s,border-color .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary:hover{background:var(--nx-primary-dk);border-color:var(--nx-primary-dk);}
+.btn-primary:focus{outline:2px solid var(--nx-focus);outline-offset:2px;}
+
+/* Secondary — now-button secondary */
+.btn-secondary{
+  height:32px;padding:0 16px;border-radius:var(--r-md);
+  background:var(--nx-surface);color:var(--nx-primary);
+  font-size:14px;font-weight:500;font-family:var(--font);
+  border:1px solid var(--nx-primary);white-space:nowrap;
+  transition:background .15s,border-color .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-secondary:hover{background:var(--nx-hv-teal-bg);}
+.btn-secondary:focus{outline:2px solid var(--nx-focus);outline-offset:2px;}
+
+/* Tertiary / ghost — now-button tertiary */
+.btn-ghost{
+  height:32px;padding:0 16px;border-radius:var(--r-md);
+  background:transparent;color:var(--nx-text-2);
+  font-size:14px;font-weight:400;font-family:var(--font);
+  border:1px solid var(--nx-border-ctrl);white-space:nowrap;
+  transition:background .15s,border-color .15s,color .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-ghost:hover{background:var(--nx-surface-2);border-color:var(--nx-primary);color:var(--nx-primary);}
+.btn-ghost:focus{outline:2px solid var(--nx-focus);outline-offset:2px;}
+.btn-ghost:disabled{opacity:.4;cursor:not-allowed;}
+
+/* Inline compact variants (table rows) */
+.btn-sm{height:26px;padding:0 12px;font-size:13px;}
+.btn-sm.btn-secondary{border-radius:var(--r-sm);}
+.btn-sm.btn-ghost{border-radius:var(--r-sm);}
+
+/* ─── AI BANNER — Now Assist gradient ─── */
+.ai-banner{
+  margin-bottom:12px;border-radius:var(--r-card);
+  border:1px solid rgba(98,216,78,.35);
+  background:linear-gradient(90deg,var(--nx-ai-grad-start),var(--nx-ai-grad-end));
+  display:flex;align-items:center;gap:12px;
+  padding:0 16px;height:44px;
+}
+.ai-banner-icon{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--nx-wasabi);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ai-banner-text{flex:1;font-size:13px;font-weight:300;color:var(--nx-text-2);line-height:1.4;}
+.ai-banner-text strong{color:var(--nx-text);font-weight:600;}
+.ai-banner-link{color:var(--nx-link);cursor:pointer;font-weight:400;}
+.ai-banner-link:hover{text-decoration:underline;}
+
+/* ─── FILTER ROW ─── */
+.filter-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:12px;
+}
+.filter-label{font-size:13px;font-weight:300;color:var(--nx-text-3);white-space:nowrap;}
+/* now-select style — full 4-sided border */
+.filter-select{
+  appearance:none;-webkit-appearance:none;
+  height:30px;padding:0 28px 0 10px;
+  border-radius:var(--r-md);
+  border:1px solid var(--nx-border-ctrl);
+  background:var(--nx-surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%234a5e65' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")
+    no-repeat right 8px center;
+  font-size:13px;font-weight:300;color:var(--nx-text);font-family:var(--font);
+  cursor:pointer;min-width:0;
+  transition:border-color .15s,background .15s;
+}
+.filter-select:hover{border-color:var(--nx-primary);background-color:var(--nx-canvas);}
+.filter-select:focus{
+  outline:none;
+  border:2px solid var(--nx-focus);
+  box-shadow:0 0 0 4px var(--nx-focus-ring);
+}
+
+/* ─── STATS ROW ─── */
+/* These are raw highlighted values — no card, just numbers directly on canvas */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:16px;
+}
+.stat-cell{
+  background:var(--nx-surface);
+  border:1px solid var(--nx-border);
+  border-radius:var(--r-card);
+  padding:16px;
+}
+/* heading/x-large emphasis — Bold 40px per NX scale */
+.stat-num{font-size:36px;font-weight:700;color:var(--nx-text);line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:13px;font-weight:300;color:var(--nx-text-3);}
+
+/* ─── CONTAINER CARD (list + toolbar) ─── */
+/* NX card rule: white, 8px radius, border only — NO box-shadow */
+.list-card{
+  background:var(--nx-surface);
+  border:1px solid var(--nx-border);
+  border-radius:var(--r-card);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  margin-bottom:16px;
+}
+
+/* ─── TABLE HEADER ─── */
+/* NX table column headers: 11px Medium all-caps, color #4a5e65, bg #f3f8f9 */
+.list-col-header{
+  display:grid;
+  grid-template-columns:32px 28px 1fr 160px 130px 100px 80px;
+  align-items:center;
+  padding:0 8px;height:36px;
+  background:var(--nx-surface-2);
+  border-bottom:1px solid var(--nx-border);
+  flex-shrink:0;
+}
+.col-th{
+  font-size:11px;font-weight:500;color:var(--nx-text-3);
+  text-transform:uppercase;letter-spacing:.06em;
+  user-select:none;
+}
+.col-th.sortable{cursor:pointer;display:flex;align-items:center;gap:3px;}
+.col-th.sortable:hover{color:var(--nx-text);}
+
+/* ─── LIST BODY ─── */
+.list-body{overflow-y:auto;flex:1;}
+
+/* ─── LIST ROW ─── */
+/* NX row divider: #e6eaed */
+.list-row{border-bottom:1px solid #e6eaed;}
+.list-row:last-child{border-bottom:none;}
+.list-row-main{
+  display:grid;
+  grid-template-columns:32px 28px 1fr 160px 130px 100px 80px;
+  align-items:center;padding:0 8px;min-height:44px;
+  cursor:pointer;transition:background .1s;
+}
+.list-row-main:hover{background:var(--nx-surface-2);}
+.list-row.expanded .list-row-main{background:var(--nx-hv-teal-bg);}
+
+/* Chevron */
+.row-chevron{
+  width:20px;height:20px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--nx-text-3);flex-shrink:0;
+}
+.row-chevron svg{transition:transform .2s;}
+.list-row.expanded .row-chevron svg{transform:rotate(90deg);}
+
+/* Topic cell */
+.row-topic{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 8px 10px 0;min-width:0;
+}
+.row-topic-name{
+  font-size:13px;font-weight:400;color:var(--nx-link);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;min-width:0;
+}
+.row-topic-name:hover{text-decoration:underline;}
+
+/* NX Highlighted Value — now-highlighted-value secondary, 12px border-radius (pill) */
+.hv{
+  flex-shrink:0;height:20px;padding:0 8px;
+  border-radius:var(--r-lg);
+  font-size:11px;font-weight:500;
+  display:inline-flex;align-items:center;white-space:nowrap;
+}
+.hv-green{background:var(--nx-hv-green-bg);color:var(--nx-hv-green-tx);}
+.hv-yellow{background:var(--nx-hv-yellow-bg);color:var(--nx-hv-yellow-tx);}
+.hv-red{background:var(--nx-hv-red-bg);color:var(--nx-hv-red-tx);}
+.hv-blue{background:var(--nx-hv-blue-bg);color:var(--nx-hv-blue-tx);}
+.hv-teal{background:var(--nx-hv-teal-bg);color:var(--nx-hv-teal-tx);}
+
+/* Meta cell */
+.row-meta{
+  font-size:13px;font-weight:300;color:var(--nx-text-3);
+  padding:0 8px;display:flex;flex-direction:column;gap:1px;
+}
+.row-meta-main{font-weight:400;color:var(--nx-text-2);}
+
+/* Row actions */
+.row-actions{display:flex;align-items:center;gap:6px;padding:0 4px;}
+
+/* NX Checkbox — now-checkbox */
+.cb{
+  appearance:none;-webkit-appearance:none;
+  width:16px;height:16px;border-radius:var(--r-md);
+  border:1px solid var(--nx-border-ctrl);
+  background:var(--nx-surface);cursor:pointer;
+  transition:border-color .15s,background .15s;
+  flex-shrink:0;position:relative;
+}
+.cb:hover{border-color:var(--nx-primary);}
+.cb:focus{
+  outline:2px solid var(--nx-focus);
+  outline-offset:1px;
+  box-shadow:0 0 0 4px var(--nx-focus-ring);
+}
+/* checked: #0080a3 fill per NX checkbox spec */
+.cb:checked{background:var(--nx-primary);border-color:var(--nx-primary);}
+.cb:checked::after{
+  content:'';position:absolute;
+  left:4px;top:1px;width:5px;height:8px;
+  border-right:2px solid #fff;border-bottom:2px solid #fff;
+  transform:rotate(40deg);
+}
+.cb:indeterminate{background:var(--nx-primary);border-color:var(--nx-primary);}
+.cb:indeterminate::after{
+  content:'';position:absolute;
+  left:2px;top:6px;width:10px;height:2px;background:#fff;border-radius:1px;
+}
+
+/* ─── EXPANDED PANEL ─── */
+.list-expand{
+  max-height:0;overflow:hidden;
+  transition:max-height .2s ease;
+  background:var(--nx-surface-2);
+  border-top:1px solid #e6eaed;
+}
+.list-expand.open{max-height:320px;}
+.expand-inner{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;padding:16px 68px;
+}
+.expand-panel{padding:0 16px 0 0;}
+.expand-panel+.expand-panel{
+  padding:0 0 0 16px;
+  border-left:1px solid var(--nx-border);
+}
+.expand-panel-title{
+  font-size:11px;font-weight:500;color:var(--nx-text-3);
+  text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:10px;
+}
+/* Recommended action */
+.rec-action-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:var(--r-md);padding:6px 10px;margin-bottom:10px;
+  font-size:13px;font-weight:500;
+}
+.rec-action-badge.ai{background:var(--nx-hv-green-bg);color:var(--nx-hv-green-tx);}
+.rec-action-badge.manual{background:var(--nx-hv-yellow-bg);color:#7a5700;}
+.rec-action-desc{font-size:12px;font-weight:300;color:var(--nx-text-3);margin-bottom:8px;line-height:1.5;}
+.rec-pills{display:flex;flex-wrap:wrap;gap:4px;}
+/* KB reference pills — now-pill style */
+.rec-pill{
+  height:22px;padding:0 8px;border-radius:var(--r-lg);
+  background:var(--nx-hv-teal-bg);
+  font-size:11px;font-weight:400;color:var(--nx-hv-teal-tx);
+  display:inline-flex;align-items:center;cursor:pointer;
+  transition:background .15s;
+}
+.rec-pill:hover{background:#c5e8f0;}
+/* Article list */
+.article-list{display:flex;flex-direction:column;gap:4px;}
+.article-item{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 8px;border-radius:var(--r-sm);
+  border:1px solid var(--nx-border);background:var(--nx-surface);
+  font-size:12px;font-weight:300;cursor:pointer;
+  transition:border-color .15s;
+}
+.article-item:hover{border-color:var(--nx-primary);}
+.article-kb{color:var(--nx-link);white-space:nowrap;flex-shrink:0;font-weight:400;}
+.article-ver{color:var(--nx-text-3);flex-shrink:0;}
+.article-title{flex:1;color:var(--nx-text);min-width:0;font-weight:400;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.article-it{color:var(--nx-text-3);flex-shrink:0;font-size:11px;}
+.article-pub{
+  flex-shrink:0;height:18px;padding:0 6px;border-radius:var(--r-lg);
+  background:var(--nx-hv-green-bg);color:var(--nx-hv-green-tx);
+  font-size:11px;font-weight:500;display:inline-flex;align-items:center;
+}
+
+/* ─── PAGINATION — now-pagination-control ─── */
+.pagination{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;border-top:1px solid var(--nx-border);
+  background:var(--nx-surface);flex-shrink:0;
+}
+.pagination-info{font-size:13px;font-weight:300;color:var(--nx-text-3);}
+.pagination-pages{display:flex;align-items:center;gap:4px;}
+.page-btn{
+  min-width:28px;height:28px;padding:0 6px;border-radius:var(--r-sm);
+  border:1px solid transparent;background:transparent;
+  font-size:13px;font-weight:400;color:var(--nx-link);
+  display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-family:var(--font);
+  transition:border-color .15s,background .15s;
+}
+.page-btn:hover{border-color:var(--nx-border);background:var(--nx-canvas);}
+/* active page: primary-1 fill */
+.page-btn.active{
+  background:var(--nx-primary);color:#fff;
+  border-color:var(--nx-primary);font-weight:500;
+}
+.page-btn.arrow{color:var(--nx-text-3);}
+.page-ellipsis{font-size:13px;color:var(--nx-text-3);padding:0 4px;}
+.page-size{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:300;color:var(--nx-text-3);
+}
+/* now-select compact */
+.page-size-select{
+  appearance:none;-webkit-appearance:none;
+  height:28px;padding:0 24px 0 8px;border-radius:var(--r-sm);
+  border:1px solid var(--nx-border-ctrl);
+  background:var(--nx-surface)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%234a5e65' stroke-width='1.3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E")
+    no-repeat right 6px center;
+  font-size:13px;font-weight:300;color:var(--nx-text);font-family:var(--font);cursor:pointer;
+}
+.page-size-select:focus{
+  outline:none;border:2px solid var(--nx-focus);
+  box-shadow:0 0 0 4px var(--nx-focus-ring);
+}
+
+/* ─── BOTTOM ACTION BAR ─── */
+.action-bar{
+  position:sticky;bottom:0;
+  height:48px;background:var(--nx-surface);
+  border-top:1px solid var(--nx-border);
+  display:flex;align-items:center;padding:0 48px;gap:8px;
+  flex-shrink:0;z-index:10;
+}
+.action-bar-info{
+  font-size:13px;font-weight:300;color:var(--nx-text-3);
+  margin-right:8px;min-width:160px;
+}
+.action-bar-info strong{font-weight:600;color:var(--nx-text);}
+.action-bar-div{width:1px;height:20px;background:var(--nx-border);margin:0 4px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- GLOBAL NAV — 52px, #032d42 -->
+  <header class="header">
+    <div class="nav-logo">
+      <div class="nav-logo-mark">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 1.5C4.86 1.5 1.5 4.86 1.5 9s3.36 7.5 7.5 7.5 7.5-3.36 7.5-7.5S13.14 1.5 9 1.5z" fill="currentColor" opacity=".2"/>
+          <path d="M9 4.5C6.52 4.5 4.5 6.52 4.5 9s2.02 4.5 4.5 4.5 4.5-2.02 4.5-4.5S11.48 4.5 9 4.5z" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-link">All</div>
+      <div class="nav-link">Favorites</div>
+      <div class="nav-link">History</div>
+      <div class="nav-link">Workspaces</div>
+      <div class="nav-link active">Knowledge <span class="caret">▾</span></div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-search">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input placeholder="Search" />
+      </div>
+      <div class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="rgba(255,255,255,.7)" stroke-width="1.3"/><path d="M5.5 8.5a2.5 2.5 0 1 1 5 0" stroke="rgba(255,255,255,.7)" stroke-width="1.3" stroke-linecap="round"/><path d="M8 11V9" stroke="rgba(255,255,255,.7)" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="nav-icon nav-notif">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5a4.5 4.5 0 0 1 4.5 4.5c0 2.5-.8 3.8-.8 5H4.3c0-1.2-.8-2.5-.8-5A4.5 4.5 0 0 1 8 1.5z" stroke="rgba(255,255,255,.7)" stroke-width="1.3"/><path d="M6.5 11c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5" stroke="rgba(255,255,255,.7)" stroke-width="1.3"/></svg>
+        <div class="nav-notif-badge"></div>
+      </div>
+      <div class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="2.5" stroke="rgba(255,255,255,.7)" stroke-width="1.3"/><path d="M2.5 13.5c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="rgba(255,255,255,.7)" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="rgba(255,255,255,.7)" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="rgba(255,255,255,.7)" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="nav-avatar">MD</div>
+    </div>
+  </header>
+
+  <!-- PAGE TABS — sn-canvas-tabs, #021f2e -->
+  <div class="page-tabs">
+    <div class="tab-item">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 4h5M3.5 6h5M3.5 8h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <span class="tab-label">Knowledge Center</span>
+      <span class="tab-close">✕</span>
+    </div>
+    <div class="tab-item active">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 4h5M3.5 6h5M3.5 8h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <span class="tab-label">Potential duplica…</span>
+      <span class="tab-close">✕</span>
+    </div>
+  </div>
+
+  <!-- CANVAS — #e5edf0 with white cards -->
+  <div class="canvas">
+
+    <!-- PAGE HEADER — title sits ON canvas, not inside a card -->
+    <div class="page-head">
+      <div class="page-breadcrumb">
+        <a href="#">Knowledge Center</a>
+        <span class="page-breadcrumb-sep">›</span>
+        <span>Potential duplicates</span>
+      </div>
+      <div class="page-title-row">
+        <h1 class="page-title">Potential duplicates</h1>
+        <button class="btn-secondary" onclick="goToList()">Go to list</button>
+      </div>
+      <div class="page-meta">Last refreshed 1m ago</div>
+    </div>
+
+    <!-- FILTER ROW -->
+    <div class="filter-row">
+      <span class="filter-label">Sort by:</span>
+      <select class="filter-select" onchange="sortRows(this.value)">
+        <option value="conf">Confidence</option>
+        <option value="articles">Articles</option>
+        <option value="views">Views</option>
+        <option value="name">Name A–Z</option>
+      </select>
+      <select class="filter-select" id="filterCat" onchange="filterRows()">
+        <option value="all">All</option>
+        <option value="IT">IT</option>
+        <option value="HR">HR</option>
+      </select>
+    </div>
+
+    <!-- NOW ASSIST AI BANNER -->
+    <div class="ai-banner">
+      <div class="ai-banner-icon">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 6l3 3 5-5" stroke="#172b31" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="ai-banner-text">
+        Now Assist analyzed all <strong id="bannerTotal">98</strong> duplicate topics&nbsp;&nbsp;
+        <span class="ai-banner-link" id="bannerDraft">67 recommendations</span> with pre-generated drafts ready · <span class="ai-banner-link" id="bannerReview">31 need manual review</span>
+      </div>
+      <button class="btn-primary" onclick="acceptAll()">Accept all recommendations</button>
+    </div>
+
+    <!-- STATS ROW — KPI cells (now-highlighted-value xl) -->
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-num" id="statDupTotal">98</div>
+        <div class="stat-lbl">Duplicate Topics</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">67</div>
+        <div class="stat-lbl">AI Recommendations</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">31</div>
+        <div class="stat-lbl">Need Review</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">306</div>
+        <div class="stat-lbl">Articles with Recommendations</div>
+      </div>
+    </div>
+
+    <!-- LIST CARD — white card on #e5edf0 canvas, border only, no shadow -->
+    <div class="list-card">
+      <!-- Column headers -->
+      <div class="list-col-header">
+        <div class="col-th">
+          <input type="checkbox" class="cb" id="selectAll" onchange="toggleSelectAll(this)" />
+        </div>
+        <div class="col-th"></div>
+        <div class="col-th sortable">Duplicate Topics</div>
+        <div class="col-th">Articles / Views</div>
+        <div class="col-th">Review Type</div>
+        <div class="col-th"></div>
+        <div class="col-th"></div>
+      </div>
+      <div class="list-body" id="listBody"></div>
+
+      <!-- Pagination — now-pagination-control -->
+      <div class="pagination">
+        <div class="pagination-info" id="pagInfo">Showing 1–15 of 98</div>
+        <div class="pagination-pages" id="pagPages"></div>
+        <div class="page-size">
+          Records per page:
+          <select class="page-size-select">
+            <option>10</option>
+            <option selected>15</option>
+            <option>25</option>
+            <option>50</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /canvas -->
+
+  <!-- BOTTOM ACTION BAR — sticky, border-top only -->
+  <div class="action-bar">
+    <div class="action-bar-info" id="selInfo">No items selected</div>
+    <div class="action-bar-div"></div>
+    <button class="btn-ghost" id="btnRetire" disabled onclick="bulkAction('retire')">Retire</button>
+    <button class="btn-ghost" id="btnUnmark" disabled onclick="bulkAction('unmark')">Unmark as duplicate</button>
+    <button class="btn-primary" onclick="bulkAction('merge')" style="margin-left:auto;">Merge into new</button>
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+const ROWS = [
+  {id:1,topic:'Hardware assets should have asset tag',conf:96,articles:3,views:5155,cat:'IT',hasDraft:true,
+   action:'Unmark as duplicates',actionDesc:'These are false positives and will be unmarked as duplicates.',
+   kbRefs:['KB8090001','KB8090235','KB8090233','KB8090231','KB8090230','KB8090234'],
+   articleList:[
+     {kb:'KB8090001',ver:'v1',title:'Family Release Penetration Test',it:'IT 5899',status:'Published'},
+     {kb:'KB8090001',ver:'v1',title:'Penetration Test: Data Encryption',it:'IT 5899',status:'Published'},
+     {kb:'KB8090001',ver:'v1',title:'Penetration Test: Mobile SDK',it:'IT 5899',status:'Published'},
+   ]},
+  {id:2,topic:'How to use Now Support | Developer',conf:94,articles:2,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'These articles cover the same topic and should be merged.',
+   kbRefs:['KB0010023','KB0019841'],
+   articleList:[
+     {kb:'KB0010023',ver:'v1',title:'Now Support Developer Guide',it:'IT 4201',status:'Published'},
+     {kb:'KB0019841',ver:'v1',title:'Developer Portal — Getting Started',it:'IT 4201',status:'Published'},
+   ]},
+  {id:3,topic:'Penetration Testing for Mobile, Network, and Edge Encryption Systems',conf:93,articles:4,views:5155,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Multiple articles cover overlapping penetration testing topics.',
+   kbRefs:['KB0041200','KB0041509','KB0042011','KB0042210'],
+   articleList:[
+     {kb:'KB0041200',ver:'v1',title:'Mobile Device Penetration Testing',it:'IT 5210',status:'Published'},
+     {kb:'KB0041509',ver:'v1',title:'Network Security Assessment',it:'IT 5210',status:'Published'},
+     {kb:'KB0042011',ver:'v2',title:'Edge Encryption Standards',it:'IT 5210',status:'Published'},
+     {kb:'KB0042210',ver:'v1',title:'Encryption Testing Framework',it:'IT 5210',status:'Draft'},
+   ]},
+  {id:4,topic:'Work Instruction | How to create a new knowledge article in Global Cloud KB',conf:91,articles:1,views:5155,cat:'IT',hasDraft:false,
+   action:'Update existing article',actionDesc:'This article duplicates existing knowledge base documentation.',
+   kbRefs:['KB0055100'],
+   articleList:[
+     {kb:'KB0055100',ver:'v3',title:'Creating Knowledge Articles — Admin Guide',it:'IT 3300',status:'Published'},
+   ]},
+  {id:5,topic:'Hardware assets should have asset tag',conf:96,articles:2,views:5155,cat:'IT',hasDraft:true,
+   action:'Merge into new article',actionDesc:'Duplicate entries for hardware asset tagging policy.',
+   kbRefs:['KB0060100','KB0060240'],
+   articleList:[
+     {kb:'KB0060100',ver:'v1',title:'Asset Tagging Policy',it:'IT 6100',status:'Published'},
+     {kb:'KB0060240',ver:'v1',title:'Hardware Inventory Tagging',it:'IT 6100',status:'Published'},
+   ]},
+  {id:6,topic:'Exit interview process',conf:88,articles:3,views:6804,cat:'HR',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Multiple HR articles describe the same exit interview workflow.',
+   kbRefs:['KB0071200','KB0071360','KB0071580'],
+   articleList:[
+     {kb:'KB0071200',ver:'v1',title:'Exit Interview: What to Expect',it:'HR 2100',status:'Published'},
+     {kb:'KB0071360',ver:'v1',title:'Scheduling Your Exit Interview',it:'HR 2100',status:'Published'},
+     {kb:'KB0071580',ver:'v2',title:'HR Offboarding Checklist',it:'HR 2100',status:'Published'},
+   ]},
+  {id:7,topic:'Cloud storage migration',conf:96,articles:7,views:8200,cat:'IT',hasDraft:true,
+   action:'Merge into new article',actionDesc:'Several articles cover the same cloud migration steps.',
+   kbRefs:['KB0033210','KB0033848','KB0034102'],
+   articleList:[
+     {kb:'KB0033210',ver:'v1',title:'Migrating to Cloud Storage: Overview',it:'IT 4400',status:'Published'},
+     {kb:'KB0033848',ver:'v1',title:'OneDrive Migration Steps',it:'IT 4400',status:'Published'},
+     {kb:'KB0034102',ver:'v2',title:'SharePoint Migration Guide',it:'IT 4400',status:'Published'},
+   ]},
+  {id:8,topic:'Password reset procedures',conf:96,articles:6,views:8200,cat:'IT',hasDraft:true,
+   action:'Update KB0010023',actionDesc:'The canonical password reset article should absorb these duplicates.',
+   kbRefs:['KB0010023','KB0010100','KB0010290'],
+   articleList:[
+     {kb:'KB0010023',ver:'v4',title:'How to Reset Your Password',it:'IT 1001',status:'Published'},
+     {kb:'KB0010100',ver:'v1',title:'Password Reset via Email Link',it:'IT 1001',status:'Published'},
+     {kb:'KB0010290',ver:'v1',title:'Admin Password Reset Guide',it:'IT 1001',status:'Published'},
+   ]},
+  {id:9,topic:'DNS configuration',conf:95,articles:6,views:6117,cat:'IT',hasDraft:true,
+   action:'Merge into new article',actionDesc:'DNS configuration content is fragmented across multiple articles.',
+   kbRefs:['KB0041200','KB0041509','KB0042011'],
+   articleList:[
+     {kb:'KB0041200',ver:'v2',title:'Setting Up DNS for Your Domain',it:'IT 5500',status:'Published'},
+     {kb:'KB0041509',ver:'v1',title:'DNS Troubleshooting Guide',it:'IT 5500',status:'Published'},
+     {kb:'KB0042011',ver:'v1',title:'Corporate DNS Configuration',it:'IT 5500',status:'Published'},
+   ]},
+  {id:10,topic:'Company org chart access',conf:95,articles:4,views:3102,cat:'HR',hasDraft:true,
+   action:'Update KB0055621',actionDesc:'The primary org chart article should absorb the duplicates.',
+   kbRefs:['KB0055621','KB0055840'],
+   articleList:[
+     {kb:'KB0055621',ver:'v2',title:'How to View the Org Chart',it:'HR 1800',status:'Published'},
+     {kb:'KB0055840',ver:'v1',title:'Org Chart in ServiceNow Portal',it:'HR 1800',status:'Published'},
+   ]},
+  {id:11,topic:'Wi-Fi connectivity troubleshooting',conf:94,articles:3,views:1237,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'Multiple Wi-Fi troubleshooting articles with overlapping content.',
+   kbRefs:['KB0062100','KB0062240','KB0063001'],
+   articleList:[
+     {kb:'KB0062100',ver:'v1',title:"Can't Connect to Office Wi-Fi",it:'IT 6200',status:'Published'},
+     {kb:'KB0062240',ver:'v1',title:'Wi-Fi Drops Frequently on Windows',it:'IT 6200',status:'Published'},
+     {kb:'KB0063001',ver:'v3',title:'Wireless Network Troubleshooting',it:'IT 6200',status:'Published'},
+   ]},
+  {id:12,topic:'Email setup iOS and Android',conf:98,articles:2,views:3474,cat:'IT',hasDraft:true,
+   action:'Merge into new article',actionDesc:'Two platform-specific articles should be merged into a unified guide.',
+   kbRefs:['KB0051200','KB0051340'],
+   articleList:[
+     {kb:'KB0051200',ver:'v1',title:'Set Up Corporate Email on iPhone',it:'IT 5100',status:'Published'},
+     {kb:'KB0051340',ver:'v1',title:'Set Up Corporate Email on Android',it:'IT 5100',status:'Published'},
+   ]},
+  {id:13,topic:'Parental leave policy',conf:90,articles:3,views:4200,cat:'HR',hasDraft:true,
+   action:'Merge into new article',actionDesc:'HR leave policy articles need consolidation.',
+   kbRefs:['KB0090100','KB0090250','KB0090410'],
+   articleList:[
+     {kb:'KB0090100',ver:'v1',title:'Parental Leave Overview and Eligibility',it:'HR 9000',status:'Published'},
+     {kb:'KB0090250',ver:'v2',title:'How to Apply for Parental Leave',it:'HR 9000',status:'Published'},
+     {kb:'KB0090410',ver:'v1',title:'Parental Leave FAQ',it:'HR 9000',status:'Published'},
+   ]},
+  {id:14,topic:'VPN access and remote work setup',conf:93,articles:5,views:9100,cat:'IT',hasDraft:true,
+   action:'Merge into new article',actionDesc:'VPN documentation is duplicated across multiple articles.',
+   kbRefs:['KB0080100','KB0080320','KB0080540'],
+   articleList:[
+     {kb:'KB0080100',ver:'v3',title:'Setting Up VPN for Remote Work',it:'IT 8000',status:'Published'},
+     {kb:'KB0080320',ver:'v1',title:'VPN Client Installation Guide',it:'IT 8000',status:'Published'},
+     {kb:'KB0080540',ver:'v1',title:'Troubleshoot VPN Connection Issues',it:'IT 8000',status:'Published'},
+   ]},
+  {id:15,topic:'Software license request workflow',conf:89,articles:6,views:5600,cat:'IT',hasDraft:false,
+   action:'Merge into new article',actionDesc:'License request process is documented inconsistently.',
+   kbRefs:['KB0100210','KB0100340','KB0100510'],
+   articleList:[
+     {kb:'KB0100210',ver:'v2',title:'Requesting a Software License',it:'IT 1100',status:'Published'},
+     {kb:'KB0100340',ver:'v1',title:'Approved Software Catalog',it:'IT 1100',status:'Published'},
+     {kb:'KB0100510',ver:'v1',title:'License Approval Workflow',it:'IT 1100',status:'Published'},
+   ]},
+];
+
+let expanded = new Set([1]);
+let selected = new Set();
+
+function confClass(c){ return c>=95?'hv-green':c>=88?'hv-yellow':'hv-red'; }
+
+function renderList(data){
+  const body = document.getElementById('listBody');
+  body.innerHTML = '';
+  data.forEach(r => {
+    const isExp = expanded.has(r.id);
+    const isSel = selected.has(r.id);
+    const cc = confClass(r.conf);
+    const reviewBadge = r.hasDraft
+      ? `<span class="hv hv-blue">AI ready</span>`
+      : `<span class="hv hv-yellow">Manual review</span>`;
+
+    const rowDiv = document.createElement('div');
+    rowDiv.className = `list-row${isExp?' expanded':''}`;
+    rowDiv.id = `row-${r.id}`;
+
+    rowDiv.innerHTML = `
+      <div class="list-row-main" onclick="toggleExpand(${r.id})">
+        <div style="display:flex;align-items:center;justify-content:center;" onclick="event.stopPropagation()">
+          <input type="checkbox" class="cb" ${isSel?'checked':''} onchange="toggleSel(${r.id},this)" />
+        </div>
+        <div class="row-chevron" onclick="event.stopPropagation();toggleExpand(${r.id})">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="row-topic">
+          <span class="row-topic-name">Duplicate topic: ${r.topic}</span>
+          <span class="hv ${cc}">${r.conf}%</span>
+        </div>
+        <div class="row-meta">
+          <span class="row-meta-main">${r.articles} article${r.articles!==1?'s':''}</span>
+          <span>${r.views.toLocaleString()} views</span>
+        </div>
+        <div style="padding:0 8px">${reviewBadge}</div>
+        <div class="row-actions">
+          <button class="btn-secondary btn-sm" onclick="event.stopPropagation();openTopic(${r.id})">Open topic</button>
+        </div>
+        <div style="padding:0 4px">
+          <button class="btn-ghost btn-sm" onclick="event.stopPropagation();dismissRow(${r.id})">Dismiss</button>
+        </div>
+      </div>
+      <div class="list-expand${isExp?' open':''}" id="exp-${r.id}">
+        <div class="expand-inner">
+          <div class="expand-panel">
+            <div class="expand-panel-title">Recommended action</div>
+            <div class="rec-action-badge ${r.hasDraft?'ai':'manual'}">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="6" fill="currentColor" opacity=".2"/>
+                <path d="M4 7l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              ${r.action}
+            </div>
+            <div class="rec-action-desc">${r.actionDesc}</div>
+            <div class="rec-pills">
+              ${r.kbRefs.map(kb=>`<span class="rec-pill">${kb}</span>`).join('')}
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-panel-title">Articles in topic</div>
+            <div class="article-list">
+              ${r.articleList.map(a=>`
+                <div class="article-item">
+                  <span class="article-kb">${a.kb}</span>
+                  <span class="article-ver">${a.ver}</span>
+                  <span class="article-title">${a.title}</span>
+                  <span class="article-it">${a.it}</span>
+                  <span class="article-pub">${a.status}</span>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    body.appendChild(rowDiv);
+  });
+}
+
+function toggleExpand(id){
+  if(expanded.has(id)) expanded.delete(id);
+  else expanded.add(id);
+  const row = document.getElementById(`row-${id}`);
+  const exp = document.getElementById(`exp-${id}`);
+  const chev = row.querySelector('.row-chevron svg');
+  if(expanded.has(id)){
+    row.classList.add('expanded');
+    exp.classList.add('open');
+    chev.style.transform='rotate(90deg)';
+  } else {
+    row.classList.remove('expanded');
+    exp.classList.remove('open');
+    chev.style.transform='';
+  }
+}
+
+function toggleSel(id, cb){
+  if(cb.checked) selected.add(id);
+  else selected.delete(id);
+  updateSelectionUI();
+}
+
+function toggleSelectAll(masterCb){
+  ROWS.forEach(r => {
+    const cb = document.querySelector(`#row-${r.id} .cb`);
+    if(cb){ cb.checked = masterCb.checked; }
+    if(masterCb.checked) selected.add(r.id);
+    else selected.delete(r.id);
+  });
+  updateSelectionUI();
+}
+
+function updateSelectionUI(){
+  const n = selected.size;
+  const info = document.getElementById('selInfo');
+  const retire = document.getElementById('btnRetire');
+  const unmark = document.getElementById('btnUnmark');
+  info.innerHTML = n===0 ? 'No items selected' : `<strong>${n}</strong> item${n>1?'s':''} selected`;
+  retire.disabled = n===0;
+  unmark.disabled = n===0;
+  const masterCb = document.getElementById('selectAll');
+  const allSel = ROWS.length>0 && ROWS.every(r=>selected.has(r.id));
+  const someSel = ROWS.some(r=>selected.has(r.id));
+  masterCb.checked = allSel;
+  masterCb.indeterminate = someSel && !allSel;
+}
+
+function dismissRow(id){
+  const row = document.getElementById(`row-${id}`);
+  const exp = document.getElementById(`exp-${id}`);
+  row.style.transition='opacity .25s';
+  row.style.opacity='0';
+  if(exp){ exp.style.transition='opacity .25s'; exp.style.opacity='0'; }
+  setTimeout(()=>{ row.remove(); if(exp) exp.remove(); },250);
+}
+
+function openTopic(id){ /* navigate to topic */ }
+
+function acceptAll(){
+  document.getElementById('listBody').innerHTML =
+    '<div style="padding:64px 24px;text-align:center;color:var(--nx-text-3)">' +
+    '<svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="margin:0 auto 12px;display:block;opacity:.3"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/><path d="M12 20l5.5 5.5L28 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '<strong style="display:block;font-size:15px;font-weight:600;color:var(--nx-text);margin-bottom:6px">All recommendations accepted</strong>' +
+    '<span style="font-weight:300;">Your 67 AI-generated recommendations have been queued for processing.</span></div>';
+}
+
+function sortRows(by){
+  const cat = document.getElementById('filterCat').value;
+  let data = [...ROWS].filter(r=>cat==='all'||r.cat===cat);
+  if(by==='conf') data.sort((a,b)=>b.conf-a.conf);
+  else if(by==='articles') data.sort((a,b)=>b.articles-a.articles);
+  else if(by==='views') data.sort((a,b)=>b.views-a.views);
+  else if(by==='name') data.sort((a,b)=>a.topic.localeCompare(b.topic));
+  renderList(data);
+}
+
+function filterRows(){
+  sortRows(document.querySelector('.filter-select').value);
+}
+
+function bulkAction(type){
+  if(type!=='merge' && selected.size===0) return;
+  const labels={retire:'Retire',unmark:'Unmark as duplicate',merge:'Merge into new'};
+  alert(`${labels[type]}${selected.size>0?' — '+selected.size+' item(s)':''}`);
+}
+
+function goToList(){ alert('Navigate to list view'); }
+
+function renderPagination(){
+  const total = 98, perPage = 15, pages = Math.ceil(total/perPage);
+  const container = document.getElementById('pagPages');
+  container.innerHTML='';
+  const addBtn = (label, pg, active=false, arrow=false) => {
+    const b = document.createElement('button');
+    b.className = `page-btn${active?' active':''}${arrow?' arrow':''}`;
+    b.textContent = label;
+    container.appendChild(b);
+  };
+  addBtn('‹', 0, false, true);
+  addBtn('1', 1, true);
+  addBtn('2', 2); addBtn('3', 3); addBtn('4', 4); addBtn('5', 5);
+  const ell = document.createElement('span');
+  ell.className='page-ellipsis'; ell.textContent='...';
+  container.appendChild(ell);
+  addBtn(pages, pages);
+  addBtn('›', 0, false, true);
+}
+
+sortRows('conf');
+renderPagination();
+</script>
+</body>
+</html>
